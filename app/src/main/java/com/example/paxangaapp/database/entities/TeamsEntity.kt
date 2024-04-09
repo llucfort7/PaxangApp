@@ -9,6 +9,6 @@ data class TeamsEntity(
     @PrimaryKey(autoGenerate = true)
     val teamsId: Int? = null,
     val nameT: String = "",
-    //Posar un color predeterminat
+    val localicacion: String = "",
 )
 

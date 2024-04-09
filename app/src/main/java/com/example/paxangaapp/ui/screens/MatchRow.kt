@@ -72,8 +72,3 @@ fun MatchRow() {
         }
     }
 }
-@Preview
-@Composable
-fun MatchRowPreview() {
-    MatchRow()
-}

@@ -28,26 +28,25 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.paxangaapp.R
 import com.example.paxangaapp.navigartion.Routes
-import com.example.paxangaapp.ui.theme.md_theme_light_onSecondary
 import com.example.paxangaapp.ui.theme.md_theme_light_onSecondaryContainer
 import com.example.paxangaapp.ui.theme.md_theme_light_primary
-import com.example.paxangaapp.ui.theme.md_theme_light_secondary
 import com.example.paxangaapp.ui.theme.md_theme_light_secondaryContainer
+import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
 import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Onboarding(navController: NavHostController) {
+fun Onboarding(navController: NavHostController,teamsViewModel: TeamsViewModel,loginViwModel: LoginViwModel) {
     var nameState by rememberSaveable { mutableStateOf("") }
-    var sName by rememberSaveable { mutableStateOf("") }
+    var passw by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
     val myFile = "miArchivo"
     val content = "Mi primer archivo en android?"
@@ -94,7 +93,7 @@ fun Onboarding(navController: NavHostController) {
                 .padding(10.dp)
         ) {
             TextField(
-                value = sName, onValueChange = { sName = it },
+                value = passw, onValueChange = { passw = it },
                 label = { Text(text = "Contraseña") },
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Next
@@ -115,19 +114,34 @@ fun Onboarding(navController: NavHostController) {
         Row {
             Button(
                 onClick = {
+                    if (loginViwModel.loginUP("Admin",passw)){
                     navController.navigate(Routes.MatchScreen.routes)
+                    }
                 },
-                enabled = nameState.length >= 3 && nameState.contains(Regex("^[A-Za-z]+\$")) && sName.length >= 3 && sName.contains(
-                    Regex("^[A-Za-z]+\$")
-                ),
+                enabled = nameState.length >= 3 && nameState.contains(Regex("^[A-Za-z]+\$")) && passw.length >= 3,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = md_theme_light_secondary, // Cambia el color de fondo del botón
+                    containerColor = Color.Blue, // Cambia el color de fondo del botón
                     //Preguntar per a que el boto no siga groc
-                    contentColor = md_theme_light_onSecondary
                 )
             ) {
                 Text(text = "Siguiente")
             }
         }
+       // Row {
+       //     Button(onClick = {
+       //         teamsViewModel.addTeam(
+       //             TeamsEntity(
+       //                 nameT = "Equipo1",
+       //                 localicacion = "Alcasser"
+       //             )
+       //         )
+       //     },
+       //         colors = ButtonDefaults.buttonColors(
+       //             containerColor = Color.Blue, // Cambia el color de fondo del botón
+       //             //Preguntar per a que el boto no siga groc
+       //         )) {
+       //         Text(text = "Datos Demo")
+       //     }
+       // }
     }
 }

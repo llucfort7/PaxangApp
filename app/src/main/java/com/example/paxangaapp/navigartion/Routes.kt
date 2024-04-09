@@ -6,6 +6,8 @@ sealed class Routes(val routes: String) {
 
     object MatchScreen : Routes("MatchScreen")
     object Onboarding : Routes("Onboarding")
+    object ClassificationScreen : Routes("ClassificationScreen")
+
 
 
 }
