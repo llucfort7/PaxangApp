@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.paxangaapp.database.dao.AdminLoginDAO
 import com.example.paxangaapp.database.dao.MatchDAO
 import com.example.paxangaapp.database.dao.MatchPlayerDAO
 import com.example.paxangaapp.database.dao.PlayersDAO
@@ -31,6 +32,8 @@ abstract class LeagueDB : RoomDatabase() {
     abstract fun matchDAO(): MatchDAO
     abstract fun teamMatchDAO(): TeamMatchDAO
     abstract fun matchPlayerDAO(): MatchPlayerDAO
+
+    abstract fun adminLoginDAO(): AdminLoginDAO
 
 
 
