@@ -10,6 +10,7 @@ import com.example.paxangaapp.database.dao.MatchPlayerDAO
 import com.example.paxangaapp.database.dao.PlayersDAO
 import com.example.paxangaapp.database.dao.TeamDAO
 import com.example.paxangaapp.database.dao.TeamMatchDAO
+import com.example.paxangaapp.database.entities.AdminLoginEntity
 import com.example.paxangaapp.database.entities.MatchEntity
 import com.example.paxangaapp.database.entities.MatchPlayerRelationEntity
 import com.example.paxangaapp.database.entities.PlayerEntity
@@ -23,8 +24,9 @@ import com.example.paxangaapp.database.entities.TeamsEntity
         MatchEntity::class,
         TeamsEntity::class,
         MatchPlayerRelationEntity::class,
-        TeamMatchRelationEntity::class
-    ), version = 1
+        TeamMatchRelationEntity::class,
+        AdminLoginEntity::class
+        ), version = 2
 )
 abstract class LeagueDB : RoomDatabase() {
     abstract fun playersDAO(): PlayersDAO
@@ -32,9 +34,7 @@ abstract class LeagueDB : RoomDatabase() {
     abstract fun matchDAO(): MatchDAO
     abstract fun teamMatchDAO(): TeamMatchDAO
     abstract fun matchPlayerDAO(): MatchPlayerDAO
-
     abstract fun adminLoginDAO(): AdminLoginDAO
-
 
 
     companion object {  // Patrón Singleton

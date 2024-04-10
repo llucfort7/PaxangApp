@@ -35,16 +35,18 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.paxangaapp.R
+import com.example.paxangaapp.database.entities.AdminLoginEntity
 import com.example.paxangaapp.navigartion.Routes
 import com.example.paxangaapp.ui.theme.md_theme_light_onSecondaryContainer
 import com.example.paxangaapp.ui.theme.md_theme_light_primary
 import com.example.paxangaapp.ui.theme.md_theme_light_secondaryContainer
+import com.example.paxangaapp.ui.viwmodel.AdminLoginViwModel
 import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
 import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Onboarding(navController: NavHostController,teamsViewModel: TeamsViewModel,loginViwModel: LoginViwModel) {
+fun Onboarding(navController: NavHostController,teamsViewModel: TeamsViewModel,adminLoginViwModel: AdminLoginViwModel) {
     var nameState by rememberSaveable { mutableStateOf("") }
     var passw by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
@@ -114,7 +116,7 @@ fun Onboarding(navController: NavHostController,teamsViewModel: TeamsViewModel,l
         Row {
             Button(
                 onClick = {
-                    if (loginViwModel.loginUP("Admin",passw)){
+                    if (adminLoginViwModel.userExists("Admin","1111")){
                     navController.navigate(Routes.MatchScreen.routes)
                     }
                 },

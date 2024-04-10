@@ -6,6 +6,6 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "login")
 data class AdminLoginEntity(
     @PrimaryKey
-    val userName: String="",
+    val userName: String = "",
     val password: String = "",
 )
