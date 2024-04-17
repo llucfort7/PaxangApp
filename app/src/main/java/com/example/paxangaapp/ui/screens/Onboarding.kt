@@ -116,7 +116,7 @@ fun Onboarding(navController: NavHostController,teamsViewModel: TeamsViewModel,a
         Row {
             Button(
                 onClick = {
-                    if (adminLoginViwModel.userExists("Admin","1111")){
+                    if (adminLoginViwModel.userExists(nameState,passw)){
                     navController.navigate(Routes.MatchScreen.routes)
                     }
                 },

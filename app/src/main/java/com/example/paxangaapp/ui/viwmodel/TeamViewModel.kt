@@ -21,9 +21,16 @@ class TeamsViewModel(application: Application) : AndroidViewModel(application) {
     // LiveData para la lista de equipos
     var teamList: LiveData<MutableList<TeamsEntity>> = MutableLiveData()
 
+
     // LiveData para el equipo seleccionado
     private val _selectedTeam = MutableLiveData<TeamsEntity>()
     val selectedTeam: LiveData<TeamsEntity> = _selectedTeam
+
+    private val _selectedTeamL = MutableLiveData<TeamsEntity>()
+    val selectedTeamL: LiveData<TeamsEntity> = _selectedTeamL
+
+    private val _selectedTeamV = MutableLiveData<TeamsEntity>()
+    val selectedTeamV: LiveData<TeamsEntity> = _selectedTeamV
 
     // LiveData para el recuento de equipos
     private val _teamCount = MutableLiveData<Int>()
@@ -45,6 +52,18 @@ class TeamsViewModel(application: Application) : AndroidViewModel(application) {
     fun addTeam(team: TeamsEntity) {
         viewModelScope.launch(Dispatchers.IO) {
             teamDAO.insertTeam(team)
+        }
+    }
+    fun getOneLTeam(teamId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val team = teamDAO.getTeamById(teamId)
+            _selectedTeamL.postValue(team)
+        }
+    }
+    fun getOneVTeam(teamId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val team = teamDAO.getTeamById(teamId)
+            _selectedTeamV.postValue(team)
         }
     }
 

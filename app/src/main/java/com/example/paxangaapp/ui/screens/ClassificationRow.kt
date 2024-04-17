@@ -43,6 +43,7 @@ fun ClassificationRow(
             ) {
                 // Número y nombre
                 Row(verticalAlignment = Alignment.CenterVertically) {
+                    //Text(text = teamsEntity.teamsId.toString())
                     Text(text = teamsEntity.teamsId.toString())
                     Text(text = teamsEntity.localicacion)
                 }

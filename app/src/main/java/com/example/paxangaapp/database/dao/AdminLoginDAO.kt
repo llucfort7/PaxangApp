@@ -13,7 +13,7 @@ import com.example.paxangaapp.database.entities.AdminLoginEntity
         suspend fun insertUser(user: AdminLoginEntity)
 
         @Query("SELECT * FROM login")
-        fun getAllUsers(): LiveData<MutableList<AdminLoginEntity>>
+        fun getAllUsers(): List<AdminLoginEntity>
 
         //@Query("SELECT * FROM login WHERE teamsId = :teamId")
         //suspend fun getTeamById(teamId: Int): AdminLoginEntity?
@@ -23,5 +23,4 @@ import com.example.paxangaapp.database.entities.AdminLoginEntity
 
         @Delete
         suspend fun deleteUsers(users: AdminLoginEntity):Int
-
 }

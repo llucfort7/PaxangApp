@@ -9,10 +9,11 @@ import com.example.paxangaapp.ui.screens.MatchScreen
 import com.example.paxangaapp.ui.screens.Onboarding
 import com.example.paxangaapp.ui.screens.SplashScreen
 import com.example.paxangaapp.ui.viwmodel.AdminLoginViwModel
+import com.example.paxangaapp.ui.viwmodel.MatchViewModel
 import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
 
 @Composable
-fun Navigation(teamsViewModel: TeamsViewModel,adminLoginViwModel: AdminLoginViwModel) {
+fun Navigation(matchViewModel: MatchViewModel, teamsViewModel: TeamsViewModel, adminLoginViwModel: AdminLoginViwModel) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
@@ -22,7 +23,7 @@ fun Navigation(teamsViewModel: TeamsViewModel,adminLoginViwModel: AdminLoginViwM
             SplashScreen(navController,adminLoginViwModel)
         }
         composable(Routes.MatchScreen.routes) {
-            MatchScreen(navController)
+            MatchScreen(navController,matchViewModel,teamsViewModel)
         }
         composable(Routes.Onboarding.routes) {
             Onboarding(navController,teamsViewModel,adminLoginViwModel)

@@ -21,17 +21,17 @@ fun SplashScreen(navController: NavHostController, adminLoginViwModel: AdminLogi
     LaunchedEffect(key1 = true) {
         delay(100)
         navController.popBackStack() // Evitar volver a la Splash Screen
-        navController.navigate(Routes.Onboarding.routes)
+        navController.navigate(Routes.ClassificationScreen.routes)
     }
 //if (adminLoginViwModel.anyUserExists()){
-    adminLoginViwModel.insertUser(AdminLoginEntity(
-        "Admin",
-        "1111"
-    ))
-    adminLoginViwModel.insertUser(AdminLoginEntity(
-        "popo",
-        "1111"
-    ))
+ //   adminLoginViwModel.insertUser(AdminLoginEntity(
+ //       "Admin",
+ //       "1111"
+ //   ))
+ //   adminLoginViwModel.insertUser(AdminLoginEntity(
+ //       "popo",
+ //       "1111"
+    //))
 //}
     Splash()
 }

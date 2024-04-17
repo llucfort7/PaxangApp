@@ -11,13 +11,29 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import com.example.paxangaapp.database.entities.MatchEntity
+import com.example.paxangaapp.database.entities.TeamsEntity
+import com.example.paxangaapp.ui.viwmodel.MatchViewModel
+import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
+
 @Composable
-fun MatchRow() {
+fun MatchRow(
+    navController: NavHostController,
+    matchViewModel: MatchViewModel,
+    matchEntity: MatchEntity,
+    teamsViewModel: TeamsViewModel
+) {
+    val selectedTeamL by teamsViewModel.selectedTeamL.observeAsState()
+    val selectedTeamV by teamsViewModel.selectedTeamV.observeAsState()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -43,28 +59,34 @@ fun MatchRow() {
                         modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "Equipo 1",
-                        modifier = Modifier.padding(end = 8.dp)
-                    )
+                    teamsViewModel.getOneLTeam(matchEntity.localTeamId)
+                    selectedTeamL?.let {
+                        Text(
+                            text = it.nameT,
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+                    }
                 }
 
                 // Resultado
                 Text(
-                    text = "1-2",
+                    text = "${matchEntity.localGoals.toString()}-${matchEntity.vistGoals.toString()}",
                     modifier = Modifier.padding(horizontal = 8.dp)
                 )
 
                 // Icono y nombre del equipo 2
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = "Equipo 2",
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
+                    teamsViewModel.getOneVTeam(matchEntity.visitorTeamId)
+                    selectedTeamV?.let {
+                        Text(
+                            text = it.nameT,
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                    }
                     Spacer(modifier = Modifier.width(8.dp))
                     Icon(
                         imageVector = Icons.Default.Home,
-                        contentDescription = "Equipo 2",
+                        contentDescription = "Equipo2",
                         modifier = Modifier.size(24.dp)
                     )
                 }
