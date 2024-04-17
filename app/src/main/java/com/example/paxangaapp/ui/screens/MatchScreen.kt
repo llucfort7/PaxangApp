@@ -101,7 +101,8 @@ fun MatchScreen(navController: NavHostController, matchViewModel: MatchViewModel
                     MatchRow(
                         navController,
                         matchViewModel,
-                        match
+                        match,
+                        teamsViewModel
                     )
                 }
             }
