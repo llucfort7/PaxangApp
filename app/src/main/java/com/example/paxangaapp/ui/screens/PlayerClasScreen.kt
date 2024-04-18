@@ -34,18 +34,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.paxangaapp.database.entities.TeamsEntity
 import com.example.paxangaapp.navigartion.Routes
 import com.example.paxangaapp.ui.theme.md_theme_light_primary
-import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
+import com.example.paxangaapp.ui.viwmodel.PlayerViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ClassificationScreen (
+fun PlayerClasScreen(
     navController: NavHostController,
-    teamsViewModel: TeamsViewModel,
-){
+    playerViewModel: PlayerViewModel,
+) {
     var expanded by remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
@@ -74,7 +73,7 @@ fun ClassificationScreen (
                                 )
                             },
                             text = { "uno" },
-                            onClick = { navController.navigate(Routes.MatchScreen.routes)}
+                            onClick = { navController.navigate(Routes.MatchScreen.routes) }
                         )
                         DropdownMenuItem(
                             leadingIcon = {
@@ -83,18 +82,8 @@ fun ClassificationScreen (
                                     contentDescription = "autor",
                                 )
                             },
-                            text = { "DOS"},
-                            onClick = {navController.navigate(Routes.PlayerClasScreen.routes) }
-                        )
-                        DropdownMenuItem(
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.Add,
-                                    contentDescription = "autor",
-                                )
-                            },
-                            text = { "DOS"},
-                            onClick = {navController.navigate(Routes.NewPlayer.routes) }
+                            text = { "DOS" },
+                            onClick = { }
                         )
 
                     }
@@ -112,9 +101,9 @@ fun ClassificationScreen (
             )
         }
     ) {
-        teamsViewModel.getAllTeams()
-        val teams by teamsViewModel.teamList.observeAsState(initial = emptyList())
-        teamsViewModel.getAllTeams()
+        playerViewModel.getAllPlayers()
+        val players by playerViewModel.playerList.observeAsState(initial = emptyList())
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -130,9 +119,9 @@ fun ClassificationScreen (
                     Spacer(modifier = Modifier.height(56.dp))
                 }
 
-                items(teams) { teamsForClass ->
-                    ClassificationRow(
-                        teamsForClass ,navController ,teamsViewModel
+                items(players) { player ->
+                    PlayerRow(
+                        player, playerViewModel,navController
                     )
                 }
             }

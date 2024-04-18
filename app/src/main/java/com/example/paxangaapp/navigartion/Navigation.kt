@@ -6,14 +6,18 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.paxangaapp.ui.screens.ClassificationScreen
 import com.example.paxangaapp.ui.screens.MatchScreen
+import com.example.paxangaapp.ui.screens.NewPlayer
 import com.example.paxangaapp.ui.screens.Onboarding
+import com.example.paxangaapp.ui.screens.PlayerClasScreen
+import com.example.paxangaapp.ui.screens.PlayerInfoScreen
 import com.example.paxangaapp.ui.screens.SplashScreen
 import com.example.paxangaapp.ui.viwmodel.AdminLoginViwModel
 import com.example.paxangaapp.ui.viwmodel.MatchViewModel
+import com.example.paxangaapp.ui.viwmodel.PlayerViewModel
 import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
 
 @Composable
-fun Navigation(matchViewModel: MatchViewModel, teamsViewModel: TeamsViewModel, adminLoginViwModel: AdminLoginViwModel) {
+fun Navigation(matchViewModel: MatchViewModel, teamsViewModel: TeamsViewModel, adminLoginViwModel: AdminLoginViwModel,playerViewModel: PlayerViewModel) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
@@ -31,7 +35,14 @@ fun Navigation(matchViewModel: MatchViewModel, teamsViewModel: TeamsViewModel, a
         composable(Routes.ClassificationScreen.routes) {
             ClassificationScreen(navController,teamsViewModel)
         }
-
+        composable(Routes.PlayerClasScreen.routes) {
+            PlayerClasScreen(navController, playerViewModel)
+        }
+        composable(Routes.NewPlayer.routes) {
+            NewPlayer(navController, playerViewModel)
+        }
+        composable(Routes.PlayerInfoScreen.routes) {
+            PlayerInfoScreen( navController,playerViewModel)
+        }
     }
-
 }

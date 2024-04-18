@@ -13,11 +13,9 @@ data class PlayerEntity(
     val playerSname: String = "",
     val goodFoot: String = "",
     val position: String = "",
-
-    //var favoriteP: Boolean = false,
-   // var goalsP: Int = 0,
-   // var foulsP: Int = 0,
-   // var assistsP: Int = 0,
-   // var yellowCardsP: Int = 0,
-   // var redCardsP: Int = 0,
+    var goalsP: Int = 0,
+    var foulsP: Int = 0,
+    var assistsP: Int = 0,
+    var yellowCardsP: Int = 0,
+    var redCardsP: Int = 0,
 )

@@ -3,11 +3,12 @@ package com.example.paxangaapp.navigartion
 sealed class Routes(val routes: String) {
 
     object SplashScreen : Routes("SplashScreen")
-
     object MatchScreen : Routes("MatchScreen")
     object Onboarding : Routes("Onboarding")
     object ClassificationScreen : Routes("ClassificationScreen")
-
+    object PlayerClasScreen : Routes("PlayerClasScreen")
+    object NewPlayer : Routes("NewPlayer")
+    object PlayerInfoScreen : Routes("PlayerInfoScreen")
 
 
 }

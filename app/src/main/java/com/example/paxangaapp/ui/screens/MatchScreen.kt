@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -58,9 +59,10 @@ fun MatchScreen(navController: NavHostController, matchViewModel: MatchViewModel
                 },
                 navigationIcon = {
                     IconButton(onClick = {
+                        navController.popBackStack()
                     }) {
                         Icon(
-                            imageVector = Icons.Default.ExitToApp,
+                            imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Classificacion",
                             tint = Color.Black
                         )
@@ -76,11 +78,6 @@ fun MatchScreen(navController: NavHostController, matchViewModel: MatchViewModel
         teamsViewModel.getAllTeams()
         val teams by teamsViewModel.teamList.observeAsState(initial = emptyList())
         teamsViewModel.getAllTeams()
-
-        val selectedTeamL by teamsViewModel.selectedTeamL.observeAsState()
-        val selectedTeamV by teamsViewModel.selectedTeamV.observeAsState()
-
-
 
         Column(
             modifier = Modifier
@@ -98,14 +95,31 @@ fun MatchScreen(navController: NavHostController, matchViewModel: MatchViewModel
                 }
 
                 items(matches) { match ->
-                    MatchRow(
-                        navController,
-                        matchViewModel,
-                        match,
-                        teamsViewModel
-                    )
+                    val localTeam = teams.firstOrNull { it.teamsId == match.localTeamId }
+                    val visitorTeam = teams.firstOrNull { it.teamsId == match.visitorTeamId }
+                    MatchRow(navController, match, localTeam, visitorTeam)
                 }
             }
+
+            // LazyColumn(
+           //     modifier = Modifier
+           //         .fillMaxWidth()
+           //         .padding(vertical = 8.dp)
+           // ) {
+           //     item {
+           //         // Spacer para dejar espacio para la TopAppBar
+           //         Spacer(modifier = Modifier.height(56.dp))
+           //     }
+//
+           //     items(matches) { match ->
+           //         MatchRow(
+           //             navController,
+           //             matchViewModel,
+           //             match,
+           //             teamsViewModel
+           //         )
+           //     }
+           // }
         }
     }
 }
