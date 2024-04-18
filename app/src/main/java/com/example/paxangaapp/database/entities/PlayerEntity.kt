@@ -8,6 +8,7 @@ import androidx.room.PrimaryKey
 data class PlayerEntity(
     @PrimaryKey(autoGenerate = true)
     val playersId: Int? = null,
+    val playerTeamID:Int? = null,
     val playerNumber: Int = 0,
     val playerName: String = "",
     val playerSname: String = "",

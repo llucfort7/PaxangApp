@@ -3,12 +3,12 @@ package com.example.paxangaapp.database.entities
 import androidx.room.Embedded
 import androidx.room.Relation
 
-data class PlayerTeamsForQueris(
+data class  PlayerTeamsForQueris(
     @Embedded
-    val user: PlayerEntity,
+    val team: TeamsEntity,
     @Relation(
-        parentColumn = "playersId",
-        entityColumn = "teamsId"
+        parentColumn = "teamsId",
+        entityColumn = "playerTeamID"
     )
-    val teamsEntity: List<TeamsEntity>
+    val playerEntity: List<PlayerEntity>
 )

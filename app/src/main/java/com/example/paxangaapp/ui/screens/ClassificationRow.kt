@@ -1,5 +1,6 @@
 package com.example.paxangaapp.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.paxangaapp.database.entities.TeamsEntity
+import com.example.paxangaapp.navigartion.Routes
 import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
 
 @Composable
@@ -28,6 +30,10 @@ fun ClassificationRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
+            .clickable {
+                teamsViewModel.onTeamClicked(teamsEntity)
+                navController.navigate(Routes.TeamInfoScreen.routes)
+            }
     ) {
         OutlinedCard(
             shape = RoundedCornerShape(8.dp),

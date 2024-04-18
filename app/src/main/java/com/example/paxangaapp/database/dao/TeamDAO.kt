@@ -7,7 +7,9 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.*
+import com.example.paxangaapp.database.entities.PlayerTeamsForQueris
 import com.example.paxangaapp.database.entities.TeamsEntity
+import com.example.paxangaapp.database.entities.PlayerEntity
 
 @Dao
 interface TeamDAO  {
@@ -25,4 +27,15 @@ interface TeamDAO  {
 
     @Delete
      suspend fun deleteTeam(team: TeamsEntity):Int
+
+    @Transaction
+    @Query("SELECT * FROM teams")
+    fun getAllTeamsWithPlayers():List<PlayerTeamsForQueris>
+
+   // @Transaction
+   // @Query("SELECT * FROM teams WHERE teams.teamsId = :teamId AND players.teamsId = :teamId")
+   // fun getAllTeamsWithPlayersSameTeam(teamId: Int):List<PlayerTeamsForQueris>
+  //  @Transaction
+  //  @Query("SELECT * FROM PlayerTeamsForQueris WHERE team.teamsId = :teamId")
+  //  fun getPlayersByTeamId(teamId: Int): List<PlayerTeamsForQueris>
 }

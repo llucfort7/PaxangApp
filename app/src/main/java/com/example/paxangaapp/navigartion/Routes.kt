@@ -9,6 +9,7 @@ sealed class Routes(val routes: String) {
     object PlayerClasScreen : Routes("PlayerClasScreen")
     object NewPlayer : Routes("NewPlayer")
     object PlayerInfoScreen : Routes("PlayerInfoScreen")
+    object TeamInfoScreen : Routes("TeamInfoScreen")
 
 
 }

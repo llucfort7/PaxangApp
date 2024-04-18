@@ -1,13 +1,17 @@
 package com.example.paxangaapp.ui.screens
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,14 +31,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.paxangaapp.database.entities.PlayerEntity
+import com.example.paxangaapp.database.entities.PlayerTeamsForQueris
+import com.example.paxangaapp.database.entities.TeamsEntity
 import com.example.paxangaapp.ui.theme.md_theme_light_primary
+import com.example.paxangaapp.ui.viwmodel.PlayerTeamsViewModel
 import com.example.paxangaapp.ui.viwmodel.PlayerViewModel
+import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
+
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlayerInfoScreen(
+fun TeamInfoScreen(
     navController: NavHostController,
+    teamsViewModel: TeamsViewModel,
     playersViwModel: PlayerViewModel,
 ) {
     Scaffold(
@@ -63,73 +73,79 @@ fun PlayerInfoScreen(
         }
 
     ) {
+        //teamsEntity.teamsId?.let { it1 -> playerTeamsViewModel.getAllTeamsWithPlayersSameTeam(it1) }
+        //val playerAndTeam by playerTeamsViewModel.teamList.observeAsState(emptyList())
+        //teamsEntity.teamsId?.let { it1 -> playerTeamsViewModel.getAllTeamsWithPlayersSameTeam(it1) }
+        val team: TeamsEntity by teamsViewModel.selectedTeam.observeAsState(TeamsEntity())
+        team.teamsId?.let { it1 -> playersViwModel.getPlayerById(it1) }
+        val players by playersViwModel.playerList.observeAsState(emptyList())
+        team.teamsId?.let { it1 -> playersViwModel.getPlayerById(it1) }
 
-
-        val player: PlayerEntity by playersViwModel.selectedPlayer.observeAsState(PlayerEntity())
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
             Text(
-                text = "${player.playerName} ${player.playerSname}",
+                text = team.nameT,
                 //style = MaterialTheme.typography.h4,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
             PlayerDetailItem(
-                label = "Player Number",
-                value = player.playerNumber.toString()
+                label = "Team Name",
+                value = team.teamsId.toString()
             )
             PlayerDetailItem(
-                label = "Position",
-                value = player.position
+                label = "Localiacion",
+                value = team.localicacion
             )
-            PlayerDetailItem(
-                label = "Good Foot",
-                value = player.goodFoot
-            )
-            PlayerDetailItem(
-                label = "Goals",
-                value = player.goalsP.toString()
-            )
-            PlayerDetailItem(
-                label = "Fouls",
-                value = player.foulsP.toString()
-            )
-            PlayerDetailItem(
-                label = "Assists",
-                value = player.assistsP.toString()
-            )
-            PlayerDetailItem(
-                label = "Yellow Cards",
-                value = player.yellowCardsP.toString()
-            )
-            PlayerDetailItem(
-                label = "Red Cards",
-                value = player.redCardsP.toString()
-            )
+        }
+        Row {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.primary)
+            ) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                ) {
+                    item {
+                        // Spacer para dejar espacio para la TopAppBar
+                        Spacer(modifier = Modifier.height(56.dp))
+                    }
+
+                    items(players) { player ->
+                        PlayerRow(
+                            player, playersViwModel, navController
+                        )
+                    }
+                }
+            }
         }
     }
 }
-    @Composable
-    fun PlayerDetailItem(
-        label: String,
-        value: String
+
+@Composable
+fun TeamDetailInfo(
+    label: String,
+    value: String
+) {
+    Row(
+        modifier = Modifier.padding(vertical = 4.dp)
     ) {
-        Row(
-            modifier = Modifier.padding(vertical = 4.dp)
-        ) {
-            Text(
-                text = label,
-                // style = MaterialTheme.typography.subtitle1,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.width(150.dp)
-            )
-            Text(
-                text = value,
-                // style = MaterialTheme.typography.body1,
-            )
-        }
+        Text(
+            text = label,
+            // style = MaterialTheme.typography.subtitle1,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.width(150.dp)
+        )
+        Text(
+            text = value,
+            // style = MaterialTheme.typography.body1,
+        )
     }
+}
