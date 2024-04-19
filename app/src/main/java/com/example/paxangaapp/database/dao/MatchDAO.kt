@@ -16,6 +16,9 @@ interface MatchDAO{
     @Query("SELECT * FROM 'match' ")
      fun getAllMatches(): LiveData<MutableList<MatchEntity>>
 
+    @Query("SELECT * FROM 'match' WHERE matchNum = :matchId")
+    fun getAllMatchesByNumMatch(matchId: Int): LiveData<MutableList<MatchEntity>>
+
     @Query("SELECT * FROM 'match' WHERE matchId = :matchId")
      suspend fun getMatchById(matchId: Int): MatchEntity?
 

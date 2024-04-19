@@ -11,6 +11,7 @@ import com.example.paxangaapp.ui.screens.Onboarding
 import com.example.paxangaapp.ui.screens.PlayerClasScreen
 import com.example.paxangaapp.ui.screens.PlayerInfoScreen
 import com.example.paxangaapp.ui.screens.SplashScreen
+import com.example.paxangaapp.ui.screens.TabRowMatchScreen
 import com.example.paxangaapp.ui.screens.TeamInfoScreen
 import com.example.paxangaapp.ui.viwmodel.AdminLoginViwModel
 import com.example.paxangaapp.ui.viwmodel.MatchViewModel
@@ -48,6 +49,9 @@ fun Navigation(matchViewModel: MatchViewModel, teamsViewModel: TeamsViewModel, a
         }
         composable(Routes.TeamInfoScreen.routes) {
             TeamInfoScreen( navController,teamsViewModel,playerViewModel)
+        }
+        composable(Routes.TabRowMatchScreen.routes) {
+            TabRowMatchScreen( navController,matchViewModel, teamsViewModel)
         }
     }
 }

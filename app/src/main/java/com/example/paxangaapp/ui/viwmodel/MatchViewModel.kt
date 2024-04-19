@@ -18,10 +18,17 @@ class MatchViewModel(application: Application) : AndroidViewModel(application) {
     // LiveData para la lista de partidos
     var matchList: LiveData<MutableList<MatchEntity>> = MutableLiveData()
 
+    var matchListNumber: LiveData<MutableList<MatchEntity>> = MutableLiveData()
+
     // Método para obtener todos los partidos
     fun getAllMatches() {
         viewModelScope.launch(Dispatchers.IO) {
             matchList = matchDAO.getAllMatches()
+        }
+    }
+    fun getAllMatchesByNumMatch(nMatch:Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            matchListNumber = matchDAO.getAllMatchesByNumMatch(nMatch)
         }
     }
 

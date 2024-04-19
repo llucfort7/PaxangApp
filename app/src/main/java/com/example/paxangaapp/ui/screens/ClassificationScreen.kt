@@ -84,7 +84,7 @@ fun ClassificationScreen (
                                 )
                             },
                             text = { "DOS"},
-                            onClick = {navController.navigate(Routes.PlayerClasScreen.routes) }
+                            onClick = {navController.navigate(Routes.TabRowMatchScreen.routes) }
                         )
                         DropdownMenuItem(
                             leadingIcon = {

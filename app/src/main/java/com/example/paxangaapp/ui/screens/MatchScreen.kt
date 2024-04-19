@@ -44,82 +44,60 @@ import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MatchScreen(navController: NavHostController, matchViewModel: MatchViewModel,teamsViewModel: TeamsViewModel) {
-    //var expanded by remember { mutableStateOf(false) }
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = md_theme_light_primary
-                ),
-                title = { Text(text = "PAXANGAPP") },
-                actions = {
+fun MatchScreen(
+    navController: NavHostController,
+    matchViewModel: MatchViewModel,
+    teamsViewModel: TeamsViewModel
+) {
 
+    matchViewModel.getAllMatches()
+    val matches by matchViewModel.matchList.observeAsState(initial = emptyList())
+    matchViewModel.getAllMatches()
+    teamsViewModel.getAllTeams()
+    val teams by teamsViewModel.teamList.observeAsState(initial = emptyList())
+    teamsViewModel.getAllTeams()
 
-                },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        navController.popBackStack()
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Classificacion",
-                            tint = Color.Black
-                        )
-                    }
-                }
-            )
-        }
-
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.primary)
     ) {
-        matchViewModel.getAllMatches()
-        val matches by matchViewModel.matchList.observeAsState(initial = emptyList())
-        matchViewModel.getAllMatches()
-        teamsViewModel.getAllTeams()
-        val teams by teamsViewModel.teamList.observeAsState(initial = emptyList())
-        teamsViewModel.getAllTeams()
-
-        Column(
+        LazyColumn(
             modifier = Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.primary)
+                .weight(1f)
+                .padding(vertical = 8.dp)
         ) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp)
-            ) {
-                item {
-                    // Spacer para dejar espacio para la TopAppBar
-                    Spacer(modifier = Modifier.height(56.dp))
-                }
-
-                items(matches) { match ->
-                    val localTeam = teams.firstOrNull { it.teamsId == match.localTeamId }
-                    val visitorTeam = teams.firstOrNull { it.teamsId == match.visitorTeamId }
-                    MatchRow(navController, match, localTeam, visitorTeam)
-                }
+            item {
+                // Spacer para dejar espacio para la TopAppBar
+                Spacer(modifier = Modifier.height(56.dp))
             }
 
-            // LazyColumn(
-           //     modifier = Modifier
-           //         .fillMaxWidth()
-           //         .padding(vertical = 8.dp)
-           // ) {
-           //     item {
-           //         // Spacer para dejar espacio para la TopAppBar
-           //         Spacer(modifier = Modifier.height(56.dp))
-           //     }
-//
-           //     items(matches) { match ->
-           //         MatchRow(
-           //             navController,
-           //             matchViewModel,
-           //             match,
-           //             teamsViewModel
-           //         )
-           //     }
-           // }
+            items(matches) { match ->
+                val localTeam = teams.firstOrNull { it.teamsId == match.localTeamId }
+                val visitorTeam = teams.firstOrNull { it.teamsId == match.visitorTeamId }
+                MatchRow(navController, match, localTeam, visitorTeam)
+            }
         }
     }
-}
+
+        // LazyColumn(
+        //     modifier = Modifier
+        //         .fillMaxWidth()
+        //         .padding(vertical = 8.dp)
+        // ) {
+        //     item {
+        //         // Spacer para dejar espacio para la TopAppBar
+        //         Spacer(modifier = Modifier.height(56.dp))
+        //     }
+//
+        //     items(matches) { match ->
+        //         MatchRow(
+        //             navController,
+        //             matchViewModel,
+        //             match,
+        //             teamsViewModel
+        //         )
+        //     }
+        // }
+
+    }
