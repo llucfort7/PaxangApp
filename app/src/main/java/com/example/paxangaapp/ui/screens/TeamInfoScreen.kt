@@ -53,7 +53,7 @@ fun TeamInfoScreen(
                 colors = TopAppBarDefaults.smallTopAppBarColors(
                     containerColor = md_theme_light_primary
                 ),
-                title = { Text(text = "Maximos goleadores") },
+                title = { Text(text = "Info equipo") },
                 actions = {
 
 
@@ -77,10 +77,9 @@ fun TeamInfoScreen(
         //val playerAndTeam by playerTeamsViewModel.teamList.observeAsState(emptyList())
         //teamsEntity.teamsId?.let { it1 -> playerTeamsViewModel.getAllTeamsWithPlayersSameTeam(it1) }
         val team: TeamsEntity by teamsViewModel.selectedTeam.observeAsState(TeamsEntity())
-        team.teamsId?.let { it1 -> playersViwModel.getPlayerById(it1) }
+        team.teamsId?.let { it1 -> playersViwModel.getPlayerByTeamId(it1) }
         val players by playersViwModel.playerList.observeAsState(emptyList())
-        team.teamsId?.let { it1 -> playersViwModel.getPlayerById(it1) }
-
+        team.teamsId?.let { it1 -> playersViwModel.getPlayerByTeamId(it1) }
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -101,28 +100,21 @@ fun TeamInfoScreen(
                 label = "Localiacion",
                 value = team.localicacion
             )
-        }
-        Row {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.primary)
-            ) {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp)
-                ) {
-                    item {
-                        // Spacer para dejar espacio para la TopAppBar
-                        Spacer(modifier = Modifier.height(56.dp))
-                    }
 
-                    items(players) { player ->
-                        PlayerRow(
-                            player, playersViwModel, navController
-                        )
-                    }
+            LazyColumn(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(vertical = 8.dp)
+            ) {
+                //  item {
+                //      // Spacer para dejar espacio para la TopAppBar
+                //      Spacer(modifier = Modifier.height(256.dp))
+                //  }
+
+                items(players) { player ->
+                    PlayerRow(
+                        player, playersViwModel, navController
+                    )
                 }
             }
         }
@@ -149,3 +141,4 @@ fun TeamDetailInfo(
         )
     }
 }
+

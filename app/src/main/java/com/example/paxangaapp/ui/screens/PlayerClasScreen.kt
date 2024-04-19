@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.paxangaapp.database.entities.PlayerEntity
 import com.example.paxangaapp.navigartion.Routes
 import com.example.paxangaapp.ui.theme.md_theme_light_primary
 import com.example.paxangaapp.ui.viwmodel.PlayerViewModel
@@ -101,6 +102,7 @@ fun PlayerClasScreen(
             )
         }
     ) {
+
         playerViewModel.getAllPlayers()
         val players by playerViewModel.playerList.observeAsState(initial = emptyList())
 

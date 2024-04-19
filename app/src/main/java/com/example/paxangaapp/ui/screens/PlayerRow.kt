@@ -1,5 +1,6 @@
 package com.example.paxangaapp.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -18,6 +19,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.paxangaapp.database.entities.PlayerEntity
 import com.example.paxangaapp.navigartion.Routes
+import com.example.paxangaapp.ui.theme.md_theme_dark_primary
+import com.example.paxangaapp.ui.theme.md_theme_light_primary
 import com.example.paxangaapp.ui.viwmodel.PlayerViewModel
 
 
@@ -40,9 +43,11 @@ fun PlayerRow(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .background(md_theme_light_primary)
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+
             // Columna para el nombre del jugador y más información
             Column(
                 modifier = Modifier.weight(1f)

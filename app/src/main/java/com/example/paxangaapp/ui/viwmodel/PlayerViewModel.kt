@@ -40,6 +40,12 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
         return playerDAO.getPlayerById(playerId)
     }
 
+    fun getPlayerByTeamId(playerId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            playerList = playerDAO.getPlayerByTeamId(playerId)
+        }
+    }
+
     // Método para eliminar un jugador
  //   fun deletePlayer(player: PlayerEntity) {
  //       viewModelScope.launch(Dispatchers.IO) {

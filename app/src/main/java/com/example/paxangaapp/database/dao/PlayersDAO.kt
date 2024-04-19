@@ -19,6 +19,9 @@ interface PlayersDAO {
     @Query("SELECT * FROM players WHERE playersId = :playerId")
     fun getPlayerById(playerId: Int): LiveData<PlayerEntity?>
 
+    @Query("SELECT * FROM players WHERE playerTeamID = :playerTId")
+    fun getPlayerByTeamId(playerTId: Int): LiveData<List<PlayerEntity>>
+
     @Query("DELETE FROM players")
     suspend fun deleteAllPlayers()
 

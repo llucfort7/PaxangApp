@@ -110,6 +110,10 @@ fun PlayerInfoScreen(
                 label = "Red Cards",
                 value = player.redCardsP.toString()
             )
+            PlayerDetailItem(
+                label = "Team id",
+                value = player.playerTeamID.toString()
+            )
         }
     }
 }
