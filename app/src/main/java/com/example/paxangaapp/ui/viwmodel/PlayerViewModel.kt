@@ -17,9 +17,15 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     // LiveData para la lista de jugadores
     var playerList: LiveData<List<PlayerEntity>> = MutableLiveData()
 
+    var playerListByid: LiveData<PlayerEntity> = MutableLiveData()
+
+
     // LiveData para el jugador seleccionado
     private val _selectedPlayer = MutableLiveData<PlayerEntity>()
     val selectedPlayer: LiveData<PlayerEntity> = _selectedPlayer
+
+    private var _selectedPlayerById = PlayerEntity()
+    val selectedPlayerById: PlayerEntity? = _selectedPlayerById
 
     // Método para obtener todos los jugadores
     fun getAllPlayers() {
@@ -36,13 +42,13 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     // Método para obtener un jugador por su ID
-    fun getPlayerById(playerId: Int): LiveData<PlayerEntity?> {
-        return playerDAO.getPlayerById(playerId)
+    fun getPlayerById(playerId: Int) {
+        playerListByid= playerDAO.getPlayerById(playerId)
     }
 
     fun getPlayerByTeamId(playerId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            playerList = playerDAO.getPlayerByTeamId(playerId)
+          playerDAO.getPlayerByTeamId(playerId)
         }
     }
 

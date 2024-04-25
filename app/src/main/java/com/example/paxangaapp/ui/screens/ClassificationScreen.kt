@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenu
@@ -46,7 +47,7 @@ fun ClassificationScreen (
     navController: NavHostController,
     teamsViewModel: TeamsViewModel,
 ){
-    var expanded by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -55,62 +56,23 @@ fun ClassificationScreen (
                 ),
                 title = { Text(text = "PAXANGAPP") },
                 actions = {
-                    IconButton(onClick = { expanded = !expanded }) {
-                        Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = "More"
-                        )
-                    }
 
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false }
-                    ) {
-                        DropdownMenuItem(
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.AccountBox,
-                                    contentDescription = "autor",
-                                )
-                            },
-                            text = { "uno" },
-                            onClick = { navController.navigate(Routes.MatchScreen.routes)}
-                        )
-                        DropdownMenuItem(
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.Add,
-                                    contentDescription = "autor",
-                                )
-                            },
-                            text = { "DOS"},
-                            onClick = {navController.navigate(Routes.TabRowMatchScreen.routes) }
-                        )
-                        DropdownMenuItem(
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.Add,
-                                    contentDescription = "autor",
-                                )
-                            },
-                            text = { "DOS"},
-                            onClick = {navController.navigate(Routes.NewPlayer.routes) }
-                        )
 
-                    }
                 },
                 navigationIcon = {
                     IconButton(onClick = {
+                        navController.popBackStack()
                     }) {
                         Icon(
-                            imageVector = Icons.Default.ExitToApp,
-                            contentDescription = "Arrow back",
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Classificacion",
                             tint = Color.Black
                         )
                     }
                 }
             )
         }
+
     ) {
         //teamsViewModel.addTeam(
         //    TeamsEntity(

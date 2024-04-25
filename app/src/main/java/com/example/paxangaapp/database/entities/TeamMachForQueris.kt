@@ -4,7 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
 
-data class TeamWithmach(
+data class TeamWithMach(
     @Embedded val team: TeamsEntity,
     @Relation(
         parentColumn = "teamsId",
@@ -14,7 +14,7 @@ data class TeamWithmach(
     val matchT: List<MatchEntity>
 )
 
-data class machwithteam(
+data class MachWithTeam(
     @Embedded val match: MatchEntity,
     @Relation(
         parentColumn = "matchId",

@@ -5,22 +5,23 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.paxangaapp.ui.screens.ClassificationScreen
-import com.example.paxangaapp.ui.screens.MatchScreen
 import com.example.paxangaapp.ui.screens.NewPlayer
 import com.example.paxangaapp.ui.screens.Onboarding
 import com.example.paxangaapp.ui.screens.PlayerClasScreen
 import com.example.paxangaapp.ui.screens.PlayerInfoScreen
+import com.example.paxangaapp.ui.screens.SeeMatches
 import com.example.paxangaapp.ui.screens.SplashScreen
 import com.example.paxangaapp.ui.screens.TabRowMatchScreen
 import com.example.paxangaapp.ui.screens.TeamInfoScreen
 import com.example.paxangaapp.ui.viwmodel.AdminLoginViwModel
+import com.example.paxangaapp.ui.viwmodel.MatchPlayerViewModel
 import com.example.paxangaapp.ui.viwmodel.MatchViewModel
 import com.example.paxangaapp.ui.viwmodel.PlayerTeamsViewModel
 import com.example.paxangaapp.ui.viwmodel.PlayerViewModel
 import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
 
 @Composable
-fun Navigation(matchViewModel: MatchViewModel, teamsViewModel: TeamsViewModel, adminLoginViwModel: AdminLoginViwModel,playerViewModel: PlayerViewModel) {
+fun Navigation(matchViewModel: MatchViewModel, teamsViewModel: TeamsViewModel, adminLoginViwModel: AdminLoginViwModel,playerViewModel: PlayerViewModel,matchPlayerViewModel: MatchPlayerViewModel) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
@@ -28,9 +29,6 @@ fun Navigation(matchViewModel: MatchViewModel, teamsViewModel: TeamsViewModel, a
     ){
         composable(Routes.SplashScreen.routes) {
             SplashScreen(navController,adminLoginViwModel)
-        }
-        composable(Routes.MatchScreen.routes) {
-            MatchScreen(navController,matchViewModel,teamsViewModel)
         }
         composable(Routes.Onboarding.routes) {
             Onboarding(navController,teamsViewModel,adminLoginViwModel)
@@ -52,6 +50,9 @@ fun Navigation(matchViewModel: MatchViewModel, teamsViewModel: TeamsViewModel, a
         }
         composable(Routes.TabRowMatchScreen.routes) {
             TabRowMatchScreen( navController,matchViewModel, teamsViewModel)
+        }
+        composable(Routes.SeeMatches.routes) {
+            SeeMatches(navController,matchViewModel,teamsViewModel,playerViewModel,matchPlayerViewModel)
         }
     }
 }

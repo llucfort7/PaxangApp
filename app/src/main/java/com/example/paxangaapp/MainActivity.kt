@@ -8,6 +8,7 @@ import com.example.paxangaapp.database.dao.AdminLoginDAO
 import com.example.paxangaapp.navigartion.Navigation
 import com.example.paxangaapp.ui.theme.PaxangaAppTheme
 import com.example.paxangaapp.ui.viwmodel.AdminLoginViwModel
+import com.example.paxangaapp.ui.viwmodel.MatchPlayerViewModel
 import com.example.paxangaapp.ui.viwmodel.MatchViewModel
 import com.example.paxangaapp.ui.viwmodel.PlayerViewModel
 import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
@@ -17,12 +18,14 @@ class MainActivity : ComponentActivity() {
     private val teamsViewModel by viewModels<TeamsViewModel>()
     private val adminLoginViwModel by viewModels<AdminLoginViwModel>()
     private val playerViewModel by viewModels<PlayerViewModel>()
+    private val matchPlayerViewModel by viewModels<MatchPlayerViewModel>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             PaxangaAppTheme {
-                Navigation(matchViewModel, teamsViewModel, adminLoginViwModel,playerViewModel)
+                Navigation(matchViewModel, teamsViewModel, adminLoginViwModel,playerViewModel,matchPlayerViewModel)
             }
         }
     }

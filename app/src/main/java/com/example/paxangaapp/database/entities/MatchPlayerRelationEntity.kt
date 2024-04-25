@@ -11,4 +11,5 @@ data class MatchPlayerRelationEntity(
     var assistsP: Int = 0,
     var yellowCardsP: Int = 0,
     var redCardsP: Int = 0,
+    var TimePlayed: Int = 0,
 )

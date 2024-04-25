@@ -21,7 +21,7 @@ fun SplashScreen(navController: NavHostController, adminLoginViwModel: AdminLogi
     LaunchedEffect(key1 = true) {
         delay(100)
         navController.popBackStack() // Evitar volver a la Splash Screen
-        navController.navigate(Routes.ClassificationScreen.routes)
+        navController.navigate(Routes.TabRowMatchScreen.routes)
     }
 //if (adminLoginViwModel.anyUserExists()){
  //   adminLoginViwModel.insertUser(AdminLoginEntity(
@@ -45,7 +45,5 @@ fun Splash() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-
-        //Aplicar per a que es cambie al on boardingf o a la pantalla de admin
     }
 }
