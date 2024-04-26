@@ -12,6 +12,7 @@ sealed class Routes(val routes: String) {
     object TeamInfoScreen : Routes("TeamInfoScreen")
     object TabRowMatchScreen : Routes("TabRowMatchScreen")
     object SeeMatches : Routes("SeeMatches")
+    object NewTeam : Routes("NewTeam")
 
 
 }

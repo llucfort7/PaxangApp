@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AcUnit
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
@@ -130,6 +131,16 @@ fun TabRowMatchScreen(
                             },
                             text = { "DOS"},
                             onClick = {navController.navigate(Routes.NewPlayer.routes) }
+                        )
+                        DropdownMenuItem(
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.AcUnit,
+                                    contentDescription = "autor",
+                                )
+                            },
+                            text = { "DOS"},
+                            onClick = {navController.navigate(Routes.NewTeam.routes) }
                         )
 
                     }

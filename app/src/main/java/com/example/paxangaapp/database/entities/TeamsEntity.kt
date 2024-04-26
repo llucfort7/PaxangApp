@@ -10,5 +10,6 @@ data class TeamsEntity(
     val teamsId: Int? = null,
     val nameT: String = "",
     val localicacion: String = "",
+    val clubImage: Int? = null,
 )
 

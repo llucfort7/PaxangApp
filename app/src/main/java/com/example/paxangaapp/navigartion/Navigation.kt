@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.paxangaapp.ui.screens.ClassificationScreen
 import com.example.paxangaapp.ui.screens.NewPlayer
+import com.example.paxangaapp.ui.screens.NewTeam
 import com.example.paxangaapp.ui.screens.Onboarding
 import com.example.paxangaapp.ui.screens.PlayerClasScreen
 import com.example.paxangaapp.ui.screens.PlayerInfoScreen
@@ -53,6 +54,9 @@ fun Navigation(matchViewModel: MatchViewModel, teamsViewModel: TeamsViewModel, a
         }
         composable(Routes.SeeMatches.routes) {
             SeeMatches(navController,matchViewModel,teamsViewModel,playerViewModel,matchPlayerViewModel)
+        }
+        composable(Routes.NewTeam.routes) {
+            NewTeam(teamsViewModel)
         }
     }
 }
