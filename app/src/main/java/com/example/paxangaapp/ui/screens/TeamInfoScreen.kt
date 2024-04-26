@@ -73,12 +73,52 @@ fun TeamInfoScreen(
         }
 
     ) {
+      //  playersViwModel.addPlayer(PlayerEntity(
+      //      playerTeamID=1,
+      //      playerNumber = 10,
+      //      playerName = "Lionel",
+      //      playerSname = "Messi",
+      //      goodFoot = "Left",
+      //      position = "Forward",
+      //      goalsP = 700,
+      //      foulsP = 100,
+      //      assistsP = 300,
+      //      yellowCardsP = 20,
+      //      redCardsP = 2
+      //  ))
+      //  playersViwModel.addPlayer(PlayerEntity(
+      //      playerTeamID=1,
+      //      playerNumber = 6,
+      //      playerName = "Pedro",
+      //      playerSname = "Porro",
+      //      goodFoot = "Left",
+      //      position = "Forward",
+      //      goalsP = 700,
+      //      foulsP = 100,
+      //      assistsP = 300,
+      //      yellowCardsP = 20,
+      //      redCardsP = 2
+      //  ))
+      //  playersViwModel.addPlayer(PlayerEntity(
+      //      playerTeamID=1,
+      //      playerNumber = 7,
+      //      playerName = "Xavi",
+      //      playerSname = "Hernandez",
+      //      goodFoot = "Left",
+      //      position = "Forward",
+      //      goalsP = 700,
+      //      foulsP = 100,
+      //      assistsP = 300,
+      //      yellowCardsP = 20,
+      //      redCardsP = 2
+      //  ))
+
         //teamsEntity.teamsId?.let { it1 -> playerTeamsViewModel.getAllTeamsWithPlayersSameTeam(it1) }
         //val playerAndTeam by playerTeamsViewModel.teamList.observeAsState(emptyList())
         //teamsEntity.teamsId?.let { it1 -> playerTeamsViewModel.getAllTeamsWithPlayersSameTeam(it1) }
         val team: TeamsEntity by teamsViewModel.selectedTeam.observeAsState(TeamsEntity())
         team.teamsId?.let { it1 -> playersViwModel.getPlayerByTeamId(it1) }
-        val players by playersViwModel.playerList.observeAsState(emptyList())
+        val players by playersViwModel.playerListByTeam.observeAsState(emptyList())
         team.teamsId?.let { it1 -> playersViwModel.getPlayerByTeamId(it1) }
         Column(
             modifier = Modifier
@@ -93,7 +133,7 @@ fun TeamInfoScreen(
             )
             Spacer(modifier = Modifier.height(16.dp))
             PlayerDetailItem(
-                label = "Team Name",
+                label = "Team id",
                 value = team.teamsId.toString()
             )
             PlayerDetailItem(
@@ -120,6 +160,7 @@ fun TeamInfoScreen(
         }
     }
 }
+
 
 @Composable
 fun TeamDetailInfo(

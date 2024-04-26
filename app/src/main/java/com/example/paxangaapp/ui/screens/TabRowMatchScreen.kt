@@ -205,7 +205,7 @@ fun MatchRow(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = matchEntity.matchNum.toString())
+                Text(text = matchEntity.matchId.toString())
                 // Icono y nombre del equipo local
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(

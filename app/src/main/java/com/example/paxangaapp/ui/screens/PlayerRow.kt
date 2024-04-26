@@ -53,7 +53,7 @@ fun PlayerRow(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "${player.playerName} ${player.playerSname}",
+                    text = "${player.playersId} ${player.playerName} ${player.playerSname}",
                     //style = MaterialTheme.typography.subtitle1,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 4.dp)

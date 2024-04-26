@@ -95,14 +95,14 @@ fun TopBarComponent(
     teamsViewModel: TeamsViewModel,
     playerViewModel: PlayerViewModel,
     matchPlayerViewModel: MatchPlayerViewModel,
-    ) {
+) {
 
     //Objeto del actual partido
     val match: MatchEntity by matchViewModel.selectedMatch.observeAsState(MatchEntity())
 
 
     //Numero de la jornada
-    val num=match.matchId
+    val num = match.matchId
     teamsViewModel.getAllTeams()
     //Le asignamos a la variable teams la lista teamlist del viewModel
     val teams by teamsViewModel.teamList.observeAsState(initial = emptyList())
@@ -113,14 +113,21 @@ fun TopBarComponent(
     teamsViewModel.getOneVTeam(match.visitorTeamId)
 
     //Le asignamos a la variable playeroal la lista matchPlayerListMatchGoal del viewModel
-    match.matchId?.let { matchPlayerViewModel.getAllMatchPlayersByMatch(it) }
-    val playerGoal by matchPlayerViewModel.matchPlayerListMatch.observeAsState(initial = emptyList())
-    match.matchId?.let { matchPlayerViewModel.getAllMatchPlayersByMatch(it) }
+    match.matchId?.let { matchPlayerViewModel.getAllMatchPlayersByMatchGoal(it) }
+    val playerGoal by matchPlayerViewModel.matchPlayerListMatchGoal.observeAsState(initial = emptyList())
+    match.matchId?.let { matchPlayerViewModel.getAllMatchPlayersByMatchGoal(it) }
+
+    playerViewModel.getAllPlayers()
+    val players by playerViewModel.playerList.observeAsState(initial = emptyList())
+    playerViewModel.getAllPlayers()
 
 
     // val teamWithMatch: TeamWithMach by teamMatchViewModel.selectedTeamWithMatch.observeAsState(TeamWithMach())
     val localTeam = teams.firstOrNull { it.teamsId == match.localTeamId }
     val visitorTeam = teams.firstOrNull { it.teamsId == match.visitorTeamId }
+
+
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -206,24 +213,21 @@ fun TopBarComponent(
                                 modifier = Modifier.padding(start = 10.dp),
                             )
                         }
+                        if (playerGoal.isEmpty()) {
+                        } else {
+                            for (i in 0..<playerGoal.size) {
+                                for (x in 0..<playerGoal[i].goalsP) {
+                                    for (z in 0..<players.size) {
+                                        if (players[z].playersId == playerGoal[i].playersId) {
+                                            if (localTeam != null) {
+                                                if (players[z].playerTeamID == localTeam.teamsId)
+                                                    Text(text = players[z].playerName)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
 
-                        for (i in 0..playerGoal.size) {
-
-                            //playerViewModel.getPlayerById(0)
-                           // val play by playerViewModel.playerListByid.observeAsState(initial = emptyList())
-                           // playerViewModel.getPlayerById(playeroal[i].playersId)
-                            // val playerx=playerViewModel.selectedPlayerById
-                            // playerViewModel.getPlayerById(playeroal[i].playersId)
-                          //  if (localTeam != null) {
-                          //      if (play[0].playerTeamID == localTeam.teamsId)
-                                    Text(
-                                        text = playerGoal[playerGoal[i].playersId].toString(),
-                                        style = MaterialTheme.typography.bodySmall,
-                                        fontWeight = FontWeight.SemiBold,
-                                        fontStyle = FontStyle.Italic,
-                                        modifier = Modifier.padding(start = 25.dp),
-                                    )
-                          //  }
                         }
                     }
                     Text(
@@ -252,21 +256,22 @@ fun TopBarComponent(
 
                                 )
                         }
-                        // for (i in 0..playeroal.size){
-                        //     playerViewModel.getPlayerById(playeroal[i].playersId)
-                        //     val playerx: PlayerEntity by playerViewModel.selectedPlayerById.observeAsState(PlayerEntity())
-                        //     playerViewModel.getPlayerById(playeroal[i].playersId)
-                        //         if (visitorTeam != null) {
-                        //             if (playerx.playerTeamID==visitorTeam.teamsId)
-                        //                 Text(
-                        //                     text = "$playerx Goal",
-                        //                     style = MaterialTheme.typography.bodySmall,
-                        //                     fontWeight = FontWeight.SemiBold,
-                        //                     fontStyle = FontStyle.Italic,
-                        //                     modifier = Modifier.padding(start = 25.dp),
-                        //                 )
-                        //         }
-                        // }
+                        if (playerGoal.isEmpty()) {
+                        } else {
+                            for (i in 0..<playerGoal.size) {
+                                for (x in 0..<playerGoal[i].goalsP) {
+                                    for (z in 0..<players.size) {
+                                        if (players[z].playersId == playerGoal[i].playersId) {
+                                            if (visitorTeam != null) {
+                                                if (players[z].playerTeamID == visitorTeam.teamsId)
+                                                    Text(text = players[z].playerName)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
                     }
 
                 }

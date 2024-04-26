@@ -105,6 +105,8 @@ fun PlayerClasScreen(
 
         playerViewModel.getAllPlayers()
         val players by playerViewModel.playerList.observeAsState(initial = emptyList())
+        playerViewModel.getAllPlayers()
+
 
         Column(
             modifier = Modifier
