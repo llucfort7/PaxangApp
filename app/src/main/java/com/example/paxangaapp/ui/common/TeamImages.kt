@@ -28,10 +28,32 @@ class TeamImages() {
             R.drawable.oviedo,
 
             )
+        private val listaDeRetirados: MutableList<Int> = mutableListOf()
 
         // Función para obtener la lista de nombres de imágenes
         fun obtenerImagenes(): List<Int> {
-            return listaDeImagenes
+           return  compararImagen()
+        }
+
+        fun compararImagen(): List<Int> {
+            val lista: MutableList<Int> = mutableListOf()
+            val isRet = false
+            for (i in 0..<listaDeImagenes.size) {
+                var isRet = false
+                for (x in 0..<listaDeRetirados.size) {
+                    if (listaDeImagenes[i] == listaDeRetirados[x]
+                    ) {
+                        isRet = true
+                    }
+                }
+                if (!isRet) {
+                    lista.add(listaDeImagenes[i])
+                }
+            }
+            return lista
+        }
+        fun anyadirImagenRet(img:Int){
+            listaDeRetirados.add(img)
         }
     }
 }

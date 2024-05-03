@@ -33,12 +33,14 @@ class TeamsViewModel(application: Application) : AndroidViewModel(application) {
     val selectedTeamV: LiveData<TeamsEntity> = _selectedTeamV
 
     // LiveData para el recuento de equipos
-    private val _teamCount = MutableLiveData<Int>()
-    val teamCount: LiveData<Int> = _teamCount
+
+    var teamCount=0
 
     // Función para actualizar el recuento de equipos
-    private fun updateTeamCount(count: Int) {
-        _teamCount.value = count
+    fun updateTeamCount() {
+        viewModelScope.launch(Dispatchers.IO) {
+            teamCount= teamDAO.getCountTeam()
+        }
     }
 
     // Método para obtener todos los equipos

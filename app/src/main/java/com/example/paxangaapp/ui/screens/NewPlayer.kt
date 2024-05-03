@@ -56,21 +56,27 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
 import com.example.paxangaapp.R
 import com.example.paxangaapp.database.entities.PlayerEntity
+import com.example.paxangaapp.navigartion.Routes
 import com.example.paxangaapp.ui.theme.md_theme_light_onSecondary
 import com.example.paxangaapp.ui.theme.md_theme_light_onSecondaryContainer
 import com.example.paxangaapp.ui.theme.md_theme_light_primary
 import com.example.paxangaapp.ui.theme.md_theme_light_secondary
 import com.example.paxangaapp.ui.theme.md_theme_light_secondaryContainer
+import com.example.paxangaapp.ui.viwmodel.AppViewModel
 import com.example.paxangaapp.ui.viwmodel.PlayerViewModel
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewPlayer(navController: NavHostController, playerViewModel: PlayerViewModel) {
+fun NewPlayer(
+    navController: NavHostController,
+    playerViewModel: PlayerViewModel,
+    appViewModel: AppViewModel
+) {
     var playerName by rememberSaveable { mutableStateOf("") }
     var playerSName by rememberSaveable { mutableStateOf("") }
-    var playerNumber by rememberSaveable { mutableStateOf(0) }
+    var playerNumber by rememberSaveable { mutableStateOf(1) }
     var goodFoot = rememberSaveable { mutableStateOf("") }
     var position = rememberSaveable { mutableStateOf("") }
     val backgroundImage = painterResource(id = R.drawable.furbol)
@@ -125,7 +131,7 @@ fun NewPlayer(navController: NavHostController, playerViewModel: PlayerViewModel
                 TextField(
                     value = playerName,
                     onValueChange = { playerName = it },
-                   // placeholder = { Text(stringResource(R.string.introduceNombre) ) },
+                    // placeholder = { Text(stringResource(R.string.introduceNombre) ) },
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.AccountCircle,
@@ -165,7 +171,7 @@ fun NewPlayer(navController: NavHostController, playerViewModel: PlayerViewModel
                 factory = { context ->
                     NumberPicker(context).apply {
                         setOnValueChangedListener { _, _, newval ->
-                            playerNumber=newval
+                            playerNumber = newval
 
                         }
                         minValue = 1
@@ -175,7 +181,7 @@ fun NewPlayer(navController: NavHostController, playerViewModel: PlayerViewModel
                 }
             )
             if (!isPortrait) {
-                Row (Modifier.height(100.dp)){
+                Row(Modifier.height(100.dp)) {
                 }
             }
 
@@ -399,7 +405,7 @@ fun NewPlayer(navController: NavHostController, playerViewModel: PlayerViewModel
             }
 
             if (!isPortrait) {
-                Row (Modifier.height(400.dp)){
+                Row(Modifier.height(400.dp)) {
                 }
             }
             Row(
@@ -408,13 +414,14 @@ fun NewPlayer(navController: NavHostController, playerViewModel: PlayerViewModel
                     .padding(10.dp)
             ) {
                 val playerp = PlayerEntity(
+                    playerTeamID = appViewModel.idTeamsEdit.value,
                     playerName = playerName,
                     playerSname = playerSName,
                     playerNumber = playerNumber,
                     goodFoot = goodFoot.value,
                     position = position.value,
 
-                )
+                    )
                 Button(
                     onClick = {
                         try {
@@ -422,8 +429,15 @@ fun NewPlayer(navController: NavHostController, playerViewModel: PlayerViewModel
                         } catch (e: Exception) {
                             Log.e("TAG", "Error al insertar jugador: ${e.message}")
                         }
-
-                        navController.popBackStack()
+                        if (appViewModel.contadorDePantallaPlayer == appViewModel.numPlayersEdit) {
+                            if (appViewModel.contadorDePantallaTeam == appViewModel.numTeamsEdit) {
+                                navController.navigate(Routes.TabRowMatchScreen.routes)
+                            } else {
+                                navController.navigate(Routes.NewTeam.routes)
+                            }
+                        } else {
+                            navController.navigate(Routes.NewPlayer.routes)
+                        }
                     },
                     enabled = playerName.length > 3 && playerName.contains(Regex("^[A-Za-z]+\$")) && playerSName.length > 3 && playerSName.contains(
                         Regex("^[A-Za-z]+\$")

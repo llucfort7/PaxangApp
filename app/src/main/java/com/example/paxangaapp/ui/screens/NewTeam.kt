@@ -44,6 +44,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -59,9 +60,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.navigation.NavHostController
 import com.example.paxangaapp.R
+import com.example.paxangaapp.database.entities.MatchEntity
 import com.example.paxangaapp.database.entities.PlayerEntity
 import com.example.paxangaapp.database.entities.TeamsEntity
+import com.example.paxangaapp.navigartion.Routes
 import com.example.paxangaapp.ui.common.TeamImages
 import com.example.paxangaapp.ui.theme.md_theme_dark_inverseOnSurface
 import com.example.paxangaapp.ui.theme.md_theme_light_onSecondary
@@ -69,12 +73,19 @@ import com.example.paxangaapp.ui.theme.md_theme_light_onSecondaryContainer
 import com.example.paxangaapp.ui.theme.md_theme_light_primary
 import com.example.paxangaapp.ui.theme.md_theme_light_secondary
 import com.example.paxangaapp.ui.theme.md_theme_light_secondaryContainer
+import com.example.paxangaapp.ui.viwmodel.AppViewModel
 import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
+import okhttp3.Route
+import kotlin.random.Random
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-fun NewTeam(teamsViewModel: TeamsViewModel){
+fun NewTeam(
+    teamsViewModel: TeamsViewModel,
+    navController: NavHostController,
+    appViewModel: AppViewModel
+) {
 
     var teamName by rememberSaveable { mutableStateOf("") }
     var teamLocation by rememberSaveable { mutableStateOf("") }
@@ -95,17 +106,6 @@ fun NewTeam(teamsViewModel: TeamsViewModel){
 
 
                 },
-                navigationIcon = {
-                    IconButton(onClick = {
-                       // navController.popBackStack()
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Classificacion",
-                            tint = Color.Black
-                        )
-                    }
-                }
             )
         }
 
@@ -133,7 +133,7 @@ fun NewTeam(teamsViewModel: TeamsViewModel){
                 TextField(
                     value = teamName,
                     onValueChange = { teamName = it },
-                    label = { Text(text = "Nombre del club")},
+                    label = { Text(text = "Nombre del club") },
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.AccountCircle,
@@ -172,17 +172,19 @@ fun NewTeam(teamsViewModel: TeamsViewModel){
                 factory = { context ->
                     NumberPicker(context).apply {
                         setOnValueChangedListener { _, _, newval ->
-                            playersNumber=newval
+                            playersNumber = newval
 
                         }
-                        minValue = 8
+                        minValue = 1
                         maxValue = 15
                     }
 
                 }
             )
             Column(
-                modifier = Modifier.fillMaxSize().padding(16.dp)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
             ) {
                 // Muestra las imágenes de los equipos
                 val imagenesClub = TeamImages.obtenerImagenes()
@@ -217,21 +219,29 @@ fun NewTeam(teamsViewModel: TeamsViewModel){
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }
+            teamsViewModel.getAllTeams()
+            val teams by teamsViewModel.teamList.observeAsState(initial = emptyList())
             // Botón para agregar el equipo
             Button(
                 onClick = {
                     if (selectedImage != null) {
-                        // Crea un objeto TeamsEntity y lo pasa al ViewModel
                         teamsViewModel.addTeam(
                             TeamsEntity(
+                                teamsId = appViewModel.idTeamsEdit.value,
                                 nameT = teamName,
                                 localicacion = teamLocation,
                                 clubImage = selectedImage
                             )
                         )
                     }
+                    selectedImage?.let { it1 -> TeamImages.anyadirImagenRet(it1) }
+
+                    navController.navigate(Routes.NewPlayer.routes)
+
                 },
-                enabled = selectedImage != null && teamName.length > 3 && teamName.contains(Regex("^[A-Za-z]+\$")) && teamLocation.length > 3 && teamLocation.contains(Regex("^[A-Za-z]+\$")),
+                enabled = selectedImage != null && teamName.length > 3 && teamName.contains(Regex("^[A-Za-z]+\$")) && teamLocation.length > 3 && teamLocation.contains(
+                    Regex("^[A-Za-z]+\$")
+                ),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = md_theme_light_secondary,
                     contentColor = md_theme_light_onSecondary
@@ -249,5 +259,48 @@ fun NewTeam(teamsViewModel: TeamsViewModel){
             }
         }
     }
+}
 
+fun calendario(
+    teamsViewModel: TeamsViewModel,
+    appViewModel: AppViewModel,
+    teams: List<TeamsEntity>
+) {
+    teamsViewModel.getAllTeams()
+    val nEquipos = appViewModel.numTeamsEdit.value
+    val jornadas = (nEquipos!! * 2) - 2
+    var listaPartidos = mutableListOf<MatchEntity>()
+    for (i in 0..<jornadas) {
+        var lista = mutableListOf<Int>()
+        for (u in 0..<teams.size) {
+            teams[u].teamsId?.let { lista.add(it) }
+        }
+        for (x in 0..teams.size) {
+            var pass = false
+            var equipo1 = 0
+            var equipo2 = 0
+            while (pass) {
+                equipo1 = lista.random()
+                equipo2 = lista.random()
+                for (z in 0..<listaPartidos.size) {
+                    if (listaPartidos[z].localTeamId == equipo1 && listaPartidos[z].visitorTeamId == equipo2) {
+
+                    } else {
+                        pass = true
+                    }
+                }
+                if (equipo1 == equipo2 || !pass) {
+
+                } else {
+                    pass = true
+                }
+            }
+            listaPartidos.add(
+                MatchEntity(
+                    localTeamId = equipo1,
+                    visitorTeamId = equipo2
+                )
+            )
+        }
+    }
 }

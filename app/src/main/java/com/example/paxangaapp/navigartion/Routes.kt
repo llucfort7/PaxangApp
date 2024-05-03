@@ -13,6 +13,7 @@ sealed class Routes(val routes: String) {
     object TabRowMatchScreen : Routes("TabRowMatchScreen")
     object SeeMatches : Routes("SeeMatches")
     object NewTeam : Routes("NewTeam")
+    object NoLeagueScreen : Routes("NoLeagueScreen")
 
 
 }

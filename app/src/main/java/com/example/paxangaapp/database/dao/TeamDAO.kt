@@ -1,6 +1,7 @@
 package com.example.paxangaapp.database.dao
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -18,7 +19,8 @@ interface TeamDAO  {
 
     @Query("SELECT * FROM teams")
      fun getAllTeams(): LiveData<MutableList<TeamsEntity>>
-
+    @Query("SELECT Count(*) FROM teams")
+    fun getCountTeam(): Int
     @Query("SELECT * FROM teams WHERE teamsId = :teamId")
      suspend fun getTeamById(teamId: Int): TeamsEntity?
 
