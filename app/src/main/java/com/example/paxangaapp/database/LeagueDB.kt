@@ -26,7 +26,7 @@ import com.example.paxangaapp.database.entities.TeamsEntity
         MatchPlayerRelationEntity::class,
         TeamMatchRelationEntity::class,
         AdminLoginEntity::class
-        ), version = 10
+        ), version = 19
 )
 abstract class LeagueDB : RoomDatabase() {
     abstract fun playersDAO(): PlayersDAO

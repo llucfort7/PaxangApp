@@ -67,6 +67,8 @@ fun NoLeagueScreen(
             )
             Button(onClick = {
                 appViewModel.numTeamsChangue(teamsNumber)
+                appViewModel.contadorDePantallaTeamSum(0)
+                appViewModel.contadorDePantallaPlayerSum(0)
                 navController.navigate(Routes.NewTeam.routes)
 
             }) {

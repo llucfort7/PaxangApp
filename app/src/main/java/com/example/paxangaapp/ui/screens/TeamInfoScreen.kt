@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -39,10 +40,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.paxangaapp.database.entities.MatchEntity
 import com.example.paxangaapp.database.entities.PlayerEntity
 import com.example.paxangaapp.database.entities.PlayerTeamsForQueris
 import com.example.paxangaapp.database.entities.TeamsEntity
 import com.example.paxangaapp.ui.theme.md_theme_light_primary
+import com.example.paxangaapp.ui.viwmodel.AppViewModel
+import com.example.paxangaapp.ui.viwmodel.MatchViewModel
 import com.example.paxangaapp.ui.viwmodel.PlayerTeamsViewModel
 import com.example.paxangaapp.ui.viwmodel.PlayerViewModel
 import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
@@ -54,6 +58,8 @@ import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
 fun TeamInfoScreen(
     navController: NavHostController,
     teamsViewModel: TeamsViewModel,
+    matchViewModel: MatchViewModel,
+    appViewModel: AppViewModel,
     playersViwModel: PlayerViewModel,
 ) {
     Scaffold(
@@ -82,45 +88,45 @@ fun TeamInfoScreen(
         }
 
     ) {
-      //  playersViwModel.addPlayer(PlayerEntity(
-      //      playerTeamID=1,
-      //      playerNumber = 10,
-      //      playerName = "Lionel",
-      //      playerSname = "Messi",
-      //      goodFoot = "Left",
-      //      position = "Forward",
-      //      goalsP = 700,
-      //      foulsP = 100,
-      //      assistsP = 300,
-      //      yellowCardsP = 20,
-      //      redCardsP = 2
-      //  ))
-      //  playersViwModel.addPlayer(PlayerEntity(
-      //      playerTeamID=1,
-      //      playerNumber = 6,
-      //      playerName = "Pedro",
-      //      playerSname = "Porro",
-      //      goodFoot = "Left",
-      //      position = "Forward",
-      //      goalsP = 700,
-      //      foulsP = 100,
-      //      assistsP = 300,
-      //      yellowCardsP = 20,
-      //      redCardsP = 2
-      //  ))
-      //  playersViwModel.addPlayer(PlayerEntity(
-      //      playerTeamID=1,
-      //      playerNumber = 7,
-      //      playerName = "Xavi",
-      //      playerSname = "Hernandez",
-      //      goodFoot = "Left",
-      //      position = "Forward",
-      //      goalsP = 700,
-      //      foulsP = 100,
-      //      assistsP = 300,
-      //      yellowCardsP = 20,
-      //      redCardsP = 2
-      //  ))
+        //  playersViwModel.addPlayer(PlayerEntity(
+        //      playerTeamID=1,
+        //      playerNumber = 10,
+        //      playerName = "Lionel",
+        //      playerSname = "Messi",
+        //      goodFoot = "Left",
+        //      position = "Forward",
+        //      goalsP = 700,
+        //      foulsP = 100,
+        //      assistsP = 300,
+        //      yellowCardsP = 20,
+        //      redCardsP = 2
+        //  ))
+        //  playersViwModel.addPlayer(PlayerEntity(
+        //      playerTeamID=1,
+        //      playerNumber = 6,
+        //      playerName = "Pedro",
+        //      playerSname = "Porro",
+        //      goodFoot = "Left",
+        //      position = "Forward",
+        //      goalsP = 700,
+        //      foulsP = 100,
+        //      assistsP = 300,
+        //      yellowCardsP = 20,
+        //      redCardsP = 2
+        //  ))
+        //  playersViwModel.addPlayer(PlayerEntity(
+        //      playerTeamID=1,
+        //      playerNumber = 7,
+        //      playerName = "Xavi",
+        //      playerSname = "Hernandez",
+        //      goodFoot = "Left",
+        //      position = "Forward",
+        //      goalsP = 700,
+        //      foulsP = 100,
+        //      assistsP = 300,
+        //      yellowCardsP = 20,
+        //      redCardsP = 2
+        //  ))
 
         //teamsEntity.teamsId?.let { it1 -> playerTeamsViewModel.getAllTeamsWithPlayersSameTeam(it1) }
         //val playerAndTeam by playerTeamsViewModel.teamList.observeAsState(emptyList())
@@ -145,7 +151,9 @@ fun TeamInfoScreen(
                     Image(
                         painter = it2,
                         contentDescription = null,
-                        modifier = Modifier.fillMaxSize().padding(5.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(5.dp),
                         contentScale = ContentScale.Fit // Cambia la escala de contenido a Fit
                     )
                 }
@@ -156,6 +164,12 @@ fun TeamInfoScreen(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
+            teamsViewModel.getAllTeams()
+            val teams by teamsViewModel.teamList.observeAsState(initial = emptyList())
+            teamsViewModel.getAllTeams()
+            Button(onClick = { calendario(teamsViewModel, matchViewModel, teams) }) {
+
+            }
             Spacer(modifier = Modifier.height(16.dp))
             PlayerDetailItem(
                 label = "Team id",

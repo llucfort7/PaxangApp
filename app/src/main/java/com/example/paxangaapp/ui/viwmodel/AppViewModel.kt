@@ -33,7 +33,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     fun contadorDePantallaPlayerSum(sumaP: Int) {
         _contadorDePantallaPlayer.value = sumaP
     }
-    fun numPlayersChangue(newId: Int) {
-        _numPlayersEdit.value = newId
+    fun numPlayersChangue(num: Int) {
+        _numPlayersEdit.value = num
     }
 }

@@ -38,6 +38,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -55,7 +56,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
 import com.example.paxangaapp.R
+import com.example.paxangaapp.database.entities.MatchEntity
 import com.example.paxangaapp.database.entities.PlayerEntity
+import com.example.paxangaapp.database.entities.TeamsEntity
 import com.example.paxangaapp.navigartion.Routes
 import com.example.paxangaapp.ui.theme.md_theme_light_onSecondary
 import com.example.paxangaapp.ui.theme.md_theme_light_onSecondaryContainer
@@ -63,7 +66,9 @@ import com.example.paxangaapp.ui.theme.md_theme_light_primary
 import com.example.paxangaapp.ui.theme.md_theme_light_secondary
 import com.example.paxangaapp.ui.theme.md_theme_light_secondaryContainer
 import com.example.paxangaapp.ui.viwmodel.AppViewModel
+import com.example.paxangaapp.ui.viwmodel.MatchViewModel
 import com.example.paxangaapp.ui.viwmodel.PlayerViewModel
+import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -71,7 +76,9 @@ import com.example.paxangaapp.ui.viwmodel.PlayerViewModel
 @Composable
 fun NewPlayer(
     navController: NavHostController,
+    teamsViewModel:TeamsViewModel,
     playerViewModel: PlayerViewModel,
+    matchViewModel: MatchViewModel,
     appViewModel: AppViewModel
 ) {
     var playerName by rememberSaveable { mutableStateOf("") }
@@ -408,6 +415,9 @@ fun NewPlayer(
                 Row(Modifier.height(400.dp)) {
                 }
             }
+            teamsViewModel.getAllTeams()
+            val teams by teamsViewModel.teamList.observeAsState(initial = emptyList())
+            teamsViewModel.getAllTeams()
             Row(
                 horizontalArrangement = Arrangement.Absolute.Center,
                 modifier = Modifier
@@ -422,6 +432,7 @@ fun NewPlayer(
                     position = position.value,
 
                     )
+
                 Button(
                     onClick = {
                         try {
@@ -429,15 +440,25 @@ fun NewPlayer(
                         } catch (e: Exception) {
                             Log.e("TAG", "Error al insertar jugador: ${e.message}")
                         }
-                        if (appViewModel.contadorDePantallaPlayer == appViewModel.numPlayersEdit) {
-                            if (appViewModel.contadorDePantallaTeam == appViewModel.numTeamsEdit) {
-                                navController.navigate(Routes.TabRowMatchScreen.routes)
-                            } else {
-                                navController.navigate(Routes.NewTeam.routes)
-                            }
+                        if (appViewModel.contadorDePantallaPlayer.isInitialized) {
+                            appViewModel.contadorDePantallaPlayerSum(appViewModel.contadorDePantallaPlayer.value!! + 1)
                         } else {
-                            navController.navigate(Routes.NewPlayer.routes)
+                            appViewModel.contadorDePantallaPlayerSum(0)
                         }
+
+                        //if (appViewModel.contadorDePantallaPlayer.value == appViewModel.numPlayersEdit.value) {
+                        if (appViewModel.contadorDePantallaTeam.value == appViewModel.numTeamsEdit.value) {
+                           // calendario(teamsViewModel ,matchViewModel, teams)
+                            navController.navigate(Routes.TabRowMatchScreen.routes)
+                        } else {
+
+                           // calendario(teamsViewModel,matchViewModel, teams)
+                            navController.navigate(Routes.NewTeam.routes)
+                        }
+                        // } else {
+                        //Cambiar per new player
+                        //   navController.navigate(Routes.NewTeam.routes)
+                        //}
                     },
                     enabled = playerName.length > 3 && playerName.contains(Regex("^[A-Za-z]+\$")) && playerSName.length > 3 && playerSName.contains(
                         Regex("^[A-Za-z]+\$")
@@ -461,5 +482,68 @@ fun NewPlayer(
             }
         }
     }
+}
 
+
+fun calendario(
+    teamsViewModel: TeamsViewModel,
+    matchViewModel: MatchViewModel,
+    teamList: List<TeamsEntity>
+) {
+
+    matchViewModel.deleteAllMatches()
+    val nEquipos = teamList.size
+    val jornadas = (nEquipos - 1) * 2
+
+    // Crear una copia mutable de la lista de equipos disponibles
+    var equiposDisponibles = mutableListOf<TeamsEntity>()
+    equiposDisponibles= teamList.toMutableList()
+
+    // Lista para rastrear los partidos jugados
+    val listaPartidosJugados = mutableListOf<MatchEntity>()
+
+    for (i in 1..jornadas) {
+        val partidosJornada = mutableListOf<MatchEntity>()
+
+        for (j in 0 until nEquipos / 2) {
+            var pass = false
+
+            while (!pass) {
+                // Seleccionar dos equipos al azar de la lista de equipos disponibles
+                val equipo1 = equiposDisponibles.random()
+                val equipo2 = equiposDisponibles.random()
+
+                // Verificar si los equipos seleccionados ya han jugado juntos o son el mismo equipo
+                if (partidosJornada.any { it.localTeamId == equipo1.teamsId || it.visitorTeamId == equipo1.teamsId || it.localTeamId == equipo2.teamsId || it.visitorTeamId == equipo2.teamsId } ||
+                    listaPartidosJugados.any { it.localTeamId == equipo1.teamsId && it.visitorTeamId == equipo2.teamsId } ||
+                    equipo1 == equipo2
+                ) {
+                    pass = false
+                } else {
+                    // Crear el partido y agregarlo a la lista de partidos de la jornada y la lista de partidos jugados
+                    val partido = equipo2.teamsId?.let {
+                        equipo1.teamsId?.let { it1 ->
+                            MatchEntity(
+                                localTeamId = it1,
+                                visitorTeamId = it,
+                                matchNum = i
+                            )
+                        }
+                    }
+
+                    if (partido != null) {
+                        matchViewModel.addMatch(partido)
+                        listaPartidosJugados.add(partido)
+                        partidosJornada.add(partido)
+                    }
+
+                    // Eliminar los equipos seleccionados de la lista de equipos disponibles
+                    equiposDisponibles.remove(equipo1)
+                    equiposDisponibles.remove(equipo2)
+
+                    pass = true
+                }
+            }
+        }
+    }
 }

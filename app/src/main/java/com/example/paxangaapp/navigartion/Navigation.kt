@@ -43,16 +43,16 @@ fun Navigation(matchViewModel: MatchViewModel, teamsViewModel: TeamsViewModel, a
             PlayerClasScreen(navController, playerViewModel)
         }
         composable(Routes.NewPlayer.routes) {
-            NewPlayer(navController, playerViewModel,appViewModel)
+            NewPlayer(navController,teamsViewModel, playerViewModel,matchViewModel, appViewModel)
         }
         composable(Routes.PlayerInfoScreen.routes) {
             PlayerInfoScreen( navController,playerViewModel)
         }
         composable(Routes.TeamInfoScreen.routes) {
-            TeamInfoScreen( navController,teamsViewModel,playerViewModel)
+            TeamInfoScreen( navController,teamsViewModel,matchViewModel,appViewModel,playerViewModel)
         }
         composable(Routes.TabRowMatchScreen.routes) {
-            TabRowMatchScreen( navController,matchViewModel, teamsViewModel)
+            TabRowMatchScreen( navController,matchViewModel, teamsViewModel,appViewModel)
         }
         composable(Routes.SeeMatches.routes) {
             SeeMatches(navController,matchViewModel,teamsViewModel,playerViewModel,matchPlayerViewModel)

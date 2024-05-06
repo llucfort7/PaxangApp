@@ -74,41 +74,6 @@ fun ClassificationScreen (
         }
 
     ) {
-        //teamsViewModel.addTeam(
-        //    TeamsEntity(
-        //        nameT ="Equipo 1",
-        //        localicacion = "España"
-        //    )
-        //)
-//
-        //teamsViewModel.addTeam(
-        //    TeamsEntity(
-        //        nameT ="Equipo 2",
-        //        localicacion = "Francia"
-        //    )
-        //)
-//
-        //teamsViewModel.addTeam(
-        //    TeamsEntity(
-        //        nameT ="Equipo 3",
-        //        localicacion = "Alemania"
-        //    )
-        //)
-//
-        //teamsViewModel.addTeam(
-        //    TeamsEntity(
-        //        nameT ="Equipo 4",
-        //        localicacion = "Italia"
-        //    )
-        //)
-//
-        //teamsViewModel.addTeam(
-        //    TeamsEntity(
-        //        nameT ="Equipo 5",
-        //        localicacion = "Portugal"
-        //    )
-        //)
-
         teamsViewModel.getAllTeams()
         val teams by teamsViewModel.teamList.observeAsState(initial = emptyList())
         teamsViewModel.getAllTeams()

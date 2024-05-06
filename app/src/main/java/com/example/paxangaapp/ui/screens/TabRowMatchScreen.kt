@@ -61,6 +61,7 @@ import com.example.paxangaapp.database.entities.MatchEntity
 import com.example.paxangaapp.database.entities.TeamsEntity
 import com.example.paxangaapp.navigartion.Routes
 import com.example.paxangaapp.ui.theme.md_theme_light_primary
+import com.example.paxangaapp.ui.viwmodel.AppViewModel
 import com.example.paxangaapp.ui.viwmodel.MatchViewModel
 import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
 
@@ -71,7 +72,8 @@ import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
 fun TabRowMatchScreen(
     navController: NavHostController,
     matchViewModel: MatchViewModel,
-    teamsViewModel: TeamsViewModel
+    teamsViewModel: TeamsViewModel,
+    appViewModel: AppViewModel,
 ) {
     var selectedTabIndex by remember { mutableStateOf(0) }
     matchViewModel.getAllMatches()
@@ -110,7 +112,7 @@ fun TabRowMatchScreen(
                                 )
                             },
                             text = { "uno" },
-                            onClick = { navController.navigate(Routes.ClassificationScreen.routes)}
+                            onClick = { navController.navigate(Routes.ClassificationScreen.routes) }
                         )
                         DropdownMenuItem(
                             leadingIcon = {
@@ -119,8 +121,8 @@ fun TabRowMatchScreen(
                                     contentDescription = "autor",
                                 )
                             },
-                            text = { "DOS"},
-                            onClick = {navController.navigate(Routes.PlayerClasScreen.routes) }
+                            text = { "DOS" },
+                            onClick = { navController.navigate(Routes.PlayerClasScreen.routes) }
                         )
                         DropdownMenuItem(
                             leadingIcon = {
@@ -129,8 +131,8 @@ fun TabRowMatchScreen(
                                     contentDescription = "autor",
                                 )
                             },
-                            text = { "DOS"},
-                            onClick = {navController.navigate(Routes.NewPlayer.routes) }
+                            text = { "DOS" },
+                            onClick = { navController.navigate(Routes.NewPlayer.routes) }
                         )
                         DropdownMenuItem(
                             leadingIcon = {
@@ -139,8 +141,8 @@ fun TabRowMatchScreen(
                                     contentDescription = "autor",
                                 )
                             },
-                            text = { "DOS"},
-                            onClick = {navController.navigate(Routes.NewTeam.routes) }
+                            text = { "DOS" },
+                            onClick = { navController.navigate(Routes.NewTeam.routes) }
                         )
 
                     }
@@ -148,7 +150,6 @@ fun TabRowMatchScreen(
             )
         }
     ) {
-
 
         Column(modifier = Modifier.fillMaxSize()) {
             Spacer(modifier = Modifier.height(57.dp))
@@ -178,7 +179,7 @@ fun TabRowMatchScreen(
                 items(matches) { match ->
                     val localTeam = teams.firstOrNull { it.teamsId == match.localTeamId }
                     val visitorTeam = teams.firstOrNull { it.teamsId == match.visitorTeamId }
-                    MatchRow(navController, match, matchViewModel,localTeam, visitorTeam)
+                    MatchRow(navController, match, matchViewModel, localTeam, visitorTeam)
                 }
             }
         }
@@ -194,6 +195,7 @@ fun MatchRow(
     localTeam: TeamsEntity?,
     visitorTeam: TeamsEntity?
 ) {
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -232,7 +234,6 @@ fun MatchRow(
                         )
                     }
                 }
-
                 // Resultado
                 Text(
                     text = "${matchEntity.localGoals.toString()}-${matchEntity.vistGoals.toString()}",
@@ -258,6 +259,5 @@ fun MatchRow(
         }
     }
 }
-
 
 

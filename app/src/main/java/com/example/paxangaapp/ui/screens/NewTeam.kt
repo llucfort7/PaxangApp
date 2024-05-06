@@ -89,7 +89,7 @@ fun NewTeam(
 
     var teamName by rememberSaveable { mutableStateOf("") }
     var teamLocation by rememberSaveable { mutableStateOf("") }
-    var playersNumber by rememberSaveable { mutableStateOf(0) }
+    var playersNumber by rememberSaveable { mutableStateOf(7) }
     //val backgroundImage = painterResource(id = R.drawable.furbol)
     val configuration = LocalConfiguration.current
     var selectedImage by rememberSaveable { mutableStateOf<Int?>(null) }
@@ -175,7 +175,7 @@ fun NewTeam(
                             playersNumber = newval
 
                         }
-                        minValue = 1
+                        minValue = 7
                         maxValue = 15
                     }
 
@@ -236,6 +236,8 @@ fun NewTeam(
                     }
                     selectedImage?.let { it1 -> TeamImages.anyadirImagenRet(it1) }
 
+                    appViewModel.numPlayersChangue(playersNumber)
+                    appViewModel.contadorDePantallaTeamSum(appViewModel.contadorDePantallaTeam.value!! + 1)
                     navController.navigate(Routes.NewPlayer.routes)
 
                 },
@@ -261,46 +263,3 @@ fun NewTeam(
     }
 }
 
-fun calendario(
-    teamsViewModel: TeamsViewModel,
-    appViewModel: AppViewModel,
-    teams: List<TeamsEntity>
-) {
-    teamsViewModel.getAllTeams()
-    val nEquipos = appViewModel.numTeamsEdit.value
-    val jornadas = (nEquipos!! * 2) - 2
-    var listaPartidos = mutableListOf<MatchEntity>()
-    for (i in 0..<jornadas) {
-        var lista = mutableListOf<Int>()
-        for (u in 0..<teams.size) {
-            teams[u].teamsId?.let { lista.add(it) }
-        }
-        for (x in 0..teams.size) {
-            var pass = false
-            var equipo1 = 0
-            var equipo2 = 0
-            while (pass) {
-                equipo1 = lista.random()
-                equipo2 = lista.random()
-                for (z in 0..<listaPartidos.size) {
-                    if (listaPartidos[z].localTeamId == equipo1 && listaPartidos[z].visitorTeamId == equipo2) {
-
-                    } else {
-                        pass = true
-                    }
-                }
-                if (equipo1 == equipo2 || !pass) {
-
-                } else {
-                    pass = true
-                }
-            }
-            listaPartidos.add(
-                MatchEntity(
-                    localTeamId = equipo1,
-                    visitorTeamId = equipo2
-                )
-            )
-        }
-    }
-}
