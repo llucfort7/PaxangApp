@@ -1,0 +1,316 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 22,
+    "identityHash": "5ff6e161535fbefdb6e07ce6e7c60b29",
+    "entities": [
+      {
+        "tableName": "players",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`playersId` INTEGER PRIMARY KEY AUTOINCREMENT, `playerTeamID` INTEGER, `playerNumber` INTEGER NOT NULL, `playerName` TEXT NOT NULL, `playerSname` TEXT NOT NULL, `goodFoot` TEXT NOT NULL, `position` TEXT NOT NULL, `goalsP` INTEGER NOT NULL, `foulsP` INTEGER NOT NULL, `assistsP` INTEGER NOT NULL, `yellowCardsP` INTEGER NOT NULL, `redCardsP` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "playersId",
+            "columnName": "playersId",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "playerTeamID",
+            "columnName": "playerTeamID",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "playerNumber",
+            "columnName": "playerNumber",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "playerName",
+            "columnName": "playerName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "playerSname",
+            "columnName": "playerSname",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "goodFoot",
+            "columnName": "goodFoot",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "position",
+            "columnName": "position",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "goalsP",
+            "columnName": "goalsP",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "foulsP",
+            "columnName": "foulsP",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "assistsP",
+            "columnName": "assistsP",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "yellowCardsP",
+            "columnName": "yellowCardsP",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "redCardsP",
+            "columnName": "redCardsP",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "playersId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "match",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`matchId` INTEGER PRIMARY KEY AUTOINCREMENT, `localTeamId` INTEGER NOT NULL, `visitorTeamId` INTEGER NOT NULL, `date` TEXT NOT NULL, `localGoals` INTEGER NOT NULL, `vistGoals` INTEGER NOT NULL, `matchNum` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "matchId",
+            "columnName": "matchId",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "localTeamId",
+            "columnName": "localTeamId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "visitorTeamId",
+            "columnName": "visitorTeamId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "localGoals",
+            "columnName": "localGoals",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "vistGoals",
+            "columnName": "vistGoals",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "matchNum",
+            "columnName": "matchNum",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "matchId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "teams",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`teamsId` INTEGER PRIMARY KEY AUTOINCREMENT, `nameT` TEXT NOT NULL, `localicacion` TEXT NOT NULL, `clubImage` INTEGER)",
+        "fields": [
+          {
+            "fieldPath": "teamsId",
+            "columnName": "teamsId",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "nameT",
+            "columnName": "nameT",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "localicacion",
+            "columnName": "localicacion",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clubImage",
+            "columnName": "clubImage",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "teamsId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "match_players",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`matchId` INTEGER NOT NULL, `playersId` INTEGER NOT NULL, `goalsP` INTEGER NOT NULL, `foulsP` INTEGER NOT NULL, `assistsP` INTEGER NOT NULL, `yellowCardsP` INTEGER NOT NULL, `redCardsP` INTEGER NOT NULL, `TimePlayed` INTEGER NOT NULL, PRIMARY KEY(`matchId`, `playersId`))",
+        "fields": [
+          {
+            "fieldPath": "matchId",
+            "columnName": "matchId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "playersId",
+            "columnName": "playersId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "goalsP",
+            "columnName": "goalsP",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "foulsP",
+            "columnName": "foulsP",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "assistsP",
+            "columnName": "assistsP",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "yellowCardsP",
+            "columnName": "yellowCardsP",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "redCardsP",
+            "columnName": "redCardsP",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "TimePlayed",
+            "columnName": "TimePlayed",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "matchId",
+            "playersId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "teams_match",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`teamsId` INTEGER NOT NULL, `matchId` INTEGER NOT NULL, `resultadoH` INTEGER NOT NULL, PRIMARY KEY(`teamsId`, `matchId`))",
+        "fields": [
+          {
+            "fieldPath": "teamsId",
+            "columnName": "teamsId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "matchId",
+            "columnName": "matchId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "resultadoH",
+            "columnName": "resultadoH",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "teamsId",
+            "matchId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "login",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userName` TEXT NOT NULL, `password` TEXT NOT NULL, PRIMARY KEY(`userName`))",
+        "fields": [
+          {
+            "fieldPath": "userName",
+            "columnName": "userName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "password",
+            "columnName": "password",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "userName"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5ff6e161535fbefdb6e07ce6e7c60b29')"
+    ]
+  }
+}
