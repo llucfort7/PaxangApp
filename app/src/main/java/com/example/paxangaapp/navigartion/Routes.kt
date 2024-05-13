@@ -14,6 +14,9 @@ sealed class Routes(val routes: String) {
     object SeeMatches : Routes("SeeMatches")
     object NewTeam : Routes("NewTeam")
     object NoLeagueScreen : Routes("NoLeagueScreen")
+    object MatchModifier : Routes("MatchModifier")
+    object MatchPlayedModifier : Routes("MatchPlayedModifier")
+    object PlayerMatchStats : Routes("PlayerMatchStats")
 
 
 }

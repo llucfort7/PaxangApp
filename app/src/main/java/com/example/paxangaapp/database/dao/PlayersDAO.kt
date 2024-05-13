@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Upsert
 import com.example.paxangaapp.database.entities.PlayerEntity
 import com.example.paxangaapp.database.entities.PlayerTeamsForQueris
 
@@ -12,6 +13,8 @@ import com.example.paxangaapp.database.entities.PlayerTeamsForQueris
 interface PlayersDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPlayer(player: PlayerEntity)
+    @Upsert
+    suspend fun modPlayer(player: PlayerEntity)
 
     @Query("SELECT * FROM players")
     fun getAllPlayers(): LiveData<List<PlayerEntity>>

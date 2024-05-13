@@ -5,12 +5,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.paxangaapp.ui.screens.ClassificationScreen
+import com.example.paxangaapp.ui.screens.MatchModifier
+import com.example.paxangaapp.ui.screens.MatchPlayedModifier
 import com.example.paxangaapp.ui.screens.NewPlayer
 import com.example.paxangaapp.ui.screens.NewTeam
 import com.example.paxangaapp.ui.screens.NoLeagueScreen
 import com.example.paxangaapp.ui.screens.Onboarding
 import com.example.paxangaapp.ui.screens.PlayerClasScreen
 import com.example.paxangaapp.ui.screens.PlayerInfoScreen
+import com.example.paxangaapp.ui.screens.PlayerMatchStats
 import com.example.paxangaapp.ui.screens.SeeMatches
 import com.example.paxangaapp.ui.screens.SplashScreen
 import com.example.paxangaapp.ui.screens.TabRowMatchScreen
@@ -63,5 +66,16 @@ fun Navigation(matchViewModel: MatchViewModel, teamsViewModel: TeamsViewModel, a
         composable(Routes.NoLeagueScreen.routes) {
             NoLeagueScreen(navController,teamsViewModel,appViewModel)
         }
+        composable(Routes.MatchModifier.routes) {
+            MatchModifier(navController,matchViewModel,teamsViewModel,appViewModel)
+        }
+        composable(Routes.MatchPlayedModifier.routes) {
+            MatchPlayedModifier(matchViewModel,teamsViewModel,playerViewModel,matchPlayerViewModel,navController)
+        }
+        composable(Routes.PlayerMatchStats.routes) {
+            PlayerMatchStats(matchPlayerViewModel,matchViewModel,playerViewModel,navController)
+        }
+
+
     }
 }

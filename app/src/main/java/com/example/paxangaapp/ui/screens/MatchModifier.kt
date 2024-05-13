@@ -1,12 +1,22 @@
 package com.example.paxangaapp.ui.screens
 
-import android.annotation.SuppressLint
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Text
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.dp
+import android.annotation.SuppressLint
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,61 +26,61 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AcUnit
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddAlert
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.FormatListNumbered
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.SportsSoccer
 import androidx.compose.material.icons.filled.TimeToLeave
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.paxangaapp.database.entities.MatchEntity
 import com.example.paxangaapp.database.entities.TeamsEntity
 import com.example.paxangaapp.navigartion.Routes
 import com.example.paxangaapp.ui.theme.md_theme_light_primary
 import com.example.paxangaapp.ui.viwmodel.AppViewModel
+import com.example.paxangaapp.ui.viwmodel.MatchPlayerViewModel
 import com.example.paxangaapp.ui.viwmodel.MatchViewModel
+import com.example.paxangaapp.ui.viwmodel.PlayerViewModel
 import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
 
-
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun TabRowMatchScreen(
+fun MatchModifier(
     navController: NavHostController,
     matchViewModel: MatchViewModel,
     teamsViewModel: TeamsViewModel,
@@ -92,7 +102,7 @@ fun TabRowMatchScreen(
                 colors = TopAppBarDefaults.smallTopAppBarColors(
                     containerColor = md_theme_light_primary
                 ),
-                title = { Text(text = "PAXANGAPP") },
+                title = { Text(text = "Modificador") },
                 actions = {
                     IconButton(onClick = { expanded = !expanded }) {
                         Icon(
@@ -190,7 +200,7 @@ fun TabRowMatchScreen(
                 items(matches) { match ->
                     val localTeam = teams.firstOrNull { it.teamsId == match.localTeamId }
                     val visitorTeam = teams.firstOrNull { it.teamsId == match.visitorTeamId }
-                    MatchRow(navController, match, matchViewModel, localTeam, visitorTeam)
+                    MatchRowMod(navController, match, matchViewModel, localTeam, visitorTeam)
                 }
             }
         }
@@ -199,7 +209,7 @@ fun TabRowMatchScreen(
 }
 
 @Composable
-fun MatchRow(
+fun MatchRowMod(
     navController: NavHostController,
     matchEntity: MatchEntity,
     matchViewModel: MatchViewModel,
@@ -212,8 +222,10 @@ fun MatchRow(
             .fillMaxWidth()
             .padding(16.dp)
             .clickable {
-                matchViewModel.onMatchCliked(matchEntity)
-                navController.navigate(Routes.SeeMatches.routes)
+                if (!matchEntity.isPlayed) {
+                    matchViewModel.onMatchCliked(matchEntity)
+                    navController.navigate(Routes.MatchPlayedModifier.routes)
+                }
             }
     ) {
         OutlinedCard(
@@ -222,6 +234,7 @@ fun MatchRow(
             elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
 
             ) {
+
             Row(
                 modifier = Modifier
                     .padding(16.dp)
@@ -229,6 +242,13 @@ fun MatchRow(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                if (matchEntity.isPlayed) {
+                    Icon(
+                        imageVector = Icons.Default.Check,
+                        contentDescription = "Equipo 1",
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
                 Text(text = matchEntity.matchId.toString())
                 // Icono y nombre del equipo local
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -270,5 +290,4 @@ fun MatchRow(
         }
     }
 }
-
 

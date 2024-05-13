@@ -38,6 +38,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -81,7 +82,6 @@ fun SeeMatches(
                     playerViewModel,
                     matchPlayerViewModel
                 )
-                StatsHeadline()
                 MatchStats()
 
             }
@@ -138,33 +138,33 @@ fun TopBarComponent(
         //     painter = painterResource(id = R.drawable.epl_background),
         //     contentDescription = stringResource(id = R.string.epl_background),
         // )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 10.dp, top = 15.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            // Icon(
-            //     painter = painterResource(id = R.drawable.left_arrow),
-            //     contentDescription = stringResource(id = R.string.arrow_back),
-            //     tint = Color.White
-            // )
-            Text(
-                text = "String1",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.White,
-                modifier = Modifier
-                    .padding(top = 5.dp)
-            )
-            // Icon(
-            //     imageVector = Icons.Default.MoreVert,
-            //     contentDescription = stringResource(id = R.string.more_vert),
-            //     modifier = modifier
-            //         .padding(top = 10.dp),
-            //     tint = Color.White
-            // )
-        }
+     //   Row(
+     //       modifier = Modifier
+     //           .fillMaxWidth()
+     //           .padding(start = 10.dp, top = 15.dp),
+     //       horizontalArrangement = Arrangement.SpaceEvenly
+     //   ) {
+     //       // Icon(
+     //       //     painter = painterResource(id = R.drawable.left_arrow),
+     //       //     contentDescription = stringResource(id = R.string.arrow_back),
+     //       //     tint = Color.White
+     //       // )
+     //     //  Text(
+     //     //      text = "String1",
+     //     //      style = MaterialTheme.typography.titleLarge,
+     //     //      fontWeight = FontWeight.SemiBold,
+     //     //      color = Color.White,
+     //     //      modifier = Modifier
+     //     //          .padding(top = 5.dp)
+     //     //  )
+     //       // Icon(
+     //       //     imageVector = Icons.Default.MoreVert,
+     //       //     contentDescription = stringResource(id = R.string.more_vert),
+     //       //     modifier = modifier
+     //       //         .padding(top = 10.dp),
+     //       //     tint = Color.White
+     //       // )
+     //   }
         Card(
             modifier = Modifier
                 .align(Alignment.Center)
@@ -179,17 +179,17 @@ fun TopBarComponent(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "String1",
+                    text = "Jornada ${match.matchNum}",
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(top = 10.dp),
                     fontWeight = FontWeight.SemiBold,
 
                     )
-                Text(
-                    text = "String1",
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Light,
-                )
+              //  Text(
+              //      text = "String3",
+              //      style = MaterialTheme.typography.titleSmall,
+              //      fontWeight = FontWeight.Light,
+              //  )
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                 ) {
@@ -197,13 +197,15 @@ fun TopBarComponent(
                         modifier = Modifier.padding(start = 10.dp),
                         verticalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        Row() {
-                            // Image(
-                            //     painter = painterResource(id = R.drawable.chelsea),
-                            //     contentDescription = stringResource(id = R.string.chelsea),
-                            //     modifier = modifier.size(80.dp)
-                            // )
+
+                        if (localTeam != null) {
+                            Image(
+                                painter = painterResource(id = localTeam.clubImage!!),
+                                contentDescription = "LocalTeam",
+                                modifier = Modifier.size(80.dp)
+                            )
                         }
+
 
                         if (localTeam != null) {
                             Text(
@@ -231,9 +233,10 @@ fun TopBarComponent(
                         }
                     }
                     Text(
-                        text = "String1",
+                        text = "${match.localGoals}-${match.vistGoals}",
                         style = MaterialTheme.typography.headlineLarge,
                         color = Color.White,
+                        textAlign = TextAlign.Center,
                         modifier = Modifier
                             .padding(start = 64.dp, top = 40.dp)
                             .background(Color(0xFF5C075F), shape = RectangleShape)
@@ -243,11 +246,14 @@ fun TopBarComponent(
                         modifier = Modifier.padding(end = 10.dp),
                         verticalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        // Image(
-                        //     painter = painterResource(id = R.drawable.manchester_united),
-                        //     contentDescription = stringResource(id = R.string.manchester_united),
-                        //     modifier = Modifier.size(80.dp)
-                        // )
+                            if (visitorTeam != null) {
+                                Image(
+                                    painter = painterResource(id = visitorTeam.clubImage!!),
+                                    contentDescription =  "visitorTeam",
+                                    modifier = Modifier.size(80.dp)
+                                )
+                            }
+
                         if (visitorTeam != null) {
                             Text(
                                 text = visitorTeam.nameT,
@@ -283,45 +289,6 @@ fun TopBarComponent(
                     )
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun StatsHeadline(modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(top = 340.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        FilledTonalButton(
-            onClick = { /*TODO*/ },
-            colors = ButtonDefaults.buttonColors(Color.Gray)
-        ) {
-            Text(
-                text = "String1",
-                style = MaterialTheme.typography.titleMedium
-            )
-        }
-        FilledTonalButton(
-            onClick = { /*TODO*/ },
-            colors = ButtonDefaults.buttonColors(Color.Gray)
-        ) {
-            Text(
-                text = "String1",
-                style = MaterialTheme.typography.titleMedium
-            )
-        }
-        FilledTonalButton(
-            onClick = { /*TODO*/ },
-            colors = ButtonDefaults.buttonColors(Color.Gray)
-        ) {
-            Text(
-                text = "String1",
-                style = MaterialTheme.typography.titleMedium
-            )
         }
     }
 }

@@ -23,6 +23,8 @@ class MatchViewModel(application: Application) : AndroidViewModel(application) {
     private val _selectedMatch = MutableLiveData<MatchEntity>()
     val selectedMatch: LiveData<MatchEntity> = _selectedMatch
 
+    private val _selectedMatchId = MutableLiveData<MatchEntity>()
+    val selectedMatchId: LiveData<MatchEntity> = _selectedMatchId
     // Método para obtener todos los partidos
     fun getAllMatches() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -41,10 +43,17 @@ class MatchViewModel(application: Application) : AndroidViewModel(application) {
             matchDAO.insertMatch(match)
         }
     }
+    fun modificateMatch(match: MatchEntity) {
+        viewModelScope.launch(Dispatchers.IO) {
+            matchDAO.modifierMatch(match)
+        }
+    }
 
     // Método para obtener un partido por su ID
-    suspend fun getMatchById(matchId: Int): MatchEntity? {
-        return matchDAO.getMatchById(matchId)
+     fun getMatchById(matchId: Int){
+        viewModelScope.launch(Dispatchers.IO) {
+        _selectedMatchId.value= matchDAO.getMatchById(matchId)
+        }
     }
 
     // Método para eliminar todos los partidos
@@ -56,4 +65,6 @@ class MatchViewModel(application: Application) : AndroidViewModel(application) {
     fun onMatchCliked(match:MatchEntity){
         _selectedMatch.value=match
     }
+
+
 }

@@ -66,7 +66,7 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     // Método para actualizar un jugador
     fun updatePlayer(player: PlayerEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            playerDAO.insertPlayer(player)
+            playerDAO.modPlayer(player)
         }
     }
 

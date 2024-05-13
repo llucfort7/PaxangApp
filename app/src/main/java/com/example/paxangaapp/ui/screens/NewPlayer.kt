@@ -69,6 +69,8 @@ import com.example.paxangaapp.ui.viwmodel.AppViewModel
 import com.example.paxangaapp.ui.viwmodel.MatchViewModel
 import com.example.paxangaapp.ui.viwmodel.PlayerViewModel
 import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.runBlocking
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -424,7 +426,7 @@ fun NewPlayer(
                     .padding(10.dp)
             ) {
                 val playerp = PlayerEntity(
-                    playerTeamID = appViewModel.idTeamsEdit.value,
+                    playerTeamID = appViewModel.contadorDePantallaTeam.value,
                     playerName = playerName,
                     playerSname = playerSName,
                     playerNumber = playerNumber,
@@ -440,11 +442,13 @@ fun NewPlayer(
                         } catch (e: Exception) {
                             Log.e("TAG", "Error al insertar jugador: ${e.message}")
                         }
-                        if (appViewModel.contadorDePantallaPlayer.isInitialized) {
-                            appViewModel.contadorDePantallaPlayerSum(appViewModel.contadorDePantallaPlayer.value!! + 1)
-                        } else {
-                            appViewModel.contadorDePantallaPlayerSum(0)
+                        appViewModel.contadorDePantallaTeam.value?.let { it1 ->
+                            appViewModel.idTeamsChangue(
+                                it1
+                            )
                         }
+                            appViewModel.contadorDePantallaPlayerSum(appViewModel.contadorDePantallaPlayer.value!! + 1)
+
 
                         //if (appViewModel.contadorDePantallaPlayer.value == appViewModel.numPlayersEdit.value) {
                         if (appViewModel.contadorDePantallaTeam.value == appViewModel.numTeamsEdit.value) {
@@ -479,70 +483,6 @@ fun NewPlayer(
                     .height(200.dp)
                     .padding(10.dp)
             ) {
-            }
-        }
-    }
-}
-
-
-fun calendario(
-    teamsViewModel: TeamsViewModel,
-    matchViewModel: MatchViewModel,
-    teamList: List<TeamsEntity>
-) {
-
-    matchViewModel.deleteAllMatches()
-    val nEquipos = teamList.size
-    val jornadas = (nEquipos - 1) * 2
-
-    // Crear una copia mutable de la lista de equipos disponibles
-    var equiposDisponibles = mutableListOf<TeamsEntity>()
-    equiposDisponibles= teamList.toMutableList()
-
-    // Lista para rastrear los partidos jugados
-    val listaPartidosJugados = mutableListOf<MatchEntity>()
-
-    for (i in 1..jornadas) {
-        val partidosJornada = mutableListOf<MatchEntity>()
-
-        for (j in 0 until nEquipos / 2) {
-            var pass = false
-
-            while (!pass) {
-                // Seleccionar dos equipos al azar de la lista de equipos disponibles
-                val equipo1 = equiposDisponibles.random()
-                val equipo2 = equiposDisponibles.random()
-
-                // Verificar si los equipos seleccionados ya han jugado juntos o son el mismo equipo
-                if (partidosJornada.any { it.localTeamId == equipo1.teamsId || it.visitorTeamId == equipo1.teamsId || it.localTeamId == equipo2.teamsId || it.visitorTeamId == equipo2.teamsId } ||
-                    listaPartidosJugados.any { it.localTeamId == equipo1.teamsId && it.visitorTeamId == equipo2.teamsId } ||
-                    equipo1 == equipo2
-                ) {
-                    pass = false
-                } else {
-                    // Crear el partido y agregarlo a la lista de partidos de la jornada y la lista de partidos jugados
-                    val partido = equipo2.teamsId?.let {
-                        equipo1.teamsId?.let { it1 ->
-                            MatchEntity(
-                                localTeamId = it1,
-                                visitorTeamId = it,
-                                matchNum = i
-                            )
-                        }
-                    }
-
-                    if (partido != null) {
-                        matchViewModel.addMatch(partido)
-                        listaPartidosJugados.add(partido)
-                        partidosJornada.add(partido)
-                    }
-
-                    // Eliminar los equipos seleccionados de la lista de equipos disponibles
-                    equiposDisponibles.remove(equipo1)
-                    equiposDisponibles.remove(equipo2)
-
-                    pass = true
-                }
             }
         }
     }

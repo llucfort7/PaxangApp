@@ -13,6 +13,9 @@ interface MatchDAO{
     @Insert(onConflict = OnConflictStrategy.REPLACE)
      suspend fun insertMatch(match: MatchEntity)
 
+     @Upsert
+     suspend fun modifierMatch(match: MatchEntity)
+
     @Query("SELECT * FROM 'match' ")
      fun getAllMatches(): LiveData<MutableList<MatchEntity>>
 
@@ -20,7 +23,7 @@ interface MatchDAO{
     fun getAllMatchesByNumMatch(matchId: Int): LiveData<MutableList<MatchEntity>>
 
     @Query("SELECT * FROM 'match' WHERE matchId = :matchId")
-     suspend fun getMatchById(matchId: Int): MatchEntity?
+    suspend fun getMatchById(matchId: Int): MatchEntity?
 
     @Query("DELETE FROM 'match'")
      suspend fun deleteAllMatches(): Int

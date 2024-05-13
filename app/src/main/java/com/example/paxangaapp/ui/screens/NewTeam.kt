@@ -227,7 +227,7 @@ fun NewTeam(
                     if (selectedImage != null) {
                         teamsViewModel.addTeam(
                             TeamsEntity(
-                                teamsId = appViewModel.idTeamsEdit.value,
+                                teamsId = appViewModel.idTeamsEdit.value?.plus(1),
                                 nameT = teamName,
                                 localicacion = teamLocation,
                                 clubImage = selectedImage
@@ -237,6 +237,7 @@ fun NewTeam(
                     selectedImage?.let { it1 -> TeamImages.anyadirImagenRet(it1) }
 
                     appViewModel.numPlayersChangue(playersNumber)
+                    //appViewModel.idTeamsEdit.value?.let { it1 -> appViewModel.idTeamsChangue(it1) }
                     appViewModel.contadorDePantallaTeamSum(appViewModel.contadorDePantallaTeam.value!! + 1)
                     navController.navigate(Routes.NewPlayer.routes)
 

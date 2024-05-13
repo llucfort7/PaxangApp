@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.paxangaapp.database.LeagueDB
 import com.example.paxangaapp.database.dao.MatchPlayerDAO
+import com.example.paxangaapp.database.entities.MatchEntity
 import com.example.paxangaapp.database.entities.MatchPlayerRelationEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,6 +22,12 @@ class MatchPlayerViewModel(application: Application) : AndroidViewModel(applicat
     var matchPlayerListMatch: LiveData<List<MatchPlayerRelationEntity>> = MutableLiveData()
 
     var matchPlayerListMatchGoal: LiveData<List<MatchPlayerRelationEntity>> =MutableLiveData()
+
+    private var _selectedMatchPlayerRel = MutableLiveData<MatchPlayerRelationEntity>()
+    val selectedMatchPlayerRel: LiveData<MatchPlayerRelationEntity> = _selectedMatchPlayerRel
+
+    private val _selectedMatchPlayer = MutableLiveData<MatchPlayerRelationEntity>()
+    val selectedMatchPlayer: LiveData<MatchPlayerRelationEntity> = _selectedMatchPlayer
     // Método para agregar una nueva relación entre partido y jugador
     fun addMatchPlayer(matchPlayer: MatchPlayerRelationEntity) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -39,10 +46,23 @@ class MatchPlayerViewModel(application: Application) : AndroidViewModel(applicat
             matchPlayerListMatch = matchPlayersDAO.getMatchPlayersByMatch(id)
         }
     }
+    fun getAllMatchPlayersByMatchAndTeam(id:Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            matchPlayerListMatch = matchPlayersDAO.getMatchPlayersByMatch(id)
+        }
+    }
     fun getAllMatchPlayersByMatchGoal(id:Int) {
         viewModelScope.launch(Dispatchers.IO) {
             matchPlayerListMatchGoal = matchPlayersDAO.getMatchPlayersByMatchGoal(id)
         }
+    }
+    fun getOneMatchPlayersByMatch(idPlayer:Int,idTeam:Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _selectedMatchPlayerRel.value = matchPlayersDAO.getMatchPlayersRelation(idPlayer,idTeam)
+        }
+    }
+    fun onClickMachPlayer(matchPlayerRelationEntity: MatchPlayerRelationEntity){
+        _selectedMatchPlayer.value=matchPlayerRelationEntity
     }
     // Método para actualizar una relación entre partido y jugador
     //fun updateMatchPlayer(matchPlayer: MatchPlayerRelationEntity) {

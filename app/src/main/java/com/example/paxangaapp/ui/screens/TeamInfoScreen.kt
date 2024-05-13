@@ -33,6 +33,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -44,16 +48,25 @@ import com.example.paxangaapp.database.entities.MatchEntity
 import com.example.paxangaapp.database.entities.PlayerEntity
 import com.example.paxangaapp.database.entities.PlayerTeamsForQueris
 import com.example.paxangaapp.database.entities.TeamsEntity
+import com.example.paxangaapp.navigartion.Routes
 import com.example.paxangaapp.ui.theme.md_theme_light_primary
 import com.example.paxangaapp.ui.viwmodel.AppViewModel
 import com.example.paxangaapp.ui.viwmodel.MatchViewModel
 import com.example.paxangaapp.ui.viwmodel.PlayerTeamsViewModel
 import com.example.paxangaapp.ui.viwmodel.PlayerViewModel
 import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, DelicateCoroutinesApi::class)
 @Composable
 fun TeamInfoScreen(
     navController: NavHostController,
@@ -88,50 +101,6 @@ fun TeamInfoScreen(
         }
 
     ) {
-        //  playersViwModel.addPlayer(PlayerEntity(
-        //      playerTeamID=1,
-        //      playerNumber = 10,
-        //      playerName = "Lionel",
-        //      playerSname = "Messi",
-        //      goodFoot = "Left",
-        //      position = "Forward",
-        //      goalsP = 700,
-        //      foulsP = 100,
-        //      assistsP = 300,
-        //      yellowCardsP = 20,
-        //      redCardsP = 2
-        //  ))
-        //  playersViwModel.addPlayer(PlayerEntity(
-        //      playerTeamID=1,
-        //      playerNumber = 6,
-        //      playerName = "Pedro",
-        //      playerSname = "Porro",
-        //      goodFoot = "Left",
-        //      position = "Forward",
-        //      goalsP = 700,
-        //      foulsP = 100,
-        //      assistsP = 300,
-        //      yellowCardsP = 20,
-        //      redCardsP = 2
-        //  ))
-        //  playersViwModel.addPlayer(PlayerEntity(
-        //      playerTeamID=1,
-        //      playerNumber = 7,
-        //      playerName = "Xavi",
-        //      playerSname = "Hernandez",
-        //      goodFoot = "Left",
-        //      position = "Forward",
-        //      goalsP = 700,
-        //      foulsP = 100,
-        //      assistsP = 300,
-        //      yellowCardsP = 20,
-        //      redCardsP = 2
-        //  ))
-
-        //teamsEntity.teamsId?.let { it1 -> playerTeamsViewModel.getAllTeamsWithPlayersSameTeam(it1) }
-        //val playerAndTeam by playerTeamsViewModel.teamList.observeAsState(emptyList())
-        //teamsEntity.teamsId?.let { it1 -> playerTeamsViewModel.getAllTeamsWithPlayersSameTeam(it1) }
-
         val team: TeamsEntity by teamsViewModel.selectedTeam.observeAsState(TeamsEntity())
         team.teamsId?.let { it1 -> playersViwModel.getPlayerByTeamId(it1) }
         val players by playersViwModel.playerListByTeam.observeAsState(emptyList())
@@ -167,9 +136,26 @@ fun TeamInfoScreen(
             teamsViewModel.getAllTeams()
             val teams by teamsViewModel.teamList.observeAsState(initial = emptyList())
             teamsViewModel.getAllTeams()
-            Button(onClick = { calendario(teamsViewModel, matchViewModel, teams) }) {
+            var isLoading by rememberSaveable { mutableStateOf(false) } // Estado para controlar si se está cargando
+            val corutineScope = rememberCoroutineScope()
 
+            Button(onClick = {
+
+                isLoading = true // Mostrar pantalla de carga al hacer clic en el botón
+
+                corutineScope.launch(Dispatchers.Default) {
+                    calendario(teamsViewModel, matchViewModel, teams, navController)
+
+                    isLoading = false
+                }
+
+            }) {
+                Text("Iniciar Corrutina")
             }
+            if (isLoading) {
+                LoadingScreen()
+            }
+
             Spacer(modifier = Modifier.height(16.dp))
             PlayerDetailItem(
                 label = "Team id",
@@ -185,11 +171,6 @@ fun TeamInfoScreen(
                     .weight(1f)
                     .padding(vertical = 8.dp)
             ) {
-                //  item {
-                //      // Spacer para dejar espacio para la TopAppBar
-                //      Spacer(modifier = Modifier.height(256.dp))
-                //  }
-
                 items(players) { player ->
                     PlayerRow(
                         player, playersViwModel, navController
@@ -211,14 +192,78 @@ fun TeamDetailInfo(
     ) {
         Text(
             text = label,
-            // style = MaterialTheme.typography.subtitle1,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.width(150.dp)
         )
         Text(
             text = value,
-            // style = MaterialTheme.typography.body1,
         )
     }
 }
 
+
+suspend fun calendario(
+    teamsViewModel: TeamsViewModel,
+    matchViewModel: MatchViewModel,
+    teamList: List<TeamsEntity>,
+    navController: NavHostController,
+) {
+
+    matchViewModel.deleteAllMatches()
+    val nEquipos = teamList.size
+    val jornadas = (nEquipos - 1) * 2
+    // Crear una copia mutable de la lista de equipos disponibles
+    var partidosDisp = mutableListOf<MatchEntity>()
+
+    // Lista para rastrear los partidos jugados
+    val listaPartidosJugados = mutableListOf<MatchEntity>()
+
+    for (i in 0..<teamList.size) {
+        for (z in 0..<teamList.size) {
+            val localT = teamList[i]
+            val visitTeam = teamList[z]
+            if (localT != visitTeam) {
+                localT.teamsId?.let {
+                    visitTeam.teamsId?.let { it1 ->
+                        MatchEntity(
+                            localTeamId = it,
+                            visitorTeamId = it1
+                        )
+                    }
+                }?.let {
+                    partidosDisp.add(
+                        it
+                    )
+                }
+            }
+        }
+    }
+    var ramMatch = MatchEntity()
+
+    for (x in 0..<jornadas) {
+        var partidos = mutableListOf<MatchEntity>()
+        for (y in 0..<teamList.size / 2) {
+            var pass = false
+            while (!pass) {
+                ramMatch = partidosDisp.random()
+
+                if (false
+                   // partidos.any {
+                   //     it.localTeamId == ramMatch.localTeamId ||
+                   //             it.localTeamId == ramMatch.visitorTeamId ||
+                   //             it.visitorTeamId == ramMatch.localTeamId ||
+                   //             it.visitorTeamId == ramMatch.visitorTeamId
+                   // }
+                ) {
+                    //pass = false
+                } else {
+                    ramMatch.matchNum = x
+                    partidos.add(ramMatch)
+                    matchViewModel.addMatch(ramMatch)
+                    partidosDisp.remove(ramMatch)
+                    pass = true
+                }
+            }
+        }
+    }
+}
