@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "5ff6e161535fbefdb6e07ce6e7c60b29",
+    "identityHash": "4eeda5edb8f209703ce9c69f1c2c9bf0",
     "entities": [
       {
         "tableName": "players",
@@ -92,7 +92,7 @@
       },
       {
         "tableName": "match",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`matchId` INTEGER PRIMARY KEY AUTOINCREMENT, `localTeamId` INTEGER NOT NULL, `visitorTeamId` INTEGER NOT NULL, `date` TEXT NOT NULL, `localGoals` INTEGER NOT NULL, `vistGoals` INTEGER NOT NULL, `matchNum` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`matchId` INTEGER PRIMARY KEY AUTOINCREMENT, `localTeamId` INTEGER NOT NULL, `visitorTeamId` INTEGER NOT NULL, `isPlayed` INTEGER NOT NULL, `date` TEXT NOT NULL, `localGoals` INTEGER NOT NULL, `vistGoals` INTEGER NOT NULL, `matchNum` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "matchId",
@@ -109,6 +109,12 @@
           {
             "fieldPath": "visitorTeamId",
             "columnName": "visitorTeamId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isPlayed",
+            "columnName": "isPlayed",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -148,7 +154,7 @@
       },
       {
         "tableName": "teams",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`teamsId` INTEGER PRIMARY KEY AUTOINCREMENT, `nameT` TEXT NOT NULL, `localicacion` TEXT NOT NULL, `clubImage` INTEGER)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`teamsId` INTEGER PRIMARY KEY AUTOINCREMENT, `nameT` TEXT NOT NULL, `localicacion` TEXT NOT NULL, `clubImage` INTEGER, `points` INTEGER NOT NULL, `winMatches` INTEGER NOT NULL, `tieMatches` INTEGER NOT NULL, `lostMatches` INTEGER NOT NULL, `playedMatches` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "teamsId",
@@ -173,6 +179,36 @@
             "columnName": "clubImage",
             "affinity": "INTEGER",
             "notNull": false
+          },
+          {
+            "fieldPath": "points",
+            "columnName": "points",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "winMatches",
+            "columnName": "winMatches",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tieMatches",
+            "columnName": "tieMatches",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lostMatches",
+            "columnName": "lostMatches",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "playedMatches",
+            "columnName": "playedMatches",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -310,7 +346,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5ff6e161535fbefdb6e07ce6e7c60b29')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4eeda5edb8f209703ce9c69f1c2c9bf0')"
     ]
   }
 }

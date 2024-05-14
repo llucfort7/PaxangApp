@@ -1,6 +1,7 @@
 package com.example.paxangaapp.ui.screens
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -54,6 +55,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -76,22 +79,27 @@ fun TabRowMatchScreen(
     teamsViewModel: TeamsViewModel,
     appViewModel: AppViewModel,
 ) {
+    matchViewModel.getNMtachesPlayed()
+   // val index by matchViewModel.nplayedMatches.observeAsState(Int)
+    val oIndex=matchViewModel.getNMtachesPlayed()
     var selectedTabIndex by remember { mutableStateOf(0) }
+   // selectedTabIndex=oIndex/3
     matchViewModel.getAllMatches()
     val mMatches by matchViewModel.matchList.observeAsState(initial = emptyList())
     matchViewModel.getAllMatches()
     teamsViewModel.getAllTeams()
     val teams by teamsViewModel.teamList.observeAsState(initial = emptyList())
     teamsViewModel.getAllTeams()
+    val nJourny= mMatches.size/(teams.size-1)
 //(Esta mal)Cambiar per un numero maxim de jornades afegides a la BD
-    val tabTitles = (0..mMatches.size).map { "Tab $it" }
+    val tabTitles = (0..nJourny).map { "Tab $it" }
     var expanded by remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
             TopAppBar(
-                colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = md_theme_light_primary
-                ),
+                //  colors = TopAppBarDefaults.smallTopAppBarColors(
+                //      containerColor = md_theme_light_primary
+                //  ),
                 title = { Text(text = "PAXANGAPP") },
                 actions = {
                     IconButton(onClick = { expanded = !expanded }) {
@@ -229,14 +237,24 @@ fun MatchRow(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = matchEntity.matchId.toString())
-                // Icono y nombre del equipo local
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Default.Home,
-                        contentDescription = "Equipo 1",
-                        modifier = Modifier.size(24.dp)
-                    )
+                    Box(modifier = Modifier
+                        .height(35.dp)
+                        .width(35.dp)
+                    ){
+                        if (localTeam != null) {
+                            localTeam.clubImage?.let { it1 -> painterResource(it1) }?.let { it2 ->
+                                Image(
+                                    painter = it2,
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(5.dp),
+                                    contentScale = ContentScale.Fit // Cambia la escala de contenido a Fit
+                                )
+                            }
+                        }
+                    }
                     Spacer(modifier = Modifier.width(8.dp))
                     localTeam?.let {
                         Text(
@@ -245,11 +263,17 @@ fun MatchRow(
                         )
                     }
                 }
+                if (matchEntity.isPlayed){
+                    Text(
+                        text = "${matchEntity.localGoals.toString()}-${matchEntity.vistGoals.toString()}",
+                        modifier = Modifier.padding(horizontal = 8.dp)
+                    ) 
+                }
+                else{
+                    Text(text = "(N/P)")
+                }
                 // Resultado
-                Text(
-                    text = "${matchEntity.localGoals.toString()}-${matchEntity.vistGoals.toString()}",
-                    modifier = Modifier.padding(horizontal = 8.dp)
-                )
+               
 
                 // Icono y nombre del equipo visitante
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -260,11 +284,23 @@ fun MatchRow(
                         )
                     }
                     Spacer(modifier = Modifier.width(8.dp))
-                    Icon(
-                        imageVector = Icons.Default.TimeToLeave,
-                        contentDescription = "Equipo2",
-                        modifier = Modifier.size(24.dp)
-                    )
+                    Box(modifier = Modifier
+                        .height(45.dp)
+                        .width(45.dp)
+                    ){
+                        if (visitorTeam != null) {
+                            visitorTeam.clubImage?.let { it1 -> painterResource(it1) }?.let { it2 ->
+                                Image(
+                                    painter = it2,
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(5.dp),
+                                    contentScale = ContentScale.Fit // Cambia la escala de contenido a Fit
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }

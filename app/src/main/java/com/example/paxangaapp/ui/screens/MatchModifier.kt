@@ -99,9 +99,9 @@ fun MatchModifier(
     Scaffold(
         topBar = {
             TopAppBar(
-                colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = md_theme_light_primary
-                ),
+              //  colors = TopAppBarDefaults.smallTopAppBarColors(
+              //      containerColor = md_theme_light_primary
+              //  ),
                 title = { Text(text = "Modificador") },
                 actions = {
                     IconButton(onClick = { expanded = !expanded }) {

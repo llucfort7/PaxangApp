@@ -78,7 +78,7 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun NewPlayer(
     navController: NavHostController,
-    teamsViewModel:TeamsViewModel,
+    teamsViewModel: TeamsViewModel,
     playerViewModel: PlayerViewModel,
     matchViewModel: MatchViewModel,
     appViewModel: AppViewModel
@@ -95,9 +95,9 @@ fun NewPlayer(
     Scaffold(
         topBar = {
             TopAppBar(
-                colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = md_theme_light_primary
-                ),
+              //  colors = TopAppBarDefaults.smallTopAppBarColors(
+              //      containerColor = md_theme_light_primary
+              //  ),
                 title = { Text(text = "PAXANGAPP") },
                 actions = {
 
@@ -122,8 +122,8 @@ fun NewPlayer(
             modifier = Modifier
                 .padding(top = 58.dp)
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .background(color = md_theme_light_primary),
+                .verticalScroll(rememberScrollState()),
+            // .background(color = md_theme_light_primary),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
 
@@ -175,22 +175,28 @@ fun NewPlayer(
 
                 )
             }
-            AndroidView(
-                modifier = Modifier.width(50.dp),
-                factory = { context ->
-                    NumberPicker(context).apply {
-                        setOnValueChangedListener { _, _, newval ->
-                            playerNumber = newval
+            Row(
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.tertiary, shape = RoundedCornerShape(10.dp))
+                    .padding(20.dp)
+            ) {
+                AndroidView(
+                    modifier = Modifier.width(50.dp),
+                    factory = { context ->
+                        NumberPicker(context).apply {
+                            setOnValueChangedListener { _, _, newval ->
+                                playerNumber = newval
 
+                            }
+                            minValue = 1
+                            maxValue = 50
                         }
-                        minValue = 1
-                        maxValue = 50
-                    }
 
-                }
-            )
-            if (!isPortrait) {
-                Row(Modifier.height(100.dp)) {
+                    }
+                )
+                if (!isPortrait) {
+                    Row(Modifier.height(100.dp)) {
+                    }
                 }
             }
 
@@ -219,7 +225,7 @@ fun NewPlayer(
                             .fillMaxSize()
                             .padding(8.dp)
                             .clip(RoundedCornerShape(10.dp))
-                            .background(MaterialTheme.colorScheme.tertiary)
+                        //.background(MaterialTheme.colorScheme.tertiary)
                     )
                     {
                         RadioButton(
@@ -447,22 +453,21 @@ fun NewPlayer(
                                 it1
                             )
                         }
-                            appViewModel.contadorDePantallaPlayerSum(appViewModel.contadorDePantallaPlayer.value!! + 1)
+                        appViewModel.contadorDePantallaPlayerSum(appViewModel.contadorDePantallaPlayer.value!! + 1)
 
 
-                        //if (appViewModel.contadorDePantallaPlayer.value == appViewModel.numPlayersEdit.value) {
-                        if (appViewModel.contadorDePantallaTeam.value == appViewModel.numTeamsEdit.value) {
-                           // calendario(teamsViewModel ,matchViewModel, teams)
-                            navController.navigate(Routes.TabRowMatchScreen.routes)
+                        if (appViewModel.contadorDePantallaPlayer.value == appViewModel.numPlayersEdit.value) {
+                            if (appViewModel.contadorDePantallaTeam.value == appViewModel.numTeamsEdit.value) {
+                                // calendario(teamsViewModel ,matchViewModel, teams)
+                                navController.navigate(Routes.TabRowMatchScreen.routes)
+                            } else {
+                                appViewModel.contadorDePantallaPlayerSum(0)
+                                navController.navigate(Routes.NewTeam.routes)
+                            }
                         } else {
-
-                           // calendario(teamsViewModel,matchViewModel, teams)
-                            navController.navigate(Routes.NewTeam.routes)
+                            //Cambiar per new player
+                            navController.navigate(Routes.NewPlayer.routes)
                         }
-                        // } else {
-                        //Cambiar per new player
-                        //   navController.navigate(Routes.NewTeam.routes)
-                        //}
                     },
                     enabled = playerName.length > 3 && playerName.contains(Regex("^[A-Za-z]+\$")) && playerSName.length > 3 && playerSName.contains(
                         Regex("^[A-Za-z]+\$")

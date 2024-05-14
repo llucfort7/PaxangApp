@@ -17,7 +17,7 @@ interface TeamDAO  {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
      suspend fun insertTeam(team: TeamsEntity)
 
-    @Query("SELECT * FROM teams")
+    @Query("SELECT * FROM teams ORDER BY points DESC")
      fun getAllTeams(): LiveData<MutableList<TeamsEntity>>
     @Query("SELECT Count(*) FROM teams")
     fun getCountTeam(): Int

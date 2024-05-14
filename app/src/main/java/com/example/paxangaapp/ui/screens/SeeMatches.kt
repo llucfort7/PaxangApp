@@ -1,5 +1,6 @@
 package com.example.paxangaapp.ui.screens
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -9,23 +10,29 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -48,12 +55,14 @@ import com.example.paxangaapp.database.entities.PlayerEntity
 import com.example.paxangaapp.database.entities.TeamMatchRelationEntity
 import com.example.paxangaapp.database.entities.TeamWithMach
 import com.example.paxangaapp.database.entities.TeamsEntity
+import com.example.paxangaapp.ui.theme.md_theme_light_primary
 import com.example.paxangaapp.ui.viwmodel.MatchPlayerViewModel
 import com.example.paxangaapp.ui.viwmodel.MatchViewModel
 import com.example.paxangaapp.ui.viwmodel.PlayerViewModel
 import com.example.paxangaapp.ui.viwmodel.TeamMatchViewModel
 import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SeeMatches(
@@ -64,29 +73,61 @@ fun SeeMatches(
     matchPlayerViewModel: MatchPlayerViewModel,
 
     ) {
-
-
-    val scrollState = rememberScrollState()
     Scaffold(
-        topBar = {},
-        bottomBar = {},
-        content = {
-            Surface(
-                modifier = Modifier
-                    .padding(it)
-                    .verticalScroll(scrollState)
-            ) {
-                TopBarComponent(
-                    matchViewModel,
-                    teamsViewModel,
-                    playerViewModel,
-                    matchPlayerViewModel
-                )
-                MatchStats()
-
-            }
+        topBar = {
+            TopAppBar(
+                colors = TopAppBarDefaults.smallTopAppBarColors(
+                    containerColor = md_theme_light_primary
+                ),
+                title = { Text(text = "PAXANGAPP") },
+                actions = {
+                },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        navController.popBackStack()
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Classificacion",
+                            tint = Color.Black
+                        )
+                    }
+                }
+            )
         }
-    )
+
+    ) {
+        val scrollState = rememberScrollState()
+        Scaffold(
+            topBar = {},
+            bottomBar = {},
+            content = {
+                Surface(
+                    modifier = Modifier
+                        .padding(it)
+                        .verticalScroll(scrollState)
+                ) {
+                    TopBarComponent(
+                        matchViewModel,
+                        teamsViewModel,
+                        playerViewModel,
+                        matchPlayerViewModel
+                    )
+                    val match: MatchEntity by matchViewModel.selectedMatch.observeAsState(
+                        MatchEntity()
+                    )
+                    playerViewModel.getAllPlayers()
+                    val players by playerViewModel.playerList.observeAsState(initial = emptyList())
+                    playerViewModel.getAllPlayers()
+                    match.matchId?.let { it1 -> matchPlayerViewModel.getAllMatchPlayersByMatch(it1) }
+                    val stats by matchPlayerViewModel.matchPlayerListMatch.observeAsState(emptyList())
+                    match.matchId?.let { it1 -> matchPlayerViewModel.getAllMatchPlayersByMatch(it1) }
+                    MatchStats(stats, match,players)
+
+                }
+            }
+        )
+    }
 }
 
 @Composable
@@ -96,6 +137,7 @@ fun TopBarComponent(
     playerViewModel: PlayerViewModel,
     matchPlayerViewModel: MatchPlayerViewModel,
 ) {
+
 
     //Objeto del actual partido
     val match: MatchEntity by matchViewModel.selectedMatch.observeAsState(MatchEntity())
@@ -127,48 +169,17 @@ fun TopBarComponent(
     val visitorTeam = teams.firstOrNull { it.teamsId == match.visitorTeamId }
 
 
-
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 10.dp, end = 10.dp, top = 10.dp)
-            .clip(RoundedCornerShape(15.dp)),
+            .padding(horizontal = 10.dp, vertical = 10.dp)
+            .padding(top = 75.dp, )
+
+            .clip(RoundedCornerShape(15.dp))
     ) {
-        // Image(
-        //     painter = painterResource(id = R.drawable.epl_background),
-        //     contentDescription = stringResource(id = R.string.epl_background),
-        // )
-     //   Row(
-     //       modifier = Modifier
-     //           .fillMaxWidth()
-     //           .padding(start = 10.dp, top = 15.dp),
-     //       horizontalArrangement = Arrangement.SpaceEvenly
-     //   ) {
-     //       // Icon(
-     //       //     painter = painterResource(id = R.drawable.left_arrow),
-     //       //     contentDescription = stringResource(id = R.string.arrow_back),
-     //       //     tint = Color.White
-     //       // )
-     //     //  Text(
-     //     //      text = "String1",
-     //     //      style = MaterialTheme.typography.titleLarge,
-     //     //      fontWeight = FontWeight.SemiBold,
-     //     //      color = Color.White,
-     //     //      modifier = Modifier
-     //     //          .padding(top = 5.dp)
-     //     //  )
-     //       // Icon(
-     //       //     imageVector = Icons.Default.MoreVert,
-     //       //     contentDescription = stringResource(id = R.string.more_vert),
-     //       //     modifier = modifier
-     //       //         .padding(top = 10.dp),
-     //       //     tint = Color.White
-     //       // )
-     //   }
         Card(
             modifier = Modifier
                 .align(Alignment.Center)
-                .padding(top = 120.dp, end = 20.dp, start = 20.dp)
                 .clip(RoundedCornerShape(15.dp))
                 .background(Color.White),
             shape = RectangleShape
@@ -183,13 +194,7 @@ fun TopBarComponent(
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(top = 10.dp),
                     fontWeight = FontWeight.SemiBold,
-
                     )
-              //  Text(
-              //      text = "String3",
-              //      style = MaterialTheme.typography.titleSmall,
-              //      fontWeight = FontWeight.Light,
-              //  )
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                 ) {
@@ -239,20 +244,20 @@ fun TopBarComponent(
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .padding(start = 64.dp, top = 40.dp)
-                            .background(Color(0xFF5C075F), shape = RectangleShape)
+                            .background(Color(0xFF5C075F), shape = RoundedCornerShape(10.dp))
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     Column(
                         modifier = Modifier.padding(end = 10.dp),
                         verticalArrangement = Arrangement.SpaceEvenly
                     ) {
-                            if (visitorTeam != null) {
-                                Image(
-                                    painter = painterResource(id = visitorTeam.clubImage!!),
-                                    contentDescription =  "visitorTeam",
-                                    modifier = Modifier.size(80.dp)
-                                )
-                            }
+                        if (visitorTeam != null) {
+                            Image(
+                                painter = painterResource(id = visitorTeam.clubImage!!),
+                                contentDescription = "visitorTeam",
+                                modifier = Modifier.size(80.dp)
+                            )
+                        }
 
                         if (visitorTeam != null) {
                             Text(
@@ -283,7 +288,7 @@ fun TopBarComponent(
                 }
                 Row {
                     Text(
-                        text = match.matchNum.toString(),
+                        text = "Datos del partifdo",
                         modifier = Modifier
                             .padding(bottom = 10.dp)
                     )
@@ -293,72 +298,75 @@ fun TopBarComponent(
     }
 }
 
+
 @Composable
-fun MatchStats(modifier: Modifier = Modifier) {
+fun MatchStats(list: List<MatchPlayerRelationEntity>, matchEntity: MatchEntity,listP: List<PlayerEntity>) {
     Card(
-        modifier = modifier
-            .padding(top = 400.dp, start = 20.dp, end = 20.dp, bottom = 20.dp)
+        modifier = Modifier
+            .padding(top = 300.dp)
     ) {
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .padding(top = 5.dp, bottom = 20.dp)
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(15.dp)
         ) {
             Row(
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Text(
-                    text = "String1",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Text(
-                    text = "String1",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Text(
-                    text = "String1",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-            Row(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(end = 20.dp),
-                horizontalArrangement = Arrangement.End
-            ) {
-                LinearProgressIndicator(progress = 1f)
-            }
-            Row(
-                modifier = modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Text(
-                    text = "String1",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
+
 
                 Text(
-                    text = "String1",
+                    text = makeStatsFaultsL(list, matchEntity,listP).toString(),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold
                 )
+                Text(
+                    text = "Faltas",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    text = makeStatsFaultsV(list, matchEntity,listP).toString(),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 20.dp),
+                horizontalArrangement = Arrangement.End
+            ) {
+                LinearProgressIndicator(progress = 1f)
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+
 
                 Text(
-                    text = "String1",
+                    text = makeStatsYellowCardsL(list, matchEntity,listP).toString(),
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    text = "Amarillas",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    text = makeStatsYellowCardsV(list, matchEntity,listP).toString(),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
                 )
             }
             Row(
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .padding(end = 20.dp),
                 horizontalArrangement = Arrangement.End
@@ -366,202 +374,30 @@ fun MatchStats(modifier: Modifier = Modifier) {
                 LinearProgressIndicator(progress = 1f)
             }
             Row(
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
+
+
                 Text(
-                    text = "String1",
+                    text = makeStatsRedCardsL(list, matchEntity,listP).toString(),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    text = "String1",
+                    text = "Rojas",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    text = "String1",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-            Row(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(end = 20.dp),
-                horizontalArrangement = Arrangement.End
-            ) {
-                LinearProgressIndicator(progress = 1f)
-            }
-            Row(
-                modifier = modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Text(
-                    text = "String1",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Text(
-                    text = "String1",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Text(
-                    text = "String1",
+                    text = makeStatsRedCardsV(list, matchEntity,listP).toString(),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold
                 )
             }
             Row(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(start = 30.dp),
-                horizontalArrangement = Arrangement.Start
-            ) {
-                LinearProgressIndicator(progress = 0.5f)
-            }
-            Row(
-                modifier = modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Text(
-                    text = "String1",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Text(
-                    text = "String1",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Text(
-                    text = "String1",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-            Row(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(start = 30.dp),
-                horizontalArrangement = Arrangement.Start
-            ) {
-                LinearProgressIndicator(progress = 0.5f)
-            }
-            Row(
-                modifier = modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Text(
-                    text = "String1",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Text(
-                    text = "String1",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Text(
-                    text = "String1",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-            Row(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(end = 20.dp),
-                horizontalArrangement = Arrangement.End
-            ) {
-                LinearProgressIndicator(progress = 1f)
-            }
-            Row(
-                modifier = modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Text(
-                    text = "String1",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Text(
-                    text = "String1",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Text(
-                    text = "String1",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-            Row(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(end = 20.dp),
-                horizontalArrangement = Arrangement.End
-            ) {
-                LinearProgressIndicator(progress = 1f)
-            }
-            Row(
-                modifier = modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Text(
-                    text = "String1",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Text(
-                    text = "String1",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Text(
-                    text = "String1",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-            Row(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(start = 30.dp),
-                horizontalArrangement = Arrangement.Start
-            ) {
-                LinearProgressIndicator(progress = 0.7f)
-            }
-            Row(
-                modifier = modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Text(
-                    text = "String1",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Text(
-                    text = "String1",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Text(
-                    text = "String1",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-            Row(
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .padding(end = 20.dp),
                 horizontalArrangement = Arrangement.End
@@ -569,6 +405,83 @@ fun MatchStats(modifier: Modifier = Modifier) {
                 LinearProgressIndicator(progress = 1f)
             }
         }
+
     }
+}
+
+fun makeStatsFaultsL(list: List<MatchPlayerRelationEntity>, matchEntity: MatchEntity,listP: List<PlayerEntity>): Int {
+    var cnt = 0
+    for (i in list.indices) {
+        for (z in listP.indices){
+            if (list[i].playersId==listP[z].playersId&&listP[z].playerTeamID==matchEntity.localTeamId){
+                    cnt += list[i].foulsP
+            }
+
+        }
+    }
+    return cnt
+}
+
+fun makeStatsFaultsV(list: List<MatchPlayerRelationEntity>, matchEntity: MatchEntity,listP: List<PlayerEntity>): Int {
+    var cnt = 0
+    for (i in list.indices) {
+        for (z in listP.indices){
+            if (list[i].playersId==listP[z].playersId&&listP[z].playerTeamID==matchEntity.visitorTeamId){
+                cnt += list[i].foulsP
+            }
+
+        }
+    }
+    return cnt
+}
+fun makeStatsYellowCardsL(list: List<MatchPlayerRelationEntity>, matchEntity: MatchEntity,listP: List<PlayerEntity>): Int {
+    var cnt = 0
+    for (i in list.indices) {
+        for (z in listP.indices){
+            if (list[i].playersId==listP[z].playersId&&listP[z].playerTeamID==matchEntity.localTeamId){
+                    cnt += list[i].yellowCardsP
+            }
+
+        }
+    }
+    return cnt
+}
+
+fun makeStatsYellowCardsV(list: List<MatchPlayerRelationEntity>, matchEntity: MatchEntity,listP: List<PlayerEntity>): Int {
+    var cnt = 0
+    for (i in list.indices) {
+        for (z in listP.indices){
+            if (list[i].playersId==listP[z].playersId&&listP[z].playerTeamID==matchEntity.visitorTeamId){
+                cnt += list[i].yellowCardsP
+            }
+
+        }
+    }
+    return cnt
+}
+fun makeStatsRedCardsL(list: List<MatchPlayerRelationEntity>, matchEntity: MatchEntity,listP: List<PlayerEntity>): Int {
+    var cnt = 0
+    for (i in list.indices) {
+        for (z in listP.indices){
+            if (list[i].playersId==listP[z].playersId&&listP[z].playerTeamID==matchEntity.localTeamId){
+                cnt += list[i].yellowCardsP
+            }
+
+        }
+    }
+    return cnt
+}
+
+fun makeStatsRedCardsV(list: List<MatchPlayerRelationEntity>, matchEntity: MatchEntity,listP: List<PlayerEntity>): Int {
+    var cnt = 0
+    for (i in list.indices) {
+        for (z in listP.indices){
+            if (list[i].playersId==listP[z].playersId&&listP[z].playerTeamID==matchEntity.visitorTeamId){
+                cnt += list[i].yellowCardsP
+            }
+
+        }
+    }
+    return cnt
 }
 

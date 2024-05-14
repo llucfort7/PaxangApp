@@ -1,4 +1,5 @@
 package com.example.paxangaapp.ui.viwmodel
+
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -18,6 +19,10 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     var playerList: LiveData<List<PlayerEntity>> = MutableLiveData()
 
     var playerListByTeam: LiveData<List<PlayerEntity>> = MutableLiveData()
+
+    var playerListByTeamLocal: LiveData<List<PlayerEntity>> = MutableLiveData()
+
+    var playerListByTeamVisitor: LiveData<List<PlayerEntity>> = MutableLiveData()
 
     var playerByid: LiveData<PlayerEntity> = MutableLiveData()
 
@@ -52,16 +57,28 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
 
     fun getPlayerByTeamId(playerId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            playerListByTeam=playerDAO.getPlayerByTeamId(playerId)
+            playerListByTeam = playerDAO.getPlayerByTeamId(playerId)
+        }
+    }
+
+    fun getPlayerByTeamIdVisitor(playerId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            playerListByTeamVisitor = playerDAO.getPlayerByTeamId(playerId)
+        }
+    }
+
+    fun getPlayerByTeamIdLocal(playerId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            playerListByTeamLocal = playerDAO.getPlayerByTeamId(playerId)
         }
     }
 
     // Método para eliminar un jugador
- //   fun deletePlayer(player: PlayerEntity) {
- //       viewModelScope.launch(Dispatchers.IO) {
- //           playerDAO.deletePlayer(player)
- //       }
- //   }
+    //   fun deletePlayer(player: PlayerEntity) {
+    //       viewModelScope.launch(Dispatchers.IO) {
+    //           playerDAO.deletePlayer(player)
+    //       }
+    //   }
 
     // Método para actualizar un jugador
     fun updatePlayer(player: PlayerEntity) {

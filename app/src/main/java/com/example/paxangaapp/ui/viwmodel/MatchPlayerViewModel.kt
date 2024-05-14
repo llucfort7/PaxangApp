@@ -21,7 +21,7 @@ class MatchPlayerViewModel(application: Application) : AndroidViewModel(applicat
 
     var matchPlayerListMatch: LiveData<List<MatchPlayerRelationEntity>> = MutableLiveData()
 
-    var matchPlayerListMatchGoal: LiveData<List<MatchPlayerRelationEntity>> =MutableLiveData()
+    var matchPlayerListMatchGoal: LiveData<List<MatchPlayerRelationEntity>> = MutableLiveData()
 
     private var _selectedMatchPlayerRel = MutableLiveData<MatchPlayerRelationEntity>()
     val selectedMatchPlayerRel: LiveData<MatchPlayerRelationEntity> = _selectedMatchPlayerRel

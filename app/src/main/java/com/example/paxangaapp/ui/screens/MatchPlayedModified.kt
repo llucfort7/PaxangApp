@@ -57,6 +57,7 @@ import androidx.navigation.NavHostController
 import com.example.paxangaapp.database.entities.MatchEntity
 import com.example.paxangaapp.database.entities.MatchPlayerRelationEntity
 import com.example.paxangaapp.database.entities.PlayerEntity
+import com.example.paxangaapp.database.entities.TeamsEntity
 import com.example.paxangaapp.navigartion.Routes
 import com.example.paxangaapp.ui.theme.md_theme_light_primary
 import com.example.paxangaapp.ui.viwmodel.MatchPlayerViewModel
@@ -78,9 +79,9 @@ fun MatchPlayedModifier(
     Scaffold(
         topBar = {
             TopAppBar(
-                colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = md_theme_light_primary
-                ),
+              //  colors = TopAppBarDefaults.smallTopAppBarColors(
+              //      containerColor = md_theme_light_primary
+              //  ),
                 title = { Text(text = "PAXANGAPP") },
                 actions = {
                 },
@@ -128,23 +129,15 @@ fun MatchPlayedModifier(
         // val teamWithMatch: TeamWithMach by teamMatchViewModel.selectedTeamWithMatch.observeAsState(TeamWithMach())
         val localTeam = teams.firstOrNull { it.teamsId == match.localTeamId }
         val visitorTeam = teams.firstOrNull { it.teamsId == match.visitorTeamId }
+        playerViewModel.getPlayerByTeamIdLocal(match.localTeamId)
+        val playersByIdLocal by playerViewModel.playerListByTeamLocal.observeAsState(emptyList())
+        playerViewModel.getPlayerByTeamIdLocal(match.localTeamId)
 
-        // localTeam!!.teamsId?.let { playerViewModel.getPlayerByTeamId(it) }
-        if (localTeam != null) {
-            localTeam.teamsId?.let { playerViewModel.getPlayerByTeamId(it) }
-        }
-        val playersByIdLocal by playerViewModel.playerListByTeam.observeAsState(emptyList())
-        if (localTeam != null) {
-            localTeam.teamsId?.let { playerViewModel.getPlayerByTeamId(it) }
-        }
-//
-        if (visitorTeam != null) {
-            visitorTeam.teamsId?.let { playerViewModel.getPlayerByTeamId(it) }
-        }
-        val playersByIdVisitor by playerViewModel.playerListByTeam.observeAsState(emptyList())
-        if (visitorTeam != null) {
-            visitorTeam.teamsId?.let { playerViewModel.getPlayerByTeamId(it) }
-        }
+
+        playerViewModel.getPlayerByTeamIdVisitor(match.visitorTeamId)
+        val playersByIdVisitor by playerViewModel.playerListByTeamVisitor.observeAsState(emptyList())
+        playerViewModel.getPlayerByTeamIdVisitor(match.visitorTeamId)
+
 
         Box(
             modifier = Modifier
@@ -296,23 +289,7 @@ fun MatchPlayedModifier(
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 // Primera LazyColumn
-                                LazyColumn(
-                                    modifier = Modifier
-                                        .weight(0.5f)
-                                        .padding(vertical = 8.dp)
-                                        .fillMaxHeight()
-                                ) {
-                                    items(playersByIdVisitor) { player ->
-                                        PlayerRowMod(
-                                            player,
-                                            match,
-                                            playerViewModel,
-                                            navController,
-                                            matchViewModel,
-                                            matchPlayerViewModel
-                                        )
-                                    }
-                                }
+
                                 LazyColumn(
                                     modifier = Modifier
                                         .weight(0.5f)
@@ -327,6 +304,23 @@ fun MatchPlayedModifier(
                                             navController,
                                             matchViewModel,
                                             matchPlayerViewModel,
+                                        )
+                                    }
+                                }
+                                LazyColumn(
+                                    modifier = Modifier
+                                        .weight(0.5f)
+                                        .padding(vertical = 8.dp)
+                                        .fillMaxHeight()
+                                ) {
+                                    items(playersByIdVisitor) { player ->
+                                        PlayerRowMod(
+                                            player,
+                                            match,
+                                            playerViewModel,
+                                            navController,
+                                            matchViewModel,
+                                            matchPlayerViewModel
                                         )
                                     }
                                 }
@@ -346,8 +340,15 @@ fun MatchPlayedModifier(
             }
 
             if (showDialog) {
-                showDialog=showConfirmationDialog(navController, match, matchViewModel)
-               // showDialog = false
+                showDialog = visitorTeam?.let { it1 ->
+                    localTeam?.let { it2 ->
+                        showConfirmationDialog(
+                            navController, match, matchViewModel, teamsViewModel,
+                            it2,
+                            it1
+                        )
+                    }
+                }!!
             }
         }
 
@@ -370,9 +371,9 @@ fun PlayerRowMod(
             .clickable {
 
 
-                    playerViewModel.onPlayerClicked(player)
-                    matchViewModel.onMatchCliked(matchEntity)
-                    navController.navigate(Routes.PlayerMatchStats.routes)
+                playerViewModel.onPlayerClicked(player)
+                matchViewModel.onMatchCliked(matchEntity)
+                navController.navigate(Routes.PlayerMatchStats.routes)
             }
     ) {
         Row(
@@ -400,8 +401,11 @@ fun PlayerRowMod(
 fun showConfirmationDialog(
     navController: NavHostController,
     matchEntity: MatchEntity,
-    matchViewModel: MatchViewModel
-):Boolean {
+    matchViewModel: MatchViewModel,
+    teamsViewModel: TeamsViewModel,
+    teamsEntityLocal: TeamsEntity,
+    teamsEntityVisitor: TeamsEntity
+): Boolean {
     // Variable para controlar si el diálogo está visible
     var showDialog by rememberSaveable { mutableStateOf(true) }
 
@@ -425,6 +429,105 @@ fun showConfirmationDialog(
                                 isPlayed = true
                             )
                         )
+                        //The Local Win and the Vist Lost
+                        if (matchEntity.localGoals > matchEntity.vistGoals) {
+                            // Local team data modificate if local wins
+                            teamsViewModel.updateTeam(
+                                TeamsEntity(
+                                    teamsId = teamsEntityLocal.teamsId,
+                                    clubImage = teamsEntityLocal.clubImage,
+                                    localicacion = teamsEntityLocal.localicacion,
+                                    nameT = teamsEntityLocal.nameT,
+                                    points = teamsEntityLocal.points + 3,
+                                    winMatches = teamsEntityLocal.winMatches + 1,
+                                    tieMatches = teamsEntityLocal.tieMatches,
+                                    lostMatches = teamsEntityLocal.lostMatches,
+                                    playedMatches = teamsEntityLocal.playedMatches + 1
+                                )
+                            )
+                            // Visit team data modificate if local wins
+
+                            teamsViewModel.updateTeam(
+                                TeamsEntity(
+                                    teamsId = teamsEntityVisitor.teamsId,
+                                    clubImage = teamsEntityVisitor.clubImage,
+                                    localicacion = teamsEntityVisitor.localicacion,
+                                    nameT = teamsEntityVisitor.nameT,
+                                    points = teamsEntityVisitor.points,
+                                    winMatches = teamsEntityVisitor.winMatches,
+                                    tieMatches = teamsEntityVisitor.tieMatches,
+                                    lostMatches = teamsEntityVisitor.lostMatches + 1,
+                                    playedMatches = teamsEntityVisitor.playedMatches + 1
+                                )
+                            )
+                        }
+                        //Local lost and Visit wins
+                        if (matchEntity.vistGoals > matchEntity.localGoals) {
+                            // Local team data modificate if local lost
+
+                            teamsViewModel.updateTeam(
+                                TeamsEntity(
+                                    teamsId = teamsEntityLocal.teamsId,
+                                    clubImage = teamsEntityLocal.clubImage,
+                                    localicacion = teamsEntityLocal.localicacion,
+                                    nameT = teamsEntityLocal.nameT,
+                                    points = teamsEntityLocal.points,
+                                    winMatches = teamsEntityLocal.winMatches,
+                                    tieMatches = teamsEntityLocal.tieMatches,
+                                    lostMatches = teamsEntityLocal.lostMatches + 1,
+                                    playedMatches = teamsEntityLocal.playedMatches + 1
+                                )
+                            )
+                            // Visit team data modificate if local lost
+
+                            teamsViewModel.updateTeam(
+                                TeamsEntity(
+                                    teamsId = teamsEntityVisitor.teamsId,
+                                    clubImage = teamsEntityVisitor.clubImage,
+                                    localicacion = teamsEntityVisitor.localicacion,
+                                    nameT = teamsEntityVisitor.nameT,
+                                    points = teamsEntityVisitor.points + 3,
+                                    winMatches = teamsEntityVisitor.winMatches + 1,
+                                    tieMatches = teamsEntityVisitor.tieMatches,
+                                    lostMatches = teamsEntityVisitor.lostMatches,
+                                    playedMatches = teamsEntityVisitor.playedMatches + 1
+
+                                )
+                            )
+                        }
+                        if (matchEntity.vistGoals == matchEntity.localGoals) {
+//tie
+                            teamsViewModel.updateTeam(
+                                TeamsEntity(
+                                    teamsId = teamsEntityLocal.teamsId,
+                                    clubImage = teamsEntityLocal.clubImage,
+                                    localicacion = teamsEntityLocal.localicacion,
+                                    nameT = teamsEntityLocal.nameT,
+                                    points = teamsEntityLocal.points+1,
+                                    winMatches = teamsEntityLocal.winMatches,
+                                    tieMatches = teamsEntityLocal.tieMatches+1,
+                                    lostMatches = teamsEntityLocal.lostMatches ,
+                                    playedMatches = teamsEntityLocal.playedMatches + 1
+                                )
+                            )
+                            // Visit team data modificate if local tie
+
+                            teamsViewModel.updateTeam(
+                                TeamsEntity(
+                                    teamsId = teamsEntityVisitor.teamsId,
+                                    clubImage = teamsEntityVisitor.clubImage,
+                                    localicacion = teamsEntityVisitor.localicacion,
+                                    nameT = teamsEntityVisitor.nameT,
+                                    points = teamsEntityVisitor.points + 1,
+                                    winMatches = teamsEntityVisitor.winMatches ,
+                                    tieMatches = teamsEntityVisitor.tieMatches+1,
+                                    lostMatches = teamsEntityVisitor.lostMatches,
+                                    playedMatches = teamsEntityVisitor.playedMatches + 1
+
+                                )
+                            )
+                        }
+
                         navController.popBackStack()
 
                         showDialog = false

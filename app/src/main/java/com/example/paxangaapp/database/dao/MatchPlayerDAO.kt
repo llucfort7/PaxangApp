@@ -18,7 +18,7 @@ interface MatchPlayerDAO {
     @Query("SELECT * FROM match_players WHERE matchId = :matchId AND playersId = :playersId")
     fun getMatchPlayersRelation(matchId: Int, playersId: Int): MatchPlayerRelationEntity?
 
-    @Query("SELECT * FROM match_players WHERE matchId = :matchId")
+    @Query("SELECT * FROM match_players WHERE matchId = :matchId ")
     fun getMatchPlayersByMatch(matchId: Int): LiveData<List<MatchPlayerRelationEntity>>
     @Query("SELECT * FROM match_players WHERE matchId = :matchId AND goalsP>0")
     fun getMatchPlayersByMatchGoal(matchId: Int): LiveData<List<MatchPlayerRelationEntity>>

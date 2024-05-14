@@ -11,6 +11,10 @@ data class TeamsEntity(
     val nameT: String = "",
     val localicacion: String = "",
     val clubImage: Int? = null,
-    val points: Int=0
+    val points: Int=0,
+    val winMatches: Int=0,
+    val tieMatches: Int=0,
+    val lostMatches: Int=0,
+    val playedMatches: Int=0,
 )
 

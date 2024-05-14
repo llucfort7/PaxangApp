@@ -89,7 +89,7 @@ fun NewTeam(
 
     var teamName by rememberSaveable { mutableStateOf("") }
     var teamLocation by rememberSaveable { mutableStateOf("") }
-    var playersNumber by rememberSaveable { mutableStateOf(7) }
+    var playersNumber by rememberSaveable { mutableStateOf(2) }
     //val backgroundImage = painterResource(id = R.drawable.furbol)
     val configuration = LocalConfiguration.current
     var selectedImage by rememberSaveable { mutableStateOf<Int?>(null) }
@@ -175,7 +175,7 @@ fun NewTeam(
                             playersNumber = newval
 
                         }
-                        minValue = 7
+                        minValue = 2
                         maxValue = 15
                     }
 

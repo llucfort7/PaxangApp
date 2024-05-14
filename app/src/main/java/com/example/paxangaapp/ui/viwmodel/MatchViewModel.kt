@@ -23,6 +23,10 @@ class MatchViewModel(application: Application) : AndroidViewModel(application) {
     private val _selectedMatch = MutableLiveData<MatchEntity>()
     val selectedMatch: LiveData<MatchEntity> = _selectedMatch
 
+
+    private val _nplayedMatches = MutableLiveData<Int>()
+    val nplayedMatches: LiveData<Int> = _nplayedMatches
+
     private val _selectedMatchId = MutableLiveData<MatchEntity>()
     val selectedMatchId: LiveData<MatchEntity> = _selectedMatchId
     // Método para obtener todos los partidos
@@ -61,6 +65,13 @@ class MatchViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch(Dispatchers.IO) {
             matchDAO.deleteAllMatches()
         }
+    }
+    fun getNMtachesPlayed():Int {
+        var ret=0
+        viewModelScope.launch(Dispatchers.IO) {
+           ret= matchDAO.getNMAtchesPlayed()
+        }
+        return ret
     }
     fun onMatchCliked(match:MatchEntity){
         _selectedMatch.value=match
