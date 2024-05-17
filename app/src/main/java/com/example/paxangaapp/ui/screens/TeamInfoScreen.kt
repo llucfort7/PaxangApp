@@ -143,11 +143,14 @@ fun TeamInfoScreen(
 
                 isLoading = true // Mostrar pantalla de carga al hacer clic en el botón
 
-                corutineScope.launch(Dispatchers.Default) {
-                    calendario(teamsViewModel, matchViewModel, teams, navController)
-
-                    isLoading = false
+                corutineScope.launch(Dispatchers.IO){
+                    var pas =false
+                    while (!pas){
+                        pas=calendario(teamsViewModel, matchViewModel, teams, navController)
+                    }
                 }
+                    isLoading = false
+
 
             }) {
                 Text("Iniciar Corrutina")
@@ -180,34 +183,12 @@ fun TeamInfoScreen(
         }
     }
 }
-
-
-@Composable
-fun TeamDetailInfo(
-    label: String,
-    value: String
-) {
-    Row(
-        modifier = Modifier.padding(vertical = 4.dp)
-    ) {
-        Text(
-            text = label,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.width(150.dp)
-        )
-        Text(
-            text = value,
-        )
-    }
-}
-
-
 suspend fun calendario(
     teamsViewModel: TeamsViewModel,
     matchViewModel: MatchViewModel,
     teamList: List<TeamsEntity>,
     navController: NavHostController,
-) {
+):Boolean {
 
     matchViewModel.deleteAllMatches()
     val nEquipos = teamList.size
@@ -218,8 +199,8 @@ suspend fun calendario(
     // Lista para rastrear los partidos jugados
     val listaPartidosJugados = mutableListOf<MatchEntity>()
 
-    for (i in 0..<teamList.size) {
-        for (z in 0..<teamList.size) {
+    for (i in 0 until teamList.size) {
+        for (z in 0 until teamList.size) {
             val localT = teamList[i]
             val visitTeam = teamList[z]
             if (localT != visitTeam) {
@@ -238,32 +219,43 @@ suspend fun calendario(
             }
         }
     }
+
+    val mitadTemporada = jornadas / 2
+    var partidosTot = mutableListOf<MatchEntity>()
+
     var ramMatch = MatchEntity()
-
-    for (x in 0..<jornadas) {
+    for (x in 0 until jornadas) {
         var partidos = mutableListOf<MatchEntity>()
-        for (y in 0..<teamList.size / 2) {
-            var pass = false
-            while (!pass) {
-                ramMatch = partidosDisp.random()
-
-                if (false
-                   // partidos.any {
-                   //     it.localTeamId == ramMatch.localTeamId ||
-                   //             it.localTeamId == ramMatch.visitorTeamId ||
-                   //             it.visitorTeamId == ramMatch.localTeamId ||
-                   //             it.visitorTeamId == ramMatch.visitorTeamId
-                   // }
-                ) {
-                    //pass = false
-                } else {
+        var intentos = 0
+        while (partidos.size < teamList.size / 2 && intentos < 100) {
+            ramMatch = partidosDisp.random()
+            // Verificar si los equipos ya jugaron antes de la mitad de la temporada
+            if (listaPartidosJugados.count {
+                    (it.localTeamId == ramMatch.localTeamId && it.visitorTeamId == ramMatch.visitorTeamId) ||
+                            (it.localTeamId == ramMatch.visitorTeamId && it.visitorTeamId == ramMatch.localTeamId)
+                } < mitadTemporada) {
+                if (!partidos.any {
+                        it.localTeamId == ramMatch.localTeamId ||
+                                it.localTeamId == ramMatch.visitorTeamId ||
+                                it.visitorTeamId == ramMatch.localTeamId ||
+                                it.visitorTeamId == ramMatch.visitorTeamId
+                    }) {
                     ramMatch.matchNum = x
-                    partidos.add(ramMatch)
+                    partidosTot.add(ramMatch)
                     matchViewModel.addMatch(ramMatch)
+                    partidos.add(ramMatch)
                     partidosDisp.remove(ramMatch)
-                    pass = true
+                    // Registrar el partido jugado
+                    listaPartidosJugados.add(ramMatch)
                 }
             }
+            intentos++
         }
     }
+    return if (partidosDisp.size==0){
+        true
+    }else{
+        false
+    }
 }
+

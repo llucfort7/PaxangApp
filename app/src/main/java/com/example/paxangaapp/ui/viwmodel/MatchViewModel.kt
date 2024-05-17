@@ -29,13 +29,15 @@ class MatchViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _selectedMatchId = MutableLiveData<MatchEntity>()
     val selectedMatchId: LiveData<MatchEntity> = _selectedMatchId
+
     // Método para obtener todos los partidos
     fun getAllMatches() {
         viewModelScope.launch(Dispatchers.IO) {
             matchList = matchDAO.getAllMatches()
         }
     }
-    fun getAllMatchesByNumMatch(nMatch:Int) {
+
+    fun getAllMatchesByNumMatch(nMatch: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             matchListNumber = matchDAO.getAllMatchesByNumMatch(nMatch)
         }
@@ -47,6 +49,7 @@ class MatchViewModel(application: Application) : AndroidViewModel(application) {
             matchDAO.insertMatch(match)
         }
     }
+
     fun modificateMatch(match: MatchEntity) {
         viewModelScope.launch(Dispatchers.IO) {
             matchDAO.modifierMatch(match)
@@ -54,9 +57,9 @@ class MatchViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     // Método para obtener un partido por su ID
-     fun getMatchById(matchId: Int){
+    fun getMatchById(matchId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-        _selectedMatchId.value= matchDAO.getMatchById(matchId)
+            _selectedMatchId.value = matchDAO.getMatchById(matchId)
         }
     }
 
@@ -66,15 +69,25 @@ class MatchViewModel(application: Application) : AndroidViewModel(application) {
             matchDAO.deleteAllMatches()
         }
     }
-    fun getNMtachesPlayed():Int {
-        var ret=0
+
+    fun getNmatches(): Int {
+        var ret = 0
         viewModelScope.launch(Dispatchers.IO) {
-           ret= matchDAO.getNMAtchesPlayed()
+            ret = matchDAO.getNMatches()
         }
         return ret
     }
-    fun onMatchCliked(match:MatchEntity){
-        _selectedMatch.value=match
+
+    fun getNMtachesPlayed(): Int {
+        var ret = 0
+        viewModelScope.launch(Dispatchers.IO) {
+            ret = matchDAO.getNMAtchesPlayed()
+        }
+        return ret
+    }
+
+    fun onMatchCliked(match: MatchEntity) {
+        _selectedMatch.value = match
     }
 
 

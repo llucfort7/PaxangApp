@@ -18,6 +18,11 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     // LiveData para la lista de jugadores
     var playerList: LiveData<List<PlayerEntity>> = MutableLiveData()
 
+    var playerListGoal: LiveData<List<PlayerEntity>> = MutableLiveData()
+    var playerListAsisit: LiveData<List<PlayerEntity>> = MutableLiveData()
+    var playerListYellowC: LiveData<List<PlayerEntity>> = MutableLiveData()
+    var playerListRedC: LiveData<List<PlayerEntity>> = MutableLiveData()
+
     var playerListByTeam: LiveData<List<PlayerEntity>> = MutableLiveData()
 
     var playerListByTeamLocal: LiveData<List<PlayerEntity>> = MutableLiveData()
@@ -38,6 +43,26 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     fun getAllPlayers() {
         viewModelScope.launch(Dispatchers.IO) {
             playerList = playerDAO.getAllPlayers()
+        }
+    }
+    fun getAllPlayersByGoals() {
+        viewModelScope.launch(Dispatchers.IO) {
+            playerListGoal = playerDAO.getAllPlayersByGoals()
+        }
+    }
+    fun getAllPlayersByYellowC() {
+        viewModelScope.launch(Dispatchers.IO) {
+            playerListYellowC = playerDAO.getAllPlayersByYellowC()
+        }
+    }
+    fun getAllPlayersByAsisit() {
+        viewModelScope.launch(Dispatchers.IO) {
+            playerListAsisit = playerDAO.getAllPlayersByAsists()
+        }
+    }
+    fun getAllPlayersByRedC() {
+        viewModelScope.launch(Dispatchers.IO) {
+            playerListRedC = playerDAO.getAllPlayersByRedC()
         }
     }
 

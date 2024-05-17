@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "4eeda5edb8f209703ce9c69f1c2c9bf0",
+    "identityHash": "1137a6988c4551d666a39b3d81d28368",
     "entities": [
       {
         "tableName": "players",
@@ -222,7 +222,7 @@
       },
       {
         "tableName": "match_players",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`matchId` INTEGER NOT NULL, `playersId` INTEGER NOT NULL, `goalsP` INTEGER NOT NULL, `foulsP` INTEGER NOT NULL, `assistsP` INTEGER NOT NULL, `yellowCardsP` INTEGER NOT NULL, `redCardsP` INTEGER NOT NULL, `TimePlayed` INTEGER NOT NULL, PRIMARY KEY(`matchId`, `playersId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`matchId` INTEGER NOT NULL, `playersId` INTEGER NOT NULL, `goalsP` INTEGER NOT NULL, `foulsP` INTEGER NOT NULL, `assistsP` INTEGER NOT NULL, `yellowCardsP` INTEGER NOT NULL, `redCardsP` INTEGER NOT NULL, `timePlayed` INTEGER NOT NULL, PRIMARY KEY(`matchId`, `playersId`))",
         "fields": [
           {
             "fieldPath": "matchId",
@@ -267,8 +267,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "TimePlayed",
-            "columnName": "TimePlayed",
+            "fieldPath": "timePlayed",
+            "columnName": "timePlayed",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -346,7 +346,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4eeda5edb8f209703ce9c69f1c2c9bf0')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1137a6988c4551d666a39b3d81d28368')"
     ]
   }
 }

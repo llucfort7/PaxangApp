@@ -72,9 +72,6 @@ fun ClassificationScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-             //   colors = TopAppBarDefaults.smallTopAppBarColors(
-             //       containerColor = md_theme_light_primary
-             //   ),
                 title = { Text(text = "Clasificación") }, // Cambia el título
                 actions = {
                 },

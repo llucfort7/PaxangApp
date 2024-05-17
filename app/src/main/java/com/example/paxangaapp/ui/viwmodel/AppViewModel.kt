@@ -36,4 +36,6 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     fun numPlayersChangue(num: Int) {
         _numPlayersEdit.value = num
     }
+
+
 }

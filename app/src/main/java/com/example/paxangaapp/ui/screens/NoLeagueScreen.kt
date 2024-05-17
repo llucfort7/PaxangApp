@@ -32,7 +32,7 @@ fun NoLeagueScreen(
     teamsViewModel: TeamsViewModel,
     appViewModel: AppViewModel
 ) {
-    var teamsNumber by rememberSaveable { mutableStateOf(3) }
+    var teamsNumber by rememberSaveable { mutableStateOf(6) }
 
     teamsViewModel.updateTeamCount()
     if (teamsViewModel.teamCount < 1) {
@@ -52,6 +52,7 @@ fun NoLeagueScreen(
             Row(Modifier.padding(3.dp)) {
                 Text(text = "Numero de equipos")
             }
+            //s'ha de fer que soles puguen ser numeros pars
             AndroidView(
                 modifier = Modifier.width(50.dp),
                 factory = { context ->
@@ -59,8 +60,8 @@ fun NoLeagueScreen(
                         setOnValueChangedListener { _, _, newval ->
                             teamsNumber = newval
                         }
-                        minValue = 3
-                        maxValue = 10
+                        minValue = 6
+                        maxValue = 12
                         value = teamsNumber // Esto asegura que el NumberPicker muestre el valor actual de teamsNumber
                     }
                 }

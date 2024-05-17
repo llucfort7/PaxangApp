@@ -49,6 +49,14 @@ class TeamsViewModel(application: Application) : AndroidViewModel(application) {
             teamList = teamDAO.getAllTeams()
         }
     }
+    fun getNTeams():Int {
+
+        var num=0
+        viewModelScope.launch(Dispatchers.IO) {
+            num = teamDAO.getCountTeam()
+        }
+        return num
+    }
 
     // Método para agregar un nuevo equipo
     fun addTeam(team: TeamsEntity) {

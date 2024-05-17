@@ -43,7 +43,7 @@ fun PlayerRow(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(md_theme_light_primary)
+                //.background(md_theme_light_primary)
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {

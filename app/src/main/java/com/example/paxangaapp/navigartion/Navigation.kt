@@ -13,7 +13,7 @@ import com.example.paxangaapp.ui.screens.NoLeagueScreen
 import com.example.paxangaapp.ui.screens.Onboarding
 import com.example.paxangaapp.ui.screens.PlayerClasScreen
 import com.example.paxangaapp.ui.screens.PlayerInfoScreen
-import com.example.paxangaapp.ui.screens.PlayerMatchStats
+import com.example.paxangaapp.ui.screens.PlayerMatchStatsModifier
 import com.example.paxangaapp.ui.screens.SeeMatches
 import com.example.paxangaapp.ui.screens.SplashScreen
 import com.example.paxangaapp.ui.screens.TabRowMatchScreen
@@ -22,7 +22,6 @@ import com.example.paxangaapp.ui.viwmodel.AdminLoginViwModel
 import com.example.paxangaapp.ui.viwmodel.AppViewModel
 import com.example.paxangaapp.ui.viwmodel.MatchPlayerViewModel
 import com.example.paxangaapp.ui.viwmodel.MatchViewModel
-import com.example.paxangaapp.ui.viwmodel.PlayerTeamsViewModel
 import com.example.paxangaapp.ui.viwmodel.PlayerViewModel
 import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
 
@@ -43,7 +42,7 @@ fun Navigation(matchViewModel: MatchViewModel, teamsViewModel: TeamsViewModel, a
             ClassificationScreen(navController,teamsViewModel)
         }
         composable(Routes.PlayerClasScreen.routes) {
-            PlayerClasScreen(navController, playerViewModel)
+            PlayerClasScreen(navController,playerViewModel)
         }
         composable(Routes.NewPlayer.routes) {
             NewPlayer(navController,teamsViewModel, playerViewModel,matchViewModel, appViewModel)
@@ -70,10 +69,10 @@ fun Navigation(matchViewModel: MatchViewModel, teamsViewModel: TeamsViewModel, a
             MatchModifier(navController,matchViewModel,teamsViewModel,appViewModel)
         }
         composable(Routes.MatchPlayedModifier.routes) {
-            MatchPlayedModifier(matchViewModel,teamsViewModel,playerViewModel,matchPlayerViewModel,navController)
+            MatchPlayedModifier(matchViewModel,teamsViewModel,playerViewModel,matchPlayerViewModel,appViewModel,navController)
         }
         composable(Routes.PlayerMatchStats.routes) {
-            PlayerMatchStats(matchPlayerViewModel,matchViewModel,playerViewModel,navController)
+            PlayerMatchStatsModifier(matchPlayerViewModel,matchViewModel,playerViewModel,navController)
         }
 
 

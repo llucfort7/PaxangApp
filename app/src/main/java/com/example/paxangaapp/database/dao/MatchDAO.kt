@@ -27,6 +27,9 @@ interface MatchDAO{
     @Query("SELECT Count(*) FROM 'match' WHERE isPlayed=1")
     suspend fun getNMAtchesPlayed(): Int
 
+    @Query("SELECT Count(*) FROM 'match' ")
+    suspend fun getNMatches(): Int
+
     @Query("DELETE FROM 'match'")
      suspend fun deleteAllMatches(): Int
 }

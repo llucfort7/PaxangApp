@@ -89,7 +89,7 @@ fun NewTeam(
 
     var teamName by rememberSaveable { mutableStateOf("") }
     var teamLocation by rememberSaveable { mutableStateOf("") }
-    var playersNumber by rememberSaveable { mutableStateOf(2) }
+    var playersNumber by rememberSaveable { mutableStateOf(1) }
     //val backgroundImage = painterResource(id = R.drawable.furbol)
     val configuration = LocalConfiguration.current
     var selectedImage by rememberSaveable { mutableStateOf<Int?>(null) }

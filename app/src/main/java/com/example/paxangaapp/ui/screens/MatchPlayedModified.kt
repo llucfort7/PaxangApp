@@ -60,6 +60,7 @@ import com.example.paxangaapp.database.entities.PlayerEntity
 import com.example.paxangaapp.database.entities.TeamsEntity
 import com.example.paxangaapp.navigartion.Routes
 import com.example.paxangaapp.ui.theme.md_theme_light_primary
+import com.example.paxangaapp.ui.viwmodel.AppViewModel
 import com.example.paxangaapp.ui.viwmodel.MatchPlayerViewModel
 import com.example.paxangaapp.ui.viwmodel.MatchViewModel
 import com.example.paxangaapp.ui.viwmodel.PlayerViewModel
@@ -74,14 +75,15 @@ fun MatchPlayedModifier(
     teamsViewModel: TeamsViewModel,
     playerViewModel: PlayerViewModel,
     matchPlayerViewModel: MatchPlayerViewModel,
+    appViewModel: AppViewModel,
     navController: NavHostController
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
-              //  colors = TopAppBarDefaults.smallTopAppBarColors(
-              //      containerColor = md_theme_light_primary
-              //  ),
+                //  colors = TopAppBarDefaults.smallTopAppBarColors(
+                //      containerColor = md_theme_light_primary
+                //  ),
                 title = { Text(text = "PAXANGAPP") },
                 actions = {
                 },
@@ -116,6 +118,7 @@ fun MatchPlayedModifier(
         val playerGoal by matchPlayerViewModel.matchPlayerListMatchGoal.observeAsState(initial = emptyList())
         match.matchId?.let { matchPlayerViewModel.getAllMatchPlayersByMatchGoal(it) }
 
+
         // match.matchId?.let { matchPlayerViewModel.getAllMatchPlayersByMatch(it) }
         // val playerMatch by matchPlayerViewModel.matchPlayerListMatch.observeAsState(initial = emptyList())
         // match.matchId?.let { matchPlayerViewModel.getAllMatchPlayersByMatch(it) }
@@ -137,6 +140,12 @@ fun MatchPlayedModifier(
         playerViewModel.getPlayerByTeamIdVisitor(match.visitorTeamId)
         val playersByIdVisitor by playerViewModel.playerListByTeamVisitor.observeAsState(emptyList())
         playerViewModel.getPlayerByTeamIdVisitor(match.visitorTeamId)
+
+        match.matchId?.let { it1 -> matchPlayerViewModel.getAllMatchPlayersByMatch(it1) }
+        val matchPlayer by matchPlayerViewModel.matchPlayerListMatch.observeAsState(emptyList())
+        match.matchId?.let { it1 -> matchPlayerViewModel.getAllMatchPlayersByMatch(it1) }
+
+
 
 
         Box(
@@ -303,7 +312,8 @@ fun MatchPlayedModifier(
                                             playerViewModel,
                                             navController,
                                             matchViewModel,
-                                            matchPlayerViewModel,
+                                            matchPlayer
+
                                         )
                                     }
                                 }
@@ -320,7 +330,7 @@ fun MatchPlayedModifier(
                                             playerViewModel,
                                             navController,
                                             matchViewModel,
-                                            matchPlayerViewModel
+                                            matchPlayer
                                         )
                                     }
                                 }
@@ -362,18 +372,25 @@ fun PlayerRowMod(
     playerViewModel: PlayerViewModel,
     navController: NavHostController,
     matchViewModel: MatchViewModel,
-    matchPlayerViewModel: MatchPlayerViewModel,
+    listMatchPlayer: List<MatchPlayerRelationEntity>
 ) {
     OutlinedCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .clickable {
+                var isPlayed=true
+                for (i in 0..<listMatchPlayer.size){
+                    if (listMatchPlayer[i].playersId==player.playersId&&listMatchPlayer[i].isPayed){
+                        isPlayed=false
+                    }
+                }
+                if (isPlayed){
+                    playerViewModel.onPlayerClicked(player)
+                    matchViewModel.onMatchCliked(matchEntity)
+                    navController.navigate(Routes.PlayerMatchStats.routes)
+                }
 
-
-                playerViewModel.onPlayerClicked(player)
-                matchViewModel.onMatchCliked(matchEntity)
-                navController.navigate(Routes.PlayerMatchStats.routes)
             }
     ) {
         Row(
@@ -503,10 +520,10 @@ fun showConfirmationDialog(
                                     clubImage = teamsEntityLocal.clubImage,
                                     localicacion = teamsEntityLocal.localicacion,
                                     nameT = teamsEntityLocal.nameT,
-                                    points = teamsEntityLocal.points+1,
+                                    points = teamsEntityLocal.points + 1,
                                     winMatches = teamsEntityLocal.winMatches,
-                                    tieMatches = teamsEntityLocal.tieMatches+1,
-                                    lostMatches = teamsEntityLocal.lostMatches ,
+                                    tieMatches = teamsEntityLocal.tieMatches + 1,
+                                    lostMatches = teamsEntityLocal.lostMatches,
                                     playedMatches = teamsEntityLocal.playedMatches + 1
                                 )
                             )
@@ -519,8 +536,8 @@ fun showConfirmationDialog(
                                     localicacion = teamsEntityVisitor.localicacion,
                                     nameT = teamsEntityVisitor.nameT,
                                     points = teamsEntityVisitor.points + 1,
-                                    winMatches = teamsEntityVisitor.winMatches ,
-                                    tieMatches = teamsEntityVisitor.tieMatches+1,
+                                    winMatches = teamsEntityVisitor.winMatches,
+                                    tieMatches = teamsEntityVisitor.tieMatches + 1,
                                     lostMatches = teamsEntityVisitor.lostMatches,
                                     playedMatches = teamsEntityVisitor.playedMatches + 1
 

@@ -28,6 +28,8 @@ class MatchPlayerViewModel(application: Application) : AndroidViewModel(applicat
 
     private val _selectedMatchPlayer = MutableLiveData<MatchPlayerRelationEntity>()
     val selectedMatchPlayer: LiveData<MatchPlayerRelationEntity> = _selectedMatchPlayer
+
+
     // Método para agregar una nueva relación entre partido y jugador
     fun addMatchPlayer(matchPlayer: MatchPlayerRelationEntity) {
         viewModelScope.launch(Dispatchers.IO) {

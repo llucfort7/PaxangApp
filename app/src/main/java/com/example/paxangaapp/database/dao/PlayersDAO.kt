@@ -18,6 +18,14 @@ interface PlayersDAO {
 
     @Query("SELECT * FROM players")
     fun getAllPlayers(): LiveData<List<PlayerEntity>>
+    @Query("SELECT * FROM players ORDER BY goalsP DESC")
+    fun getAllPlayersByGoals(): LiveData<List<PlayerEntity>>
+    @Query("SELECT * FROM players ORDER BY assistsP DESC")
+    fun getAllPlayersByAsists(): LiveData<List<PlayerEntity>>
+    @Query("SELECT * FROM players ORDER BY yellowCardsP DESC")
+    fun getAllPlayersByYellowC(): LiveData<List<PlayerEntity>>
+    @Query("SELECT * FROM players ORDER BY redCardsP DESC")
+    fun getAllPlayersByRedC(): LiveData<List<PlayerEntity>>
 
     @Query("SELECT * FROM players WHERE playersId = :playerId")
     fun getPlayerById(playerId: Int): LiveData<PlayerEntity>

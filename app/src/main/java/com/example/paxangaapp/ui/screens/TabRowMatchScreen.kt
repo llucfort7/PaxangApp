@@ -57,16 +57,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.paxangaapp.database.entities.MatchEntity
+import com.example.paxangaapp.database.entities.MatchPlayerRelationEntity
+import com.example.paxangaapp.database.entities.PlayerEntity
 import com.example.paxangaapp.database.entities.TeamsEntity
 import com.example.paxangaapp.navigartion.Routes
 import com.example.paxangaapp.ui.theme.md_theme_light_primary
 import com.example.paxangaapp.ui.viwmodel.AppViewModel
 import com.example.paxangaapp.ui.viwmodel.MatchViewModel
+import com.example.paxangaapp.ui.viwmodel.PlayerViewModel
 import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
 
 
@@ -79,20 +83,8 @@ fun TabRowMatchScreen(
     teamsViewModel: TeamsViewModel,
     appViewModel: AppViewModel,
 ) {
-    matchViewModel.getNMtachesPlayed()
-   // val index by matchViewModel.nplayedMatches.observeAsState(Int)
-    val oIndex=matchViewModel.getNMtachesPlayed()
-    var selectedTabIndex by remember { mutableStateOf(0) }
-   // selectedTabIndex=oIndex/3
-    matchViewModel.getAllMatches()
-    val mMatches by matchViewModel.matchList.observeAsState(initial = emptyList())
-    matchViewModel.getAllMatches()
-    teamsViewModel.getAllTeams()
-    val teams by teamsViewModel.teamList.observeAsState(initial = emptyList())
-    teamsViewModel.getAllTeams()
-    val nJourny= mMatches.size/(teams.size-1)
-//(Esta mal)Cambiar per un numero maxim de jornades afegides a la BD
-    val tabTitles = (0..nJourny).map { "Tab $it" }
+
+
     var expanded by remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
@@ -169,6 +161,22 @@ fun TabRowMatchScreen(
             )
         }
     ) {
+        matchViewModel.getNMtachesPlayed()
+        // val index by matchViewModel.nplayedMatches.observeAsState(Int)
+        val oIndex = matchViewModel.getNMtachesPlayed()
+        var selectedTabIndex by remember { mutableStateOf(0) }
+        // selectedTabIndex=oIndex/3
+        matchViewModel.getAllMatches()
+        val mMatches by matchViewModel.matchList.observeAsState(initial = emptyList())
+        matchViewModel.getAllMatches()
+        teamsViewModel.getAllTeams()
+        val teams by teamsViewModel.teamList.observeAsState(initial = emptyList())
+
+        val nJourny = ((teams.size)*2)
+
+//(Esta mal)Cambiar per un numero maxim de jornades afegides a la BD
+
+        val tabTitles = (0..nJourny).map { "Tab $it" }
 
         Column(modifier = Modifier.fillMaxSize()) {
             Spacer(modifier = Modifier.height(57.dp))
@@ -238,10 +246,11 @@ fun MatchRow(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(modifier = Modifier
-                        .height(35.dp)
-                        .width(35.dp)
-                    ){
+                    Box(
+                        modifier = Modifier
+                            .height(35.dp)
+                            .width(35.dp)
+                    ) {
                         if (localTeam != null) {
                             localTeam.clubImage?.let { it1 -> painterResource(it1) }?.let { it2 ->
                                 Image(
@@ -263,17 +272,16 @@ fun MatchRow(
                         )
                     }
                 }
-                if (matchEntity.isPlayed){
+                if (matchEntity.isPlayed) {
                     Text(
                         text = "${matchEntity.localGoals.toString()}-${matchEntity.vistGoals.toString()}",
                         modifier = Modifier.padding(horizontal = 8.dp)
-                    ) 
-                }
-                else{
+                    )
+                } else {
                     Text(text = "(N/P)")
                 }
                 // Resultado
-               
+
 
                 // Icono y nombre del equipo visitante
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -284,10 +292,11 @@ fun MatchRow(
                         )
                     }
                     Spacer(modifier = Modifier.width(8.dp))
-                    Box(modifier = Modifier
-                        .height(45.dp)
-                        .width(45.dp)
-                    ){
+                    Box(
+                        modifier = Modifier
+                            .height(45.dp)
+                            .width(45.dp)
+                    ) {
                         if (visitorTeam != null) {
                             visitorTeam.clubImage?.let { it1 -> painterResource(it1) }?.let { it2 ->
                                 Image(
@@ -306,5 +315,3 @@ fun MatchRow(
         }
     }
 }
-
-
