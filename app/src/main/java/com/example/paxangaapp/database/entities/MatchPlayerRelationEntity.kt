@@ -13,5 +13,4 @@ data class MatchPlayerRelationEntity(
     var redCardsP: Int = 0,
     var timePlayed: Int = 0,
     var isPayed: Boolean = false,
-
 )

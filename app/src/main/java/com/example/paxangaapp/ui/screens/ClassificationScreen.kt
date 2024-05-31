@@ -61,7 +61,6 @@ import com.example.paxangaapp.database.entities.TeamsEntity
 import com.example.paxangaapp.navigartion.Routes
 import com.example.paxangaapp.ui.theme.md_theme_light_primary
 import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
-
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,9 +71,8 @@ fun ClassificationScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Clasificación") }, // Cambia el título
-                actions = {
-                },
+                title = { Text(text = "Clasificación") },
+                actions = {},
                 navigationIcon = {
                     IconButton(onClick = {
                         navController.popBackStack()
@@ -94,62 +92,63 @@ fun ClassificationScreen(
         val teams by teamsViewModel.teamList.observeAsState(initial = emptyList())
 
         // Tabla de clasificación
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-            // .background(MaterialTheme.colorScheme.primary)
         ) {
-            Spacer(modifier = Modifier.height(76.dp))
+            item {
+                Spacer(modifier = Modifier.height(76.dp))
+            }
 
             // Encabezados de columna
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(40.dp),
-                //.padding(vertical = 3.dp),
-                // verticalAlignment = Alignment.CenterVertically,
-                //horizontalArrangement = Arrangement.
-            ) {
-                // Ajusta los paddings para que coincidan con ClassificationRow
-                Text(
-                    text = "PS",
-                    modifier = Modifier.padding(start = 10.dp)
-                )
-                Spacer(modifier = Modifier.width(50.dp)) // Agrega un Spacer
-                Text(
-                    text = "T",
-                    modifier = Modifier.padding(end = 4.dp)
-                )
-                Spacer(modifier = Modifier.width(100.dp)) // Agrega un Spacer
-                Text(
-                    text = "PJ", // Partidos jugados
-                    modifier = Modifier.padding(start = 4.dp, end = 10.dp)
-                )
-                Text(
-                    text = "PG", // Partidos ganados
-                    modifier = Modifier.padding(horizontal = 10.dp)
-                )
-                Text(
-                    text = "PE", // Partidos empatados
-                    modifier = Modifier.padding(horizontal = 10.dp)
-                )
-                Text(
-                    text = "PP", // Partidos perdidos
-                    modifier = Modifier.padding(horizontal = 10.dp)
-                )
-                Text(
-                    text = "Pts", // Puntos
-                    modifier = Modifier.padding(end = 10.dp)
-                )
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(40.dp)
+                ) {
+                    Text(
+                        text = "PS",
+                        modifier = Modifier.padding(start = 10.dp)
+                    )
+                    Spacer(modifier = Modifier.width(50.dp))
+                    Text(
+                        text = "T",
+                        modifier = Modifier.padding(end = 4.dp)
+                    )
+                    Spacer(modifier = Modifier.width(100.dp))
+                    Text(
+                        text = "PJ", // Partidos jugados
+                        modifier = Modifier.padding(start = 4.dp, end = 10.dp)
+                    )
+                    Text(
+                        text = "PG", // Partidos ganados
+                        modifier = Modifier.padding(horizontal = 10.dp)
+                    )
+                    Text(
+                        text = "PE", // Partidos empatados
+                        modifier = Modifier.padding(horizontal = 10.dp)
+                    )
+                    Text(
+                        text = "PP", // Partidos perdidos
+                        modifier = Modifier.padding(horizontal = 10.dp)
+                    )
+                    Text(
+                        text = "Pts", // Puntos
+                        modifier = Modifier.padding(end = 10.dp)
+                    )
+                }
             }
 
             // Datos de los equipos
-            teams.forEachIndexed { index, team ->
-                ClassificationRow(team, index + 1, navController, teamsViewModel)
+            items(teams) { team ->
+                val index = teams.indexOf(team) + 1
+                ClassificationRow(team, index, navController, teamsViewModel)
             }
         }
     }
 }
+
 @Composable
 fun ClassificationRow(
     team: TeamsEntity,

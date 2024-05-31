@@ -98,12 +98,11 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-    // Método para eliminar un jugador
-    //   fun deletePlayer(player: PlayerEntity) {
-    //       viewModelScope.launch(Dispatchers.IO) {
-    //           playerDAO.deletePlayer(player)
-    //       }
-    //   }
+       fun deleteAllPlayers() {
+           viewModelScope.launch(Dispatchers.IO) {
+               playerDAO.deleteAllPlayers()
+           }
+       }
 
     // Método para actualizar un jugador
     fun updatePlayer(player: PlayerEntity) {

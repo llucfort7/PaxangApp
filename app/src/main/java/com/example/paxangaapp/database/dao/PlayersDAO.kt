@@ -33,11 +33,10 @@ interface PlayersDAO {
     @Query("SELECT * FROM players WHERE playerTeamID = :playerTId")
     fun getPlayerByTeamId(playerTId: Int): LiveData<List<PlayerEntity>>
 
-    @Query("DELETE FROM players")
-    suspend fun deleteAllPlayers()
 
-    @Query("DELETE FROM players WHERE playersId = :playerId")
-    suspend fun deletePlayer(playerId: Int)
+
+    @Query("DELETE FROM players ")
+    suspend fun deleteAllPlayers()
 
     @Transaction
     @Query("SELECT * FROM teams WHERE teams.teamsId = :teamId")

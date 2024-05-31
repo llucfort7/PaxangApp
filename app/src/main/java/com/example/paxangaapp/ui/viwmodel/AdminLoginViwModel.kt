@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.paxangaapp.database.AdminDB
 import com.example.paxangaapp.database.LeagueDB
 import com.example.paxangaapp.database.dao.AdminLoginDAO
 import com.example.paxangaapp.database.entities.AdminLoginEntity
@@ -14,18 +15,21 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class AdminLoginViwModel(application: Application) : AndroidViewModel(application) {
-    private val adminLoginDAO: AdminLoginDAO = LeagueDB.getInstance(application).adminLoginDAO()
+    private val adminLoginDAO: AdminLoginDAO = AdminDB.getInstance(application).adminLoginDAO()
 
     // Utilizamos MutableLiveData en lugar de LiveData
     private val _usersLiveData = MutableLiveData<List<AdminLoginEntity>>()
     val usersLiveData: LiveData<List<AdminLoginEntity>> get() = _usersLiveData
 
+    var userList: LiveData<MutableList<AdminLoginEntity>> = MutableLiveData()
+
+
     fun getAllUsers() {
         viewModelScope.launch(Dispatchers.IO) {
-            val users = adminLoginDAO.getAllUsers()
-            _usersLiveData.postValue(users)
+            userList =adminLoginDAO.getAllUsers()
         }
     }
+
  //   fun getAllUsers(): List<AdminLoginEntity> {
  //       val response: List<AdminLoginEntity> = adminLoginDAO.getAllUsers()
  //       return response.map { it }
@@ -34,20 +38,19 @@ class AdminLoginViwModel(application: Application) : AndroidViewModel(applicatio
     fun insertUser(user: AdminLoginEntity) {
         viewModelScope.launch(Dispatchers.IO) {
             adminLoginDAO.insertUser(user)
-            // Después de insertar, volvemos a obtener todos los usuarios
-            getAllUsers()
         }
     }
 
     //
-//    fun anyUserExists(): Boolean {
-//        // Verificamos si userLogList no es nulo y si contiene al menos un usuario
-//        return userLogList.value?.isNotEmpty() ?: false
-//    }
+  //  fun anyUserExists(): Boolean {
+  //      // Verificamos si userLogList no es nulo y si contiene al menos un usuario
+  //      getAllUsers()
 //
+  //  }
+
      fun userExists(username: String, password: String): Boolean {
         getAllUsers()
-        val users=usersLiveData.value
+        val users=userList.value
 
         // Iterar sobre la lista de usuarios y comparar cada objeto con los datos recibidos
         if (users != null) {

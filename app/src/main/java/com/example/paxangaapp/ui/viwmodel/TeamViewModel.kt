@@ -88,9 +88,9 @@ class TeamsViewModel(application: Application) : AndroidViewModel(application) {
    // }
 
     // Método para eliminar un equipo
-    fun deleteTeam(team: TeamsEntity) {
+    fun deleteAllTeams() {
         viewModelScope.launch(Dispatchers.IO) {
-            teamDAO.deleteTeam(team)
+            teamDAO.deleteAllTeams()
         }
     }
 

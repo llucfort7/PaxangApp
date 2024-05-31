@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.graphics.fonts.FontStyle
 import android.util.Log
 import android.widget.NumberPicker
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -89,7 +90,7 @@ fun NewTeam(
 
     var teamName by rememberSaveable { mutableStateOf("") }
     var teamLocation by rememberSaveable { mutableStateOf("") }
-    var playersNumber by rememberSaveable { mutableStateOf(1) }
+    var playersNumber by rememberSaveable { mutableStateOf(3) }
     //val backgroundImage = painterResource(id = R.drawable.furbol)
     val configuration = LocalConfiguration.current
     var selectedImage by rememberSaveable { mutableStateOf<Int?>(null) }
@@ -110,7 +111,9 @@ fun NewTeam(
         }
 
     ) {
-
+        BackHandler(enabled = true) {
+            // do nothing
+        }
         Column(
             modifier = Modifier
                 .padding(top = 58.dp)
@@ -181,44 +184,43 @@ fun NewTeam(
 
                 }
             )
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-            ) {
-                // Muestra las imágenes de los equipos
-                val imagenesClub = TeamImages.obtenerImagenes()
-                val filasDeImagenes = imagenesClub.chunked(4)
-                for (fila in filasDeImagenes) {
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        for (imagenId in fila) {
-                            val isSelected = imagenId == selectedImage
-                            val borderWidth = if (isSelected) 5.dp else 0.dp
-                            val borderColor = if (isSelected) Color.Blue else Color.Transparent
 
-                            Surface(
-                                modifier = Modifier
-                                    .size(80.dp)
-                                    .padding(4.dp)
-                                    .clickable {
-                                        // Al hacer clic en una imagen, actualiza la imagen seleccionada en el ViewModel
-                                        selectedImage = if (isSelected) null else imagenId
-                                    },
-                                shape = CircleShape,
-                                border = BorderStroke(borderWidth, borderColor)
-                            ) {
-                                Image(
-                                    painter = painterResource(imagenId),
-                                    contentDescription = null,
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentScale = ContentScale.Crop
-                                )
-                            }
+            // Muestra las imágenes de los equipos
+            val imagenesClub = TeamImages.obtenerImagenes()
+            val filasDeImagenes = imagenesClub.chunked(4)
+            for (fila in filasDeImagenes) {
+                Row(modifier = Modifier
+                    .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    for (imagenId in fila) {
+                        val isSelected = imagenId == selectedImage
+                        val borderWidth = if (isSelected) 5.dp else 0.dp
+                        val borderColor = if (isSelected) Color.Blue else Color.Transparent
+
+                        Surface(
+                            modifier = Modifier
+                                .size(80.dp)
+                                .padding(4.dp)
+                                .clickable {
+                                    // Al hacer clic en una imagen, actualiza la imagen seleccionada en el ViewModel
+                                    selectedImage = if (isSelected) null else imagenId
+                                },
+                            shape = CircleShape,
+                            border = BorderStroke(borderWidth, borderColor)
+                        ) {
+                            Image(
+                                painter = painterResource(imagenId),
+                                contentDescription = null,
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
                         }
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
                 }
+                Spacer(modifier = Modifier.height(16.dp))
             }
+
             teamsViewModel.getAllTeams()
             val teams by teamsViewModel.teamList.observeAsState(initial = emptyList())
             // Botón para agregar el equipo

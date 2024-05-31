@@ -5,8 +5,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.paxangaapp.ui.screens.ClassificationScreen
+import com.example.paxangaapp.ui.screens.FirstLogin
 import com.example.paxangaapp.ui.screens.MatchModifier
 import com.example.paxangaapp.ui.screens.MatchPlayedModifier
+import com.example.paxangaapp.ui.screens.NewAdmin
 import com.example.paxangaapp.ui.screens.NewPlayer
 import com.example.paxangaapp.ui.screens.NewTeam
 import com.example.paxangaapp.ui.screens.NoLeagueScreen
@@ -33,10 +35,13 @@ fun Navigation(matchViewModel: MatchViewModel, teamsViewModel: TeamsViewModel, a
         startDestination = Routes.SplashScreen.routes,
     ){
         composable(Routes.SplashScreen.routes) {
-            SplashScreen(navController,adminLoginViwModel)
+            SplashScreen(navController,adminLoginViwModel,teamsViewModel,matchViewModel,playerViewModel)
         }
         composable(Routes.Onboarding.routes) {
             Onboarding(navController,teamsViewModel,adminLoginViwModel)
+        }
+        composable(Routes.FirstLogin.routes) {
+            FirstLogin(navController,teamsViewModel,adminLoginViwModel)
         }
         composable(Routes.ClassificationScreen.routes) {
             ClassificationScreen(navController,teamsViewModel)
@@ -48,7 +53,7 @@ fun Navigation(matchViewModel: MatchViewModel, teamsViewModel: TeamsViewModel, a
             NewPlayer(navController,teamsViewModel, playerViewModel,matchViewModel, appViewModel)
         }
         composable(Routes.PlayerInfoScreen.routes) {
-            PlayerInfoScreen( navController,playerViewModel)
+            PlayerInfoScreen( navController,playerViewModel,teamsViewModel)
         }
         composable(Routes.TeamInfoScreen.routes) {
             TeamInfoScreen( navController,teamsViewModel,matchViewModel,appViewModel,playerViewModel)
@@ -73,6 +78,9 @@ fun Navigation(matchViewModel: MatchViewModel, teamsViewModel: TeamsViewModel, a
         }
         composable(Routes.PlayerMatchStats.routes) {
             PlayerMatchStatsModifier(matchPlayerViewModel,matchViewModel,playerViewModel,navController)
+        }
+        composable(Routes.NewAdmin.routes) {
+            NewAdmin(navController,adminLoginViwModel)
         }
 
 

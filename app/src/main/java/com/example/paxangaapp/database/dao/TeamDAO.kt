@@ -27,9 +27,6 @@ interface TeamDAO  {
     @Query("DELETE FROM teams")
      suspend fun deleteAllTeams()
 
-    @Delete
-     suspend fun deleteTeam(team: TeamsEntity):Int
-
     @Transaction
     @Query("SELECT * FROM teams")
     fun getAllTeamsWithPlayers():List<PlayerTeamsForQueris>

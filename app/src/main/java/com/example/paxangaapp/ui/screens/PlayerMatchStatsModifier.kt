@@ -1,6 +1,7 @@
 package com.example.paxangaapp.ui.screens
 
 import android.widget.NumberPicker
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -42,6 +43,9 @@ fun PlayerMatchStatsModifier(
     playerViewModel: PlayerViewModel,
     navController: NavController
 ) {
+    BackHandler(enabled = true) {
+        // do nothing
+    }
     val match: MatchEntity by matchViewModel.selectedMatch.observeAsState(MatchEntity())
     val player: PlayerEntity by playerViewModel.selectedPlayer.observeAsState(PlayerEntity())
 

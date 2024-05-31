@@ -121,73 +121,87 @@ fun SeeMatches(
                 matchPlayerViewModel,
                 navController
             )
-            playerViewModel.getAllPlayers()
-            val players by playerViewModel.playerList.observeAsState(initial = emptyList())
-            playerViewModel.getAllPlayers()
-            match.matchId?.let { it1 ->
-                matchPlayerViewModel.getAllMatchPlayersByMatch(
-                    it1
+            if (match.isPlayed) {
+                playerViewModel.getAllPlayers()
+                val players by playerViewModel.playerList.observeAsState(initial = emptyList())
+                playerViewModel.getAllPlayers()
+                match.matchId?.let { it1 ->
+                    matchPlayerViewModel.getAllMatchPlayersByMatch(
+                        it1
+                    )
+                }
+                val stats by matchPlayerViewModel.matchPlayerListMatch.observeAsState(
+                    emptyList()
                 )
-            }
-            val stats by matchPlayerViewModel.matchPlayerListMatch.observeAsState(
-                emptyList()
-            )
-            match.matchId?.let { it1 ->
-                matchPlayerViewModel.getAllMatchPlayersByMatch(
-                    it1
+                match.matchId?.let { it1 ->
+                    matchPlayerViewModel.getAllMatchPlayersByMatch(
+                        it1
+                    )
+                }
+                MatchStats(stats, match, players)
+                //
+                ManagerComments(matchEntity = match)
+                //llamamos a la funcion del viewmodel de teams para saber asignar los equipos visitante y local ala variable
+                teamsViewModel.getAllTeams()
+                //Le asignamos a la variable teams la lista teamlist del viewModel
+                val teams by teamsViewModel.teamList.observeAsState(initial = emptyList())
+                teamsViewModel.getAllTeams()
+
+                teamsViewModel.getOneLTeam(match.localTeamId)
+                teamsViewModel.getOneVTeam(match.visitorTeamId)
+
+                playerViewModel.getPlayerByTeamIdLocal(match.localTeamId)
+                val playersByIdLocal by playerViewModel.playerListByTeamLocal.observeAsState(
+                    emptyList()
                 )
-            }
-            MatchStats(stats, match, players)
-            //
-            ManagerComments()
-            //llamamos a la funcion del viewmodel de teams para saber asignar los equipos visitante y local ala variable
-            teamsViewModel.getAllTeams()
-            //Le asignamos a la variable teams la lista teamlist del viewModel
-            val teams by teamsViewModel.teamList.observeAsState(initial = emptyList())
-            teamsViewModel.getAllTeams()
+                playerViewModel.getPlayerByTeamIdLocal(match.localTeamId)
 
-            teamsViewModel.getOneLTeam(match.localTeamId)
-            teamsViewModel.getOneVTeam(match.visitorTeamId)
+                playerViewModel.getPlayerByTeamIdVisitor(match.visitorTeamId)
+                val playersByIdVisitor by playerViewModel.playerListByTeamVisitor.observeAsState(
+                    emptyList()
+                )
+                playerViewModel.getPlayerByTeamIdVisitor(match.visitorTeamId)
 
-            playerViewModel.getPlayerByTeamIdLocal(match.localTeamId)
-            val playersByIdLocal by playerViewModel.playerListByTeamLocal.observeAsState(emptyList())
-            playerViewModel.getPlayerByTeamIdLocal(match.localTeamId)
-
-            playerViewModel.getPlayerByTeamIdVisitor(match.visitorTeamId)
-            val playersByIdVisitor by playerViewModel.playerListByTeamVisitor.observeAsState(
-                emptyList()
-            )
-            playerViewModel.getPlayerByTeamIdVisitor(match.visitorTeamId)
-
-            match.matchId?.let { it1 -> matchPlayerViewModel.getAllMatchPlayersByMatch(it1) }
-            val matchPlayer by matchPlayerViewModel.matchPlayerListMatch.observeAsState(emptyList())
-            match.matchId?.let { it1 -> matchPlayerViewModel.getAllMatchPlayersByMatch(it1) }
+                match.matchId?.let { it1 -> matchPlayerViewModel.getAllMatchPlayersByMatch(it1) }
+                val matchPlayer by matchPlayerViewModel.matchPlayerListMatch.observeAsState(
+                    emptyList()
+                )
+                match.matchId?.let { it1 -> matchPlayerViewModel.getAllMatchPlayersByMatch(it1) }
 //Verificar si esta be
-            var playersPlayedInMatchL = mutableListOf<PlayerEntity>()
-            for (i in 0..<playersByIdLocal.size) {
-                for (x in 0..<matchPlayer.size) {
-                    if (playersByIdLocal[i].playersId == matchPlayer[x].playersId) {
-                        playersPlayedInMatchL.add(playersByIdLocal[i])
+                var playersPlayedInMatchL = mutableListOf<PlayerEntity>()
+                for (i in 0..<playersByIdLocal.size) {
+                    for (x in 0..<matchPlayer.size) {
+                        if (playersByIdLocal[i].playersId == matchPlayer[x].playersId) {
+                            playersPlayedInMatchL.add(playersByIdLocal[i])
+                        }
                     }
                 }
-            }
-            var playersPlayedInMatchV = mutableListOf<PlayerEntity>()
-            for (i in 0..<playersByIdLocal.size) {
-                for (x in 0..<matchPlayer.size) {
-                    if (playersByIdVisitor[i].playersId == matchPlayer[x].playersId) {
-                        playersPlayedInMatchV.add(playersByIdLocal[i])
+                var playersPlayedInMatchV = mutableListOf<PlayerEntity>()
+                for (i in 0..<playersByIdVisitor.size) {
+                    for (x in 0..<matchPlayer.size) {
+                        if (playersByIdVisitor[i].playersId == matchPlayer[x].playersId) {
+                            playersPlayedInMatchV.add(playersByIdVisitor[i])
+                        }
                     }
                 }
+                PlayedPlayers(
+                    match,
+                    playerViewModel,
+                    matchViewModel,
+                    playersPlayedInMatchL,
+                    playersPlayedInMatchV,
+                    matchPlayer,
+                    navController
+                )
+
+            }else{
+                Column (
+                    Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.Center
+                ){
+                    Text(text = "Partido a la espera de ser jugado", textAlign = TextAlign.Center)
+                }
             }
-            PlayedPlayers(
-                match,
-                playerViewModel,
-                matchViewModel,
-                playersPlayedInMatchL,
-                playersPlayedInMatchV,
-                matchPlayer,
-                navController
-            )
         }
     }
 }
@@ -569,6 +583,7 @@ fun PlayedPlayers(
         }
     }
 }
+
 @Composable
 fun PlayerRowPlayed(
     player: PlayerEntity,
@@ -595,7 +610,7 @@ fun PlayerRowPlayed(
             }
     ) {
         if (seePlayer) {
-            seePlayer=playerMatchStats(playerViewModel, listMatchPlayer, navController)
+            seePlayer = playerMatchStats(playerViewModel, listMatchPlayer, navController)
         }
         Column {
             Row(
@@ -728,7 +743,7 @@ fun playerMatchStats(
     playerViewModel: PlayerViewModel,
     listMatchPlayer: List<MatchPlayerRelationEntity>,
     navController: NavHostController
-):Boolean {
+): Boolean {
     // Variable para controlar si el diálogo está visible
     var showDialog by rememberSaveable { mutableStateOf(true) }
     var playerMatch = MatchPlayerRelationEntity(0, 0)
@@ -778,8 +793,9 @@ fun playerMatchStats(
     }
     return showDialog
 }
+
 @Composable
-fun ManagerComments() {
+fun ManagerComments(matchEntity: MatchEntity) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -797,14 +813,14 @@ fun ManagerComments() {
             ) {
                 Text(
                     text = "Comentarios del partido",
-                    fontSize = 20.sp, // Tamaño de fuente mayor para el primer texto
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
-                    text = "agnaliudhiuahfdoiuahsdfoiuahdofiuhaoufihaouihdfoiauhdfoiauhdfoiauhdf",
-                    fontSize = 16.sp, // Tamaño de fuente menor para el segundo texto
+                    text = matchEntity.comments,
+                    fontSize = 16.sp,
                     textAlign = TextAlign.Start,
                     modifier = Modifier.fillMaxWidth()
                 )

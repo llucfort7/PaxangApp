@@ -25,8 +25,7 @@ import com.example.paxangaapp.database.entities.TeamsEntity
         TeamsEntity::class,
         MatchPlayerRelationEntity::class,
         TeamMatchRelationEntity::class,
-        AdminLoginEntity::class
-        ), version = 7
+        ), version = 14
 )
 abstract class LeagueDB : RoomDatabase() {
     abstract fun playersDAO(): PlayersDAO
@@ -34,8 +33,6 @@ abstract class LeagueDB : RoomDatabase() {
     abstract fun matchDAO(): MatchDAO
     abstract fun teamMatchDAO(): TeamMatchDAO
     abstract fun matchPlayerDAO(): MatchPlayerDAO
-    abstract fun adminLoginDAO(): AdminLoginDAO
-
 
     companion object {  // Patrón Singleton
         private var instance: LeagueDB? = null

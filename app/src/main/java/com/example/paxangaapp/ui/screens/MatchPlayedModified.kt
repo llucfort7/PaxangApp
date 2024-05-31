@@ -1,6 +1,7 @@
 package com.example.paxangaapp.ui.screens
 
 import android.annotation.SuppressLint
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -36,6 +38,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -78,6 +81,9 @@ fun MatchPlayedModifier(
     appViewModel: AppViewModel,
     navController: NavHostController
 ) {
+    BackHandler(enabled = true) {
+        // do nothing
+    }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -96,12 +102,6 @@ fun MatchPlayedModifier(
         //Objeto del actual partido
 
         val match: MatchEntity by matchViewModel.selectedMatch.observeAsState(MatchEntity())
-        //oldMatch.matchId?.let { it1 -> matchViewModel.getMatchById(it1) }
-        //val match: MatchEntity by matchViewModel.selectedMatchId.observeAsState(MatchEntity())
-        //oldMatch.matchId?.let { it1 -> matchViewModel.getMatchById(it1) }
-
-        // matchI.matchId?.let { it1 -> matchViewModel.getMatchById(it1) }
-        //val match:MatchEntity by matchViewModel.selectedMatchId.observeAsState(MatchEntity())
 
         //Numero de la jornada
         teamsViewModel.getAllTeams()
@@ -118,18 +118,11 @@ fun MatchPlayedModifier(
         val playerGoal by matchPlayerViewModel.matchPlayerListMatchGoal.observeAsState(initial = emptyList())
         match.matchId?.let { matchPlayerViewModel.getAllMatchPlayersByMatchGoal(it) }
 
-
-        // match.matchId?.let { matchPlayerViewModel.getAllMatchPlayersByMatch(it) }
-        // val playerMatch by matchPlayerViewModel.matchPlayerListMatch.observeAsState(initial = emptyList())
-        // match.matchId?.let { matchPlayerViewModel.getAllMatchPlayersByMatch(it) }
-
-
         playerViewModel.getAllPlayers()
         val players by playerViewModel.playerList.observeAsState(initial = emptyList())
         playerViewModel.getAllPlayers()
 
 
-        // val teamWithMatch: TeamWithMach by teamMatchViewModel.selectedTeamWithMatch.observeAsState(TeamWithMach())
         val localTeam = teams.firstOrNull { it.teamsId == match.localTeamId }
         val visitorTeam = teams.firstOrNull { it.teamsId == match.visitorTeamId }
         playerViewModel.getPlayerByTeamIdLocal(match.localTeamId)
@@ -146,6 +139,13 @@ fun MatchPlayedModifier(
         match.matchId?.let { it1 -> matchPlayerViewModel.getAllMatchPlayersByMatch(it1) }
 
 
+        val scrollState = rememberScrollState()
+
+Column (modifier=Modifier
+    .fillMaxHeight()
+    .verticalScroll(scrollState)
+
+){
 
 
         Box(
@@ -284,7 +284,8 @@ fun MatchPlayedModifier(
                     ) {
                         Column(
                             modifier = Modifier
-                                .fillMaxWidth(),
+                                .fillMaxWidth()
+                                .height(200.dp)                            ,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
@@ -364,7 +365,7 @@ fun MatchPlayedModifier(
 
     }
 }
-
+}
 @Composable
 fun PlayerRowMod(
     player: PlayerEntity,
@@ -379,13 +380,13 @@ fun PlayerRowMod(
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .clickable {
-                var isPlayed=true
-                for (i in 0..<listMatchPlayer.size){
-                    if (listMatchPlayer[i].playersId==player.playersId&&listMatchPlayer[i].isPayed){
-                        isPlayed=false
+                var isPlayed = true
+                for (i in 0..<listMatchPlayer.size) {
+                    if (listMatchPlayer[i].playersId == player.playersId && listMatchPlayer[i].isPayed) {
+                        isPlayed = false
                     }
                 }
-                if (isPlayed){
+                if (isPlayed) {
                     playerViewModel.onPlayerClicked(player)
                     matchViewModel.onMatchCliked(matchEntity)
                     navController.navigate(Routes.PlayerMatchStats.routes)
@@ -414,6 +415,8 @@ fun PlayerRowMod(
     }
 }
 
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun showConfirmationDialog(
     navController: NavHostController,
@@ -425,12 +428,23 @@ fun showConfirmationDialog(
 ): Boolean {
     // Variable para controlar si el diálogo está visible
     var showDialog by rememberSaveable { mutableStateOf(true) }
+    var textFieldValue by rememberSaveable { mutableStateOf("") }
 
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
             title = { Text("Confirmar partido") },
-            text = { Text("Si confirmas no podras modificar el partido") },
+            text = {
+                Column {
+                    Text("Si confirmas no podrás modificar el partido")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    TextField(
+                        value = textFieldValue,
+                        onValueChange = { textFieldValue = it },
+                        label = { Text("Comentarios") },
+                    )
+                }
+            },
             confirmButton = {
                 Button(
                     onClick = {
@@ -443,7 +457,8 @@ fun showConfirmationDialog(
                                 localTeamId = matchEntity.localTeamId,
                                 visitorTeamId = matchEntity.visitorTeamId,
                                 localGoals = matchEntity.localGoals,
-                                isPlayed = true
+                                isPlayed = true,
+                                comments = textFieldValue
                             )
                         )
                         //The Local Win and the Vist Lost
@@ -513,7 +528,7 @@ fun showConfirmationDialog(
                             )
                         }
                         if (matchEntity.vistGoals == matchEntity.localGoals) {
-//tie
+                            //tie
                             teamsViewModel.updateTeam(
                                 TeamsEntity(
                                     teamsId = teamsEntityLocal.teamsId,
@@ -558,7 +573,6 @@ fun showConfirmationDialog(
                     onClick = { showDialog = false }
                 ) {
                     Text("No")
-
                 }
             }
         )

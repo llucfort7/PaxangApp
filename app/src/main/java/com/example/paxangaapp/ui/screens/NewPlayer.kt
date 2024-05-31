@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.graphics.fonts.FontStyle
 import android.util.Log
 import android.widget.NumberPicker
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +24,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.TransferWithinAStation
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -83,11 +85,15 @@ fun NewPlayer(
     matchViewModel: MatchViewModel,
     appViewModel: AppViewModel
 ) {
+    BackHandler(enabled = true) {
+        // do nothing
+    }
     var playerName by rememberSaveable { mutableStateOf("") }
     var playerSName by rememberSaveable { mutableStateOf("") }
     var playerNumber by rememberSaveable { mutableStateOf(1) }
     var goodFoot = rememberSaveable { mutableStateOf("") }
     var position = rememberSaveable { mutableStateOf("") }
+    var alertDialog by rememberSaveable { mutableStateOf(false) }
     val backgroundImage = painterResource(id = R.drawable.furbol)
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
@@ -95,9 +101,6 @@ fun NewPlayer(
     Scaffold(
         topBar = {
             TopAppBar(
-              //  colors = TopAppBarDefaults.smallTopAppBarColors(
-              //      containerColor = md_theme_light_primary
-              //  ),
                 title = { Text(text = "PAXANGAPP") },
                 actions = {
 
@@ -118,6 +121,8 @@ fun NewPlayer(
         }
 
     ) {
+
+        navController.enableOnBackPressed(false)
         Column(
             modifier = Modifier
                 .padding(top = 58.dp)
@@ -140,7 +145,6 @@ fun NewPlayer(
                 TextField(
                     value = playerName,
                     onValueChange = { playerName = it },
-                    // placeholder = { Text(stringResource(R.string.introduceNombre) ) },
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.AccountCircle,
@@ -177,7 +181,10 @@ fun NewPlayer(
             }
             Row(
                 modifier = Modifier
-                    .background(MaterialTheme.colorScheme.tertiary, shape = RoundedCornerShape(10.dp))
+                    .background(
+                        MaterialTheme.colorScheme.tertiary,
+                        shape = RoundedCornerShape(10.dp)
+                    )
                     .padding(20.dp)
             ) {
                 AndroidView(
@@ -224,7 +231,8 @@ fun NewPlayer(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(8.dp)
-                            .clip(RoundedCornerShape(10.dp))
+                            .clip(RoundedCornerShape(10.dp)),
+                        horizontalArrangement = Arrangement.Center
                         //.background(MaterialTheme.colorScheme.tertiary)
                     )
                     {
@@ -245,7 +253,7 @@ fun NewPlayer(
             Column(
                 modifier = Modifier
                     .paint(painter = backgroundImage, contentScale = ContentScale.Crop)
-                    .fillMaxWidth()
+                    .width(150.dp)
                     .padding(60.dp)
             ) {
                 Row(
@@ -440,33 +448,50 @@ fun NewPlayer(
                     position = position.value,
 
                     )
+                appViewModel.contadorDePantallaTeam.value?.let { it1 ->
+                    playerViewModel.getPlayerByTeamId(
+                        it1
+                    )
+                }
+                val playersT by playerViewModel.playerListByTeam.observeAsState(emptyList())
+
 
                 Button(
                     onClick = {
-                        try {
-                            playerViewModel.addPlayer(playerp)
-                        } catch (e: Exception) {
-                            Log.e("TAG", "Error al insertar jugador: ${e.message}")
-                        }
-                        appViewModel.contadorDePantallaTeam.value?.let { it1 ->
-                            appViewModel.idTeamsChangue(
-                                it1
-                            )
-                        }
-                        appViewModel.contadorDePantallaPlayerSum(appViewModel.contadorDePantallaPlayer.value!! + 1)
-
-
-                        if (appViewModel.contadorDePantallaPlayer.value == appViewModel.numPlayersEdit.value) {
-                            if (appViewModel.contadorDePantallaTeam.value == appViewModel.numTeamsEdit.value) {
-                                // calendario(teamsViewModel ,matchViewModel, teams)
-                                navController.navigate(Routes.TabRowMatchScreen.routes)
-                            } else {
-                                appViewModel.contadorDePantallaPlayerSum(0)
-                                navController.navigate(Routes.NewTeam.routes)
+                        var isRepeat = false
+                        for (i in 0..<playersT.size) {
+                            if (playersT[i].playerNumber == playerNumber) {
+                                isRepeat = true
+                                alertDialog = true
                             }
+                        }
+                        if (isRepeat) {
+
                         } else {
-                            //Cambiar per new player
-                            navController.navigate(Routes.NewPlayer.routes)
+                            try {
+                                playerViewModel.addPlayer(playerp)
+                            } catch (e: Exception) {
+                                Log.e("TAG", "Error al insertar jugador: ${e.message}")
+                            }
+                            appViewModel.contadorDePantallaTeam.value?.let { it1 ->
+                                appViewModel.idTeamsChangue(
+                                    it1
+                                )
+                            }
+
+                            appViewModel.contadorDePantallaPlayerSum(appViewModel.contadorDePantallaPlayer.value!! + 1)
+                            if (appViewModel.contadorDePantallaPlayer.value == appViewModel.numPlayersEdit.value) {
+                                if (appViewModel.contadorDePantallaTeam.value == appViewModel.numTeamsEdit.value) {
+                                    // calendario(teamsViewModel ,matchViewModel, teams)
+                                    navController.navigate(Routes.TabRowMatchScreen.routes)
+                                } else {
+                                    appViewModel.contadorDePantallaPlayerSum(0)
+                                    navController.navigate(Routes.NewTeam.routes)
+                                }
+                            } else {
+                                //Cambiar per new player
+                                navController.navigate(Routes.NewPlayer.routes)
+                            }
                         }
                     },
                     enabled = playerName.length > 3 && playerName.contains(Regex("^[A-Za-z]+\$")) && playerSName.length > 3 && playerSName.contains(
@@ -481,6 +506,20 @@ fun NewPlayer(
                     Text(text = "Siguiente")
                 }
             }
+            if (alertDialog) {
+                AlertDialog(
+                    onDismissRequest = { },
+                    title = { Text("El numero ya esta en uso") },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                alertDialog = false
+                            }
+                        ) {
+                            Text("OK")
+                        }
+                    })
+            }
             Row(
                 horizontalArrangement = Arrangement.Absolute.Center,
                 modifier = Modifier
@@ -492,3 +531,4 @@ fun NewPlayer(
         }
     }
 }
+

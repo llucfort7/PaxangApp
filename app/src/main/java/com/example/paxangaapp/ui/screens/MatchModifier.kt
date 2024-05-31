@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import android.annotation.SuppressLint
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -86,6 +87,9 @@ fun MatchModifier(
     teamsViewModel: TeamsViewModel,
     appViewModel: AppViewModel,
 ) {
+    BackHandler(enabled = true) {
+        // do nothing
+    }
     var selectedTabIndex by remember { mutableStateOf(0) }
     matchViewModel.getAllMatches()
     val mMatches by matchViewModel.matchList.observeAsState(initial = emptyList())
@@ -102,71 +106,29 @@ fun MatchModifier(
               //  colors = TopAppBarDefaults.smallTopAppBarColors(
               //      containerColor = md_theme_light_primary
               //  ),
+                navigationIcon = {
+                    IconButton(onClick = {
+                        navController.popBackStack()
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back",
+                            tint = Color.Black
+                        )
+                    }
+                },
                 title = { Text(text = "Modificador") },
                 actions = {
-                    IconButton(onClick = { expanded = !expanded }) {
+                    IconButton(onClick = {
+                        navController.navigate(Routes.NewAdmin.routes)
+                    }) {
                         Icon(
-                            imageVector = Icons.Default.MoreVert,
+                            imageVector = Icons.Default.Add,
                             contentDescription = "More"
                         )
                     }
 
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false }
-                    ) {
-                        DropdownMenuItem(
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.FormatListNumbered,
-                                    contentDescription = "autor",
-                                )
-                            },
-                            text = { "uno" },
-                            onClick = { navController.navigate(Routes.ClassificationScreen.routes) }
-                        )
-                        DropdownMenuItem(
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.SportsSoccer,
-                                    contentDescription = "autor",
-                                )
-                            },
-                            text = { "DOS" },
-                            onClick = { navController.navigate(Routes.PlayerClasScreen.routes) }
-                        )
-                        DropdownMenuItem(
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.Add,
-                                    contentDescription = "autor",
-                                )
-                            },
-                            text = { "DOS" },
-                            onClick = { navController.navigate(Routes.NewPlayer.routes) }
-                        )
-                        DropdownMenuItem(
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.AcUnit,
-                                    contentDescription = "autor",
-                                )
-                            },
-                            text = { "DOS" },
-                            onClick = { navController.navigate(Routes.NewTeam.routes) }
-                        )
-                        DropdownMenuItem(
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.AddAlert,
-                                    contentDescription = "autor",
-                                )
-                            },
-                            text = { "uno" },
-                            onClick = { navController.navigate(Routes.MatchModifier.routes) }
-                        )
 
-                    }
                 },
             )
         }

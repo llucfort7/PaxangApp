@@ -56,7 +56,6 @@ android {
 }
 
 dependencies {
-
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("androidx.core:core-ktx:1.9.0")

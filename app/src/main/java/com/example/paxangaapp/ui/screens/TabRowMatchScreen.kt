@@ -24,9 +24,14 @@ import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddAlert
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.FormatListNumbered
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.Login
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.SportsSoccer
 import androidx.compose.material.icons.filled.TimeToLeave
@@ -62,6 +67,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.example.paxangaapp.R
 import com.example.paxangaapp.database.entities.MatchEntity
 import com.example.paxangaapp.database.entities.MatchPlayerRelationEntity
 import com.example.paxangaapp.database.entities.PlayerEntity
@@ -89,75 +95,40 @@ fun TabRowMatchScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                //  colors = TopAppBarDefaults.smallTopAppBarColors(
-                //      containerColor = md_theme_light_primary
-                //  ),
-                title = { Text(text = "PAXANGAPP") },
+                title = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.paxangapplogo),
+                        contentDescription = "App Logo",
+                        modifier = Modifier
+                            .width(60.dp) ,// Ajusta el tamaño del logo
+                        tint = Color.Black // Define el color negro para este ícono
+
+                    )
+                },
                 actions = {
-                    IconButton(onClick = { expanded = !expanded }) {
+                    IconButton(onClick = { navController.navigate(Routes.ClassificationScreen.routes) }) {
                         Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = "More"
+                            Icons.Default.FormatListNumbered, contentDescription = "Classification",
+                            tint = Color.Black // Define el color negro para este ícono
                         )
                     }
-
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false }
-                    ) {
-                        DropdownMenuItem(
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.FormatListNumbered,
-                                    contentDescription = "autor",
-                                )
-                            },
-                            text = { "uno" },
-                            onClick = { navController.navigate(Routes.ClassificationScreen.routes) }
+                    IconButton(onClick = { navController.navigate(Routes.PlayerClasScreen.routes) }) {
+                        Icon(
+                            Icons.Filled.SportsSoccer, contentDescription = "Edit",
+                            tint = Color.Black // Define el color negro para este ícono
                         )
-                        DropdownMenuItem(
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.SportsSoccer,
-                                    contentDescription = "autor",
-                                )
-                            },
-                            text = { "DOS" },
-                            onClick = { navController.navigate(Routes.PlayerClasScreen.routes) }
+                    }
+                   // Spacer(modifier = Modifier.weight(0.5f)) // Empuja el siguiente icono hacia la derecha
+                    IconButton(onClick = { navController.navigate(Routes.Onboarding.routes) }) {
+                        Icon(
+                            Icons.Filled.Login, contentDescription = "Onboarding",
+                            tint = Color.Black // Define el color negro para este ícono
                         )
-                        DropdownMenuItem(
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.Add,
-                                    contentDescription = "autor",
-                                )
-                            },
-                            text = { "DOS" },
-                            onClick = { navController.navigate(Routes.NewPlayer.routes) }
-                        )
-                        DropdownMenuItem(
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.AcUnit,
-                                    contentDescription = "autor",
-                                )
-                            },
-                            text = { "DOS" },
-                            onClick = { navController.navigate(Routes.NewTeam.routes) }
-                        )
-                        DropdownMenuItem(
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.AddAlert,
-                                    contentDescription = "autor",
-                                )
-                            },
-                            text = { "uno" },
-                            onClick = { navController.navigate(Routes.MatchModifier.routes) }
-                        )
-
                     }
                 },
+                colors = TopAppBarDefaults.smallTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary // Cambia el color de fondo si es necesario
+                )
             )
         }
     ) {
@@ -168,15 +139,16 @@ fun TabRowMatchScreen(
         // selectedTabIndex=oIndex/3
         matchViewModel.getAllMatches()
         val mMatches by matchViewModel.matchList.observeAsState(initial = emptyList())
-        matchViewModel.getAllMatches()
+
         teamsViewModel.getAllTeams()
         val teams by teamsViewModel.teamList.observeAsState(initial = emptyList())
+        teamsViewModel.updateTeamCount()
 
-        val nJourny = ((teams.size)*2)
+        val nJourny = ((teamsViewModel.teamCount-1) * 2)
 
 //(Esta mal)Cambiar per un numero maxim de jornades afegides a la BD
 
-        val tabTitles = (0..nJourny).map { "Tab $it" }
+        val tabTitles = (1..nJourny).map { "J $it" }
 
         Column(modifier = Modifier.fillMaxSize()) {
             Spacer(modifier = Modifier.height(57.dp))
@@ -196,7 +168,7 @@ fun TabRowMatchScreen(
             }
             matchViewModel.getAllMatchesByNumMatch(selectedTabIndex)
             val matches by matchViewModel.matchListNumber.observeAsState(initial = emptyList())
-            matchViewModel.getAllMatchesByNumMatch(selectedTabIndex)
+            //matchViewModel.getAllMatchesByNumMatch(selectedTabIndex)
             LazyColumn(
                 modifier = Modifier
                     .weight(1f)

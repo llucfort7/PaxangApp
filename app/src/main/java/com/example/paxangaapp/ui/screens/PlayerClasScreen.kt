@@ -91,6 +91,12 @@ fun PlayerClasScreen(
     navController: NavHostController,
     playerViewModel:PlayerViewModel
 ) {
+    playerViewModel.getAllPlayersByGoals()
+    playerViewModel.getAllPlayersByAsisit()
+    playerViewModel.getAllPlayersByYellowC()
+    playerViewModel.getAllPlayersByRedC()
+
+
     var selectedTabIndex by remember { mutableStateOf(0) }
     // selectedTabIndex=oIndex/3
 //(Esta mal)Cambiar per un numero maxim de jornades afegides a la BD

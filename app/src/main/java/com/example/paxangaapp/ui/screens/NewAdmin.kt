@@ -2,6 +2,7 @@ package com.example.paxangaapp.ui.screens
 
 import android.annotation.SuppressLint
 import android.content.Context
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,8 +17,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -47,21 +48,19 @@ import com.example.paxangaapp.ui.theme.md_theme_light_onSecondaryContainer
 import com.example.paxangaapp.ui.theme.md_theme_light_primary
 import com.example.paxangaapp.ui.theme.md_theme_light_secondaryContainer
 import com.example.paxangaapp.ui.viwmodel.AdminLoginViwModel
-import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
 import java.io.File
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun Onboarding(
+fun NewAdmin(
     navController: NavHostController,
-    teamsViewModel: TeamsViewModel,
     adminLoginViwModel: AdminLoginViwModel
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Login") },
+                title = { Text(text = "Añadir Admin") },
                 actions = {},
                 navigationIcon = {
                     IconButton(onClick = {
@@ -79,13 +78,12 @@ fun Onboarding(
     ) {
         var nameState by rememberSaveable { mutableStateOf("") }
         var passw by rememberSaveable { mutableStateOf("") }
-        val context = LocalContext.current
-        val myFile = "miArchivo"
-        val content = "Mi primer archivo en android?"
-        var file = File(context.applicationContext.filesDir, "")
+        var showAlert by rememberSaveable { mutableStateOf(false) }
 
-        context.applicationContext.openFileOutput(myFile, Context.MODE_PRIVATE).use {
-            it.write(content.toByteArray())
+
+        //navController.enableOnBackPressed(true)
+        BackHandler(enabled = true) {
+            // do nothing
         }
 
         Column(
@@ -151,18 +149,47 @@ fun Onboarding(
             Row {
                 Button(
                     onClick = {
+                        var isRep = true
                         adminLoginViwModel.getAllUsers()
                         for (i in 0..<users.size) {
-                            if (users[i].userName == nameState && users[i].password == passw) {
-                                navController.navigate(Routes.MatchModifier.routes)
+                            if (users[i].userName == nameState) {
+                                isRep = false
                             }
                         }
+                        if (isRep) {
+                            adminLoginViwModel.insertUser(
+                                AdminLoginEntity(
+                                    userName = nameState,
+                                    password = passw
+                                )
+                            )
+                        } else {
+                            showAlert = true
+                        }
+
                     },
-                    enabled = nameState.length >= 3 && nameState.contains(Regex("^[A-Za-z]+\$")) && passw.length >= 3
-                ) {
+                    enabled = nameState.length >= 3 && nameState.contains(Regex("^[A-Za-z]+\$")) && passw.length >= 4,
+
+
+                    ) {
                     Text(text = "Siguiente")
                 }
             }
         }
+        if (showAlert) {
+            AlertDialog(
+                onDismissRequest = { showAlert = false },
+                title = { Text("Nombre de usuario ya existe") },
+                text = { Text("El nombre de usuario que has ingresado ya está en uso. Por favor, elige otro nombre.") },
+                confirmButton = {
+                    Button(
+                        onClick = { showAlert = false }
+                    ) {
+                        Text("OK")
+                    }
+                }
+            )
+        }
     }
+
 }
