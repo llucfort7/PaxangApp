@@ -4,15 +4,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import com.example.paxangaapp.database.dao.AdminLoginDAO
 import com.example.paxangaapp.navigartion.Navigation
 import com.example.paxangaapp.ui.theme.PaxangaAppTheme
-import com.example.paxangaapp.ui.viwmodel.AdminLoginViwModel
-import com.example.paxangaapp.ui.viwmodel.AppViewModel
-import com.example.paxangaapp.ui.viwmodel.MatchPlayerViewModel
-import com.example.paxangaapp.ui.viwmodel.MatchViewModel
-import com.example.paxangaapp.ui.viwmodel.PlayerViewModel
-import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
+import com.example.paxangaapp.ui.viewmodel.AdminLoginViwModel
+import com.example.paxangaapp.ui.viewmodel.AppViewModel
+import com.example.paxangaapp.ui.viewmodel.MatchPlayerViewModel
+import com.example.paxangaapp.ui.viewmodel.MatchViewModel
+import com.example.paxangaapp.ui.viewmodel.PlayerViewModel
+import com.example.paxangaapp.ui.viewmodel.TeamsViewModel
 
 class MainActivity : ComponentActivity() {
     private val matchViewModel by viewModels<MatchViewModel>()

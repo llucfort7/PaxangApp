@@ -27,9 +27,9 @@ import androidx.navigation.NavController
 import com.example.paxangaapp.database.entities.MatchEntity
 import com.example.paxangaapp.database.entities.MatchPlayerRelationEntity
 import com.example.paxangaapp.database.entities.PlayerEntity
-import com.example.paxangaapp.ui.viwmodel.MatchPlayerViewModel
-import com.example.paxangaapp.ui.viwmodel.MatchViewModel
-import com.example.paxangaapp.ui.viwmodel.PlayerViewModel
+import com.example.paxangaapp.ui.viewmodel.MatchPlayerViewModel
+import com.example.paxangaapp.ui.viewmodel.MatchViewModel
+import com.example.paxangaapp.ui.viewmodel.PlayerViewModel
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll

@@ -37,11 +37,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -64,15 +64,15 @@ import com.example.paxangaapp.database.entities.TeamsEntity
 import com.example.paxangaapp.navigartion.Routes
 import com.example.paxangaapp.ui.theme.md_theme_light_onSecondary
 import com.example.paxangaapp.ui.theme.md_theme_light_onSecondaryContainer
-import com.example.paxangaapp.ui.theme.md_theme_light_primary
 import com.example.paxangaapp.ui.theme.md_theme_light_secondary
 import com.example.paxangaapp.ui.theme.md_theme_light_secondaryContainer
-import com.example.paxangaapp.ui.viwmodel.AppViewModel
-import com.example.paxangaapp.ui.viwmodel.MatchViewModel
-import com.example.paxangaapp.ui.viwmodel.PlayerViewModel
-import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.runBlocking
+import com.example.paxangaapp.ui.viewmodel.AppViewModel
+import com.example.paxangaapp.ui.viewmodel.MatchViewModel
+import com.example.paxangaapp.ui.viewmodel.PlayerViewModel
+import com.example.paxangaapp.ui.viewmodel.TeamsViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -91,8 +91,8 @@ fun NewPlayer(
     var playerName by rememberSaveable { mutableStateOf("") }
     var playerSName by rememberSaveable { mutableStateOf("") }
     var playerNumber by rememberSaveable { mutableStateOf(1) }
-    var goodFoot = rememberSaveable { mutableStateOf("") }
-    var position = rememberSaveable { mutableStateOf("") }
+    val goodFoot = rememberSaveable { mutableStateOf("") }
+    val position = rememberSaveable { mutableStateOf("") }
     var alertDialog by rememberSaveable { mutableStateOf(false) }
     val backgroundImage = painterResource(id = R.drawable.furbol)
     val configuration = LocalConfiguration.current
@@ -176,7 +176,6 @@ fun NewPlayer(
                         containerColor = md_theme_light_secondaryContainer, // Cambia el color del texto
                         textColor = md_theme_light_onSecondaryContainer
                     )
-
                 )
             }
             Row(
@@ -446,8 +445,7 @@ fun NewPlayer(
                     playerNumber = playerNumber,
                     goodFoot = goodFoot.value,
                     position = position.value,
-
-                    )
+                )
                 appViewModel.contadorDePantallaTeam.value?.let { it1 ->
                     playerViewModel.getPlayerByTeamId(
                         it1
@@ -455,6 +453,7 @@ fun NewPlayer(
                 }
                 val playersT by playerViewModel.playerListByTeam.observeAsState(emptyList())
 
+                val coroutineScope = rememberCoroutineScope()
 
                 Button(
                     onClick = {
@@ -478,11 +477,21 @@ fun NewPlayer(
                                     it1
                                 )
                             }
-
                             appViewModel.contadorDePantallaPlayerSum(appViewModel.contadorDePantallaPlayer.value!! + 1)
                             if (appViewModel.contadorDePantallaPlayer.value == appViewModel.numPlayersEdit.value) {
                                 if (appViewModel.contadorDePantallaTeam.value == appViewModel.numTeamsEdit.value) {
-                                    // calendario(teamsViewModel ,matchViewModel, teams)
+                                    //Clendario
+                                    coroutineScope.launch(Dispatchers.Main) {
+                                        var pas = false
+                                        while (!pas) {
+                                            pas = calendario(
+                                                teamsViewModel,
+                                                matchViewModel,
+                                                teams,
+                                                navController
+                                            )
+                                        }
+                                    }
                                     navController.navigate(Routes.TabRowMatchScreen.routes)
                                 } else {
                                     appViewModel.contadorDePantallaPlayerSum(0)
@@ -530,5 +539,102 @@ fun NewPlayer(
             }
         }
     }
+}
+
+
+fun calendario(
+    teamsViewModel: TeamsViewModel,
+    matchViewModel: MatchViewModel,
+    teamList: List<TeamsEntity>,
+    navController: NavHostController,
+): Boolean {
+
+    matchViewModel.deleteAllMatches()
+    val nEquipos = teamList.size
+    val jornadas = (nEquipos - 1) * 2
+    // Crear una copia mutable de la lista de equipos disponibles
+    val partidosDisp = mutableListOf<MatchEntity>()
+
+    // Lista para rastrear los partidos jugados
+    val listaPartidosJugados = mutableListOf<MatchEntity>()
+
+    for (i in 0 until teamList.size) {
+        for (z in 0 until teamList.size) {
+            val localT = teamList[i]
+            val visitTeam = teamList[z]
+            if (localT != visitTeam) {
+                localT.teamsId?.let {
+                    visitTeam.teamsId?.let { it1 ->
+                        MatchEntity(
+                            localTeamId = it,
+                            visitorTeamId = it1
+                        )
+                    }
+                }?.let {
+                    partidosDisp.add(
+                        it
+                    )
+                }
+            }
+        }
+    }
+    val nPart = partidosDisp.size
+    val mitadTemporada = jornadas / 2
+    var partidosTot = mutableListOf<MatchEntity>()
+
+    var ramMatch = MatchEntity()
+    for (x in 0 until jornadas) {
+        var partidos = mutableListOf<MatchEntity>()
+        var intentos = 0
+        while (partidos.size < teamList.size / 2) {
+            var cntJ = 0
+            ramMatch = partidosDisp.random()
+            // Verificar si los equipos ya jugaron antes de la mitad de la temporada
+            if (listaPartidosJugados.count {
+                    (it.localTeamId == ramMatch.localTeamId && it.visitorTeamId == ramMatch.visitorTeamId) ||
+                            (it.localTeamId == ramMatch.visitorTeamId && it.visitorTeamId == ramMatch.localTeamId)
+                } < mitadTemporada) {
+                if (!partidos.any {
+                        it.localTeamId == ramMatch.localTeamId ||
+                                it.localTeamId == ramMatch.visitorTeamId ||
+                                it.visitorTeamId == ramMatch.localTeamId ||
+                                it.visitorTeamId == ramMatch.visitorTeamId
+                    }) {
+                    cntJ++
+                    ramMatch.matchNum = x
+                    partidosTot.add(ramMatch)
+                    partidos.add(ramMatch)
+                    partidosDisp.remove(ramMatch)
+                    // Registrar el partido jugado
+                    listaPartidosJugados.add(ramMatch)
+                    if (cntJ > teamList.size / 2) {
+                        return false
+                    }
+                }
+            }
+            intentos++
+            if (intentos > 100) {
+                return false
+            }
+        }
+
+    }
+    var cntJ = 0
+    var cntP = 0
+    var pfinish = true
+    if (partidosTot.size < nPart) {
+       return false
+    }
+    if (partidosTot.size > nPart) {
+        return false
+    }
+
+    if (partidosDisp.size != 0) {
+        return false
+    }
+    for (z in 0..<partidosTot.size){
+        matchViewModel.addMatch(partidosTot[z])
+    }
+    return pfinish
 }
 

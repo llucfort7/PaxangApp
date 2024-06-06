@@ -1,8 +1,6 @@
 package com.example.paxangaapp.ui.screens
 
 import android.annotation.SuppressLint
-import android.content.Context
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -36,19 +34,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.paxangaapp.R
 import com.example.paxangaapp.database.entities.AdminLoginEntity
-import com.example.paxangaapp.navigartion.Routes
 import com.example.paxangaapp.ui.theme.md_theme_light_onSecondaryContainer
 import com.example.paxangaapp.ui.theme.md_theme_light_primary
 import com.example.paxangaapp.ui.theme.md_theme_light_secondaryContainer
-import com.example.paxangaapp.ui.viwmodel.AdminLoginViwModel
-import java.io.File
+import com.example.paxangaapp.ui.viewmodel.AdminLoginViwModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -79,12 +74,7 @@ fun NewAdmin(
         var nameState by rememberSaveable { mutableStateOf("") }
         var passw by rememberSaveable { mutableStateOf("") }
         var showAlert by rememberSaveable { mutableStateOf(false) }
-
-
-        //navController.enableOnBackPressed(true)
-        BackHandler(enabled = true) {
-            // do nothing
-        }
+        
 
         Column(
             modifier = Modifier
@@ -163,6 +153,8 @@ fun NewAdmin(
                                     password = passw
                                 )
                             )
+                            nameState=""
+                            passw=""
                         } else {
                             showAlert = true
                         }

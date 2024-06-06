@@ -1,4 +1,4 @@
-package com.example.paxangaapp.ui.viwmodel
+package com.example.paxangaapp.ui.viewmodel
 
 
 
@@ -12,7 +12,6 @@ import com.example.paxangaapp.database.dao.TeamDAO
 import com.example.paxangaapp.database.entities.TeamsEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class TeamsViewModel(application: Application) : AndroidViewModel(application) {
     // Instancia del DAO
@@ -49,15 +48,6 @@ class TeamsViewModel(application: Application) : AndroidViewModel(application) {
             teamList = teamDAO.getAllTeams()
         }
     }
-    fun getNTeams():Int {
-
-        var num=0
-        viewModelScope.launch(Dispatchers.IO) {
-            num = teamDAO.getCountTeam()
-        }
-        return num
-    }
-
     // Método para agregar un nuevo equipo
     fun addTeam(team: TeamsEntity) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -77,16 +67,6 @@ class TeamsViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    // Método para verificar si existen equipos
-   // fun checkTeamExistence() {
-   //     viewModelScope.launch(Dispatchers.IO) {
-   //         val count = teamDAO.getAllTeams().size
-   //         withContext(Dispatchers.Main) {
-   //             updateTeamCount(count)
-   //         }
-   //     }
-   // }
-
     // Método para eliminar un equipo
     fun deleteAllTeams() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -94,7 +74,7 @@ class TeamsViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    // Método para actualizar un equipo
+    // Método para actualizar todos los equipos
     fun updateTeam(team: TeamsEntity) {
         viewModelScope.launch(Dispatchers.IO) {
             teamDAO.insertTeam(team)

@@ -11,36 +11,26 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -63,11 +53,11 @@ import com.example.paxangaapp.database.entities.PlayerEntity
 import com.example.paxangaapp.database.entities.TeamsEntity
 import com.example.paxangaapp.navigartion.Routes
 import com.example.paxangaapp.ui.theme.md_theme_light_primary
-import com.example.paxangaapp.ui.viwmodel.AppViewModel
-import com.example.paxangaapp.ui.viwmodel.MatchPlayerViewModel
-import com.example.paxangaapp.ui.viwmodel.MatchViewModel
-import com.example.paxangaapp.ui.viwmodel.PlayerViewModel
-import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
+import com.example.paxangaapp.ui.viewmodel.AppViewModel
+import com.example.paxangaapp.ui.viewmodel.MatchPlayerViewModel
+import com.example.paxangaapp.ui.viewmodel.MatchViewModel
+import com.example.paxangaapp.ui.viewmodel.PlayerViewModel
+import com.example.paxangaapp.ui.viewmodel.TeamsViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -95,7 +85,6 @@ fun MatchPlayedModifier(
                 },
             )
         }
-
     ) {
         var showDialog by rememberSaveable { mutableStateOf(false) }
 
@@ -146,8 +135,6 @@ Column (modifier=Modifier
     .verticalScroll(scrollState)
 
 ){
-
-
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -341,28 +328,28 @@ Column (modifier=Modifier
                     }
                 }
             }
-            FloatingActionButton(
-                onClick = { showDialog = true },
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(16.dp),
-            ) {
-                Text("Confirmar")
-            }
 
-            if (showDialog) {
-                showDialog = visitorTeam?.let { it1 ->
-                    localTeam?.let { it2 ->
-                        showConfirmationDialog(
-                            navController, match, matchViewModel, teamsViewModel,
-                            it2,
-                            it1
-                        )
-                    }
-                }!!
-            }
         }
+    FloatingActionButton(
+        onClick = { showDialog = true },
+        modifier = Modifier
+            .align(Alignment.CenterHorizontally)
+            .padding(16.dp),
+    ) {
+        Text("Confirmar")
+    }
 
+    if (showDialog) {
+        showDialog = visitorTeam?.let { it1 ->
+            localTeam?.let { it2 ->
+                showConfirmationDialog(
+                    navController, match, matchViewModel, teamsViewModel,
+                    it2,
+                    it1
+                )
+            }
+        }!!
+    }
     }
 }
 }
@@ -410,7 +397,6 @@ fun PlayerRowMod(
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
             }
-
         }
     }
 }

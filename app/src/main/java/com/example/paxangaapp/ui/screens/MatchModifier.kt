@@ -14,69 +14,46 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AcUnit
-import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AddAlert
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.ExitToApp
-import androidx.compose.material.icons.filled.FormatListNumbered
+import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.SportsSoccer
 import androidx.compose.material.icons.filled.TimeToLeave
-import androidx.compose.material3.Card
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.paxangaapp.database.entities.MatchEntity
 import com.example.paxangaapp.database.entities.TeamsEntity
 import com.example.paxangaapp.navigartion.Routes
-import com.example.paxangaapp.ui.theme.md_theme_light_primary
-import com.example.paxangaapp.ui.viwmodel.AppViewModel
-import com.example.paxangaapp.ui.viwmodel.MatchPlayerViewModel
-import com.example.paxangaapp.ui.viwmodel.MatchViewModel
-import com.example.paxangaapp.ui.viwmodel.PlayerViewModel
-import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
+import com.example.paxangaapp.ui.viewmodel.AppViewModel
+import com.example.paxangaapp.ui.viewmodel.MatchViewModel
+import com.example.paxangaapp.ui.viewmodel.TeamsViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -97,18 +74,22 @@ fun MatchModifier(
     teamsViewModel.getAllTeams()
     val teams by teamsViewModel.teamList.observeAsState(initial = emptyList())
     teamsViewModel.getAllTeams()
-//(Esta mal)Cambiar per un numero maxim de jornades afegides a la BD
-    val tabTitles = (0..mMatches.size).map { "Tab $it" }
-    var expanded by remember { mutableStateOf(false) }
+    teamsViewModel.updateTeamCount()
+    val nJourny = ((teamsViewModel.teamCount-1) * 2)
+    val tabTitles = (1..nJourny).map { "J $it" }
+    var cal = true
+    val coroutineScope = rememberCoroutineScope()
+    for (i in 0..<mMatches.size) {
+        if (mMatches[i].isPlayed) {
+            cal = false
+        }
+    }
     Scaffold(
         topBar = {
             TopAppBar(
-              //  colors = TopAppBarDefaults.smallTopAppBarColors(
-              //      containerColor = md_theme_light_primary
-              //  ),
                 navigationIcon = {
                     IconButton(onClick = {
-                        navController.popBackStack()
+                        navController.navigate(Routes.TabRowMatchScreen.routes)
                     }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
@@ -119,11 +100,40 @@ fun MatchModifier(
                 },
                 title = { Text(text = "Modificador") },
                 actions = {
+                    if (cal) {
+                        IconButton(onClick = {
+                            coroutineScope.launch(Dispatchers.IO) {
+                                var pas = false
+                                while (!pas) {
+                                    pas = calendario(
+                                        teamsViewModel,
+                                        matchViewModel,
+                                        teams,
+                                        navController
+                                    )
+                                }
+                            }
+                        }) {
+                            Icon(
+                                imageVector = Icons.Default.CalendarMonth,
+                                contentDescription = "More"
+                            )
+                        }
+                    }
+
                     IconButton(onClick = {
                         navController.navigate(Routes.NewAdmin.routes)
                     }) {
                         Icon(
                             imageVector = Icons.Default.Add,
+                            contentDescription = "More"
+                        )
+                    }
+                    IconButton(onClick = {
+                        navController.navigate(Routes.DeleteAdmin.routes)
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.DeleteForever,
                             contentDescription = "More"
                         )
                     }

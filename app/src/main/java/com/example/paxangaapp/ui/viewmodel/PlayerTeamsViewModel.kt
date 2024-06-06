@@ -1,4 +1,4 @@
-package com.example.paxangaapp.ui.viwmodel
+package com.example.paxangaapp.ui.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.paxangaapp.database.LeagueDB
 import com.example.paxangaapp.database.entities.PlayerTeamsForQueris
-import com.example.paxangaapp.database.entities.TeamsEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

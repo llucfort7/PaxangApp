@@ -11,8 +11,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,27 +22,27 @@ import androidx.navigation.NavHostController
 import com.example.paxangaapp.R
 import com.example.paxangaapp.database.entities.AdminLoginEntity
 import com.example.paxangaapp.navigartion.Routes
-import com.example.paxangaapp.ui.theme.md_theme_light_primary
-import com.example.paxangaapp.ui.viwmodel.AdminLoginViwModel
-import com.example.paxangaapp.ui.viwmodel.MatchViewModel
-import com.example.paxangaapp.ui.viwmodel.PlayerViewModel
-import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
+import com.example.paxangaapp.ui.viewmodel.AdminLoginViwModel
+import com.example.paxangaapp.ui.viewmodel.MatchPlayerViewModel
+import com.example.paxangaapp.ui.viewmodel.MatchViewModel
+import com.example.paxangaapp.ui.viewmodel.PlayerViewModel
+import com.example.paxangaapp.ui.viewmodel.TeamsViewModel
 import kotlinx.coroutines.delay
 
 
 @Composable
-fun SplashScreen(navController: NavHostController, adminLoginViwModel: AdminLoginViwModel,teamsViewModel: TeamsViewModel,matchViewModel: MatchViewModel,playerViewModel: PlayerViewModel) {
+fun SplashScreen(navController: NavHostController, adminLoginViwModel: AdminLoginViwModel,teamsViewModel: TeamsViewModel,matchViewModel: MatchViewModel,playerViewModel: PlayerViewModel,matchPlayerViewModel: MatchPlayerViewModel) {
     teamsViewModel.updateTeamCount()
 
     LaunchedEffect(key1 = true) {
         delay(100)
         navController.popBackStack() // Evitar volver a la Splash Screen
 
-        if (teamsViewModel.teamCount < 6) {
-           // teamsViewModel.deleteAllTeams()
-           // matchViewModel.deleteAllMatches()
-           // playerViewModel.deleteAllPlayers()
-           // //Posar el matchplayer
+        if (teamsViewModel.teamCount < 5) {
+            teamsViewModel.deleteAllTeams()
+            matchViewModel.deleteAllMatches()
+            playerViewModel.deleteAllPlayers()
+            matchPlayerViewModel.deleteAllMatchPlayer()
             navController.navigate(Routes.FirstLogin.routes)
         }
         else{

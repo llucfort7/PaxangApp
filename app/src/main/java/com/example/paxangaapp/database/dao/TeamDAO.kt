@@ -29,12 +29,6 @@ interface TeamDAO  {
 
     @Transaction
     @Query("SELECT * FROM teams")
-    fun getAllTeamsWithPlayers():List<PlayerTeamsForQueris>
+        fun getAllTeamsWithPlayers():List<PlayerTeamsForQueris>
 
-   // @Transaction
-   // @Query("SELECT * FROM teams WHERE teams.teamsId = :teamId AND players.teamsId = :teamId")
-   // fun getAllTeamsWithPlayersSameTeam(teamId: Int):List<PlayerTeamsForQueris>
-  //  @Transaction
-  //  @Query("SELECT * FROM PlayerTeamsForQueris WHERE team.teamsId = :teamId")
-  //  fun getPlayersByTeamId(teamId: Int): List<PlayerTeamsForQueris>
 }

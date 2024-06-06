@@ -1,4 +1,4 @@
-package com.example.paxangaapp.ui.viwmodel
+package com.example.paxangaapp.ui.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.paxangaapp.database.LeagueDB
 import com.example.paxangaapp.database.dao.MatchPlayerDAO
-import com.example.paxangaapp.database.entities.MatchEntity
 import com.example.paxangaapp.database.entities.MatchPlayerRelationEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -48,35 +47,14 @@ class MatchPlayerViewModel(application: Application) : AndroidViewModel(applicat
             matchPlayerListMatch = matchPlayersDAO.getMatchPlayersByMatch(id)
         }
     }
-    fun getAllMatchPlayersByMatchAndTeam(id:Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            matchPlayerListMatch = matchPlayersDAO.getMatchPlayersByMatch(id)
-        }
-    }
     fun getAllMatchPlayersByMatchGoal(id:Int) {
         viewModelScope.launch(Dispatchers.IO) {
             matchPlayerListMatchGoal = matchPlayersDAO.getMatchPlayersByMatchGoal(id)
         }
     }
-    fun getOneMatchPlayersByMatch(idPlayer:Int,idTeam:Int) {
+    fun deleteAllMatchPlayer() {
         viewModelScope.launch(Dispatchers.IO) {
-            _selectedMatchPlayerRel.value = matchPlayersDAO.getMatchPlayersRelation(idPlayer,idTeam)
+            matchPlayersDAO.deleteAllMatchPlayerRelations()
         }
     }
-    fun onClickMachPlayer(matchPlayerRelationEntity: MatchPlayerRelationEntity){
-        _selectedMatchPlayer.value=matchPlayerRelationEntity
-    }
-    // Método para actualizar una relación entre partido y jugador
-    //fun updateMatchPlayer(matchPlayer: MatchPlayerRelationEntity) {
-    //    viewModelScope.launch(Dispatchers.IO) {
-    //        matchPlayersDAO.updateMatchPlayer(matchPlayer)
-    //    }
-    //}
-//
-    //// Método para eliminar una relación entre partido y jugador
-    //fun deleteMatchPlayer(matchPlayer: MatchPlayerRelationEntity) {
-    //    viewModelScope.launch(Dispatchers.IO) {
-    //        matchPlayersDAO.deleteMatchPlayer(matchPlayer)
-    //    }
-    //}
 }

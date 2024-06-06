@@ -1,14 +1,7 @@
 package com.example.paxangaapp.ui.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.Card
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,9 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.paxangaapp.database.entities.PlayerEntity
 import com.example.paxangaapp.navigartion.Routes
-import com.example.paxangaapp.ui.theme.md_theme_dark_primary
-import com.example.paxangaapp.ui.theme.md_theme_light_primary
-import com.example.paxangaapp.ui.viwmodel.PlayerViewModel
+import com.example.paxangaapp.ui.viewmodel.PlayerViewModel
 
 
 @Composable

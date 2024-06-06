@@ -1,4 +1,4 @@
-package com.example.paxangaapp.ui.viwmodel
+package com.example.paxangaapp.ui.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -72,14 +72,6 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
             playerDAO.insertPlayer(player)
         }
     }
-
-    // Método para obtener un jugador por su ID
-    fun getPlayerById(playerId: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            playerByid = playerDAO.getPlayerById(playerId)
-        }
-    }
-
     fun getPlayerByTeamId(playerId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             playerListByTeam = playerDAO.getPlayerByTeamId(playerId)

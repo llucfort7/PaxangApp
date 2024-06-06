@@ -1,4 +1,4 @@
-package com.example.paxangaapp.ui.viwmodel
+package com.example.paxangaapp.ui.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

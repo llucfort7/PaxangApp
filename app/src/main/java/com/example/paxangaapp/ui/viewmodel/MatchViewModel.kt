@@ -1,4 +1,4 @@
-package com.example.paxangaapp.ui.viwmodel
+package com.example.paxangaapp.ui.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -69,15 +69,6 @@ class MatchViewModel(application: Application) : AndroidViewModel(application) {
             matchDAO.deleteAllMatches()
         }
     }
-
-    fun getNmatches(): Int {
-        var ret = 0
-        viewModelScope.launch(Dispatchers.IO) {
-            ret = matchDAO.getNMatches()
-        }
-        return ret
-    }
-
     fun getNMtachesPlayed(): Int {
         var ret = 0
         viewModelScope.launch(Dispatchers.IO) {
@@ -89,6 +80,4 @@ class MatchViewModel(application: Application) : AndroidViewModel(application) {
     fun onMatchCliked(match: MatchEntity) {
         _selectedMatch.value = match
     }
-
-
 }

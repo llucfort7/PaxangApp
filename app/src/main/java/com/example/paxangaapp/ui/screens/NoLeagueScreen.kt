@@ -21,11 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
 import com.example.paxangaapp.navigartion.Routes
-import com.example.paxangaapp.ui.viwmodel.AppViewModel
-import com.example.paxangaapp.ui.viwmodel.MatchViewModel
-import com.example.paxangaapp.ui.viwmodel.PlayerTeamsViewModel
-import com.example.paxangaapp.ui.viwmodel.PlayerViewModel
-import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
+import com.example.paxangaapp.ui.viewmodel.AppViewModel
+import com.example.paxangaapp.ui.viewmodel.TeamsViewModel
 
 @Composable
 fun NoLeagueScreen(

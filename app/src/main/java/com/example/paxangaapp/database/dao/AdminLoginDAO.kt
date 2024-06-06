@@ -25,5 +25,5 @@ interface AdminLoginDAO {
     suspend fun deleteAllUsers()
 
     @Delete
-    suspend fun deleteUsers(users: AdminLoginEntity): Int
+    suspend fun deleteUser(users: AdminLoginEntity): Int
 }

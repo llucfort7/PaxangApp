@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.paxangaapp.ui.screens.ClassificationScreen
+import com.example.paxangaapp.ui.screens.DeleteAdmin
 import com.example.paxangaapp.ui.screens.FirstLogin
 import com.example.paxangaapp.ui.screens.MatchModifier
 import com.example.paxangaapp.ui.screens.MatchPlayedModifier
@@ -20,12 +21,12 @@ import com.example.paxangaapp.ui.screens.SeeMatches
 import com.example.paxangaapp.ui.screens.SplashScreen
 import com.example.paxangaapp.ui.screens.TabRowMatchScreen
 import com.example.paxangaapp.ui.screens.TeamInfoScreen
-import com.example.paxangaapp.ui.viwmodel.AdminLoginViwModel
-import com.example.paxangaapp.ui.viwmodel.AppViewModel
-import com.example.paxangaapp.ui.viwmodel.MatchPlayerViewModel
-import com.example.paxangaapp.ui.viwmodel.MatchViewModel
-import com.example.paxangaapp.ui.viwmodel.PlayerViewModel
-import com.example.paxangaapp.ui.viwmodel.TeamsViewModel
+import com.example.paxangaapp.ui.viewmodel.AdminLoginViwModel
+import com.example.paxangaapp.ui.viewmodel.AppViewModel
+import com.example.paxangaapp.ui.viewmodel.MatchPlayerViewModel
+import com.example.paxangaapp.ui.viewmodel.MatchViewModel
+import com.example.paxangaapp.ui.viewmodel.PlayerViewModel
+import com.example.paxangaapp.ui.viewmodel.TeamsViewModel
 
 @Composable
 fun Navigation(matchViewModel: MatchViewModel, teamsViewModel: TeamsViewModel, adminLoginViwModel: AdminLoginViwModel,playerViewModel: PlayerViewModel,matchPlayerViewModel: MatchPlayerViewModel,appViewModel: AppViewModel) {
@@ -35,7 +36,7 @@ fun Navigation(matchViewModel: MatchViewModel, teamsViewModel: TeamsViewModel, a
         startDestination = Routes.SplashScreen.routes,
     ){
         composable(Routes.SplashScreen.routes) {
-            SplashScreen(navController,adminLoginViwModel,teamsViewModel,matchViewModel,playerViewModel)
+            SplashScreen(navController,adminLoginViwModel,teamsViewModel,matchViewModel,playerViewModel,matchPlayerViewModel)
         }
         composable(Routes.Onboarding.routes) {
             Onboarding(navController,teamsViewModel,adminLoginViwModel)
@@ -81,6 +82,9 @@ fun Navigation(matchViewModel: MatchViewModel, teamsViewModel: TeamsViewModel, a
         }
         composable(Routes.NewAdmin.routes) {
             NewAdmin(navController,adminLoginViwModel)
+        }
+        composable(Routes.DeleteAdmin.routes) {
+            DeleteAdmin(navController,adminLoginViwModel)
         }
 
 
